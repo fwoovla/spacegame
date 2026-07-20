@@ -1,0 +1,231 @@
+#include "sprite.h"
+
+
+
+void LoadSpriteCentered(Sprite &_sprite, Texture2D _texture, Vector2 _position) {
+    _sprite.texture = _texture;
+    _sprite.size = {(float)_texture.width, (float)_texture.height};
+    _sprite.frame_size = _sprite.size.x;
+    //_sprite.frame_size = _sprite.size;
+    _sprite.position = _position;
+    _sprite.center = { _sprite.size.x/2, _sprite.size.y /2 };
+    _sprite.source = {
+        .x = 0,
+        .y = 0,
+        .width = _sprite.size.x,
+        .height = _sprite.size.y,
+    };
+    _sprite.dest = {
+        _sprite.position.x,
+        _sprite.position.y,
+        _sprite.size.x,
+        _sprite.size.y  
+    };
+    _sprite.rotation = 0.0;
+    _sprite.modulate = WHITE;
+    _sprite.pivot = _sprite.center;
+    _sprite.dest.x = _sprite.position.x;
+    _sprite.dest.y = _sprite.position.y;
+        
+}
+
+
+void LoadSpriteAnchored(Sprite &_sprite, Texture2D _texture, Vector2 _position) {
+    _sprite.texture = _texture;
+    _sprite.size = {(float)_texture.width, (float)_texture.height};
+    _sprite.frame_size = _sprite.size.x;
+    //_sprite.frame_size = _sprite.size;
+    _sprite.position = _position;
+    _sprite.center = { _sprite.size.x/2, _sprite.size.y};
+    _sprite.source = {
+        .x = 0,
+        .y = 0,
+        .width = _sprite.size.x,
+        .height = _sprite.size.y,
+    };
+    _sprite.dest = {
+        _sprite.position.x,
+        _sprite.position.y,
+        _sprite.size.x,
+        _sprite.size.y  
+    };
+    _sprite.rotation = 0.0;
+    _sprite.modulate = WHITE;
+    _sprite.pivot = _sprite.center;
+    _sprite.dest.x = _sprite.position.x;
+    _sprite.dest.y = _sprite.position.y;  
+}
+
+void LoadSpriteCentered(AnimatedSprite &_sprite, Texture2D _texture, Vector2 _position, int _max_frames, float _frame_size, float _frame_delay) {
+    _sprite.texture = _texture;
+    _sprite.size = {_frame_size, _frame_size};
+    _sprite.frame_size = _frame_size;
+    _sprite.position = _position;
+    _sprite.center = { _sprite.size.x/2, _sprite.size.y/2 };
+    _sprite.source = {
+        .x = 0,
+        .y = 0,
+        .width = _sprite.size.x,
+        .height = _sprite.size.y,
+    };
+    _sprite.dest = {
+        _sprite.position.x,
+        _sprite.position.y,
+        _sprite.size.x,
+        _sprite.size.y  
+    };
+    _sprite.rotation = 0.0;
+    _sprite.modulate = WHITE;
+    _sprite.pivot = _sprite.center;
+
+    _sprite.max_frames = _max_frames;
+    _sprite.frame_delay = _frame_delay;
+    _sprite.last_frame_time = GetTime();
+    _sprite.frame = 0;
+    _sprite.y_index = 0;
+    _sprite.dest.x = _sprite.position.x;
+    _sprite.dest.y = _sprite.position.y;
+}
+
+
+
+void LoadSpriteAnchored(AnimatedSprite &_sprite, Texture2D _texture, Vector2 _position, int _max_frames, float _frame_size, float _frame_delay) {
+    _sprite.texture = _texture;
+    _sprite.size = {_frame_size, _frame_size};
+    _sprite.frame_size = _frame_size;
+    _sprite.position = _position;
+    _sprite.center = {0.0f, _sprite.size.y};
+    _sprite.source = {
+        .x = 0,
+        .y = 0,
+        .width = _sprite.size.x,
+        .height = _sprite.size.y,
+    };
+    _sprite.dest = {
+        _sprite.position.x,
+        _sprite.position.y,
+        _sprite.size.x,
+        _sprite.size.y  
+    };
+    _sprite.rotation = 0.0;
+    _sprite.modulate = WHITE;
+    _sprite.pivot = _sprite.center;
+
+    _sprite.max_frames = _max_frames;
+    _sprite.frame_delay = _frame_delay;
+    _sprite.last_frame_time = GetTime();
+    _sprite.frame = 0;
+    _sprite.y_index = 0;
+    _sprite.dest.x = _sprite.position.x;
+    _sprite.dest.y = _sprite.position.y;
+}
+
+
+
+
+void LoadSprite(Sprite &_sprite, Texture2D _texture, Vector2 _position) {
+    _sprite.texture = _texture;
+    _sprite.size = {(float)_texture.width, (float)_texture.height};
+    _sprite.frame_size = _sprite.size.x;
+    _sprite.position = _position;
+     _sprite.center = {0,0};
+    _sprite.source = {
+        .x = 0,
+        .y = 0,
+        .width = _sprite.size.x,
+        .height = _sprite.size.y,
+    };
+    _sprite.dest = {
+        _sprite.position.x,
+        _sprite.position.y,
+        _sprite.size.x,
+        _sprite.size.y  
+    };
+    _sprite.rotation = 0.0;
+    _sprite.modulate = WHITE;
+    _sprite.pivot = _sprite.center;
+    _sprite.dest.x = _sprite.position.x;
+    _sprite.dest.y = _sprite.position.y;
+}
+
+void LoadSprite(AnimatedSprite &_sprite, Texture2D _texture, Vector2 _position, int _max_frames, float _frame_size, float _frame_delay) {
+    _sprite.texture = _texture;
+    _sprite.size = {_frame_size, _frame_size};
+    _sprite.frame_size = _frame_size;
+    _sprite.position = _position;
+    _sprite.center = {0,0};
+    _sprite.source = {
+        .x = 0,
+        .y = 0,
+        .width = _sprite.size.x,
+        .height = _sprite.size.y,
+    };
+    _sprite.dest = {
+        _sprite.position.x,
+        _sprite.position.y,
+        _sprite.size.x,
+        _sprite.size.y  
+    };
+    _sprite.rotation = 0.0;
+    _sprite.modulate = WHITE;
+    _sprite.pivot = _sprite.center;
+
+    _sprite.max_frames = _max_frames;
+    _sprite.frame_delay = _frame_delay;
+    _sprite.last_frame_time = GetTime();
+    _sprite.frame = 0;
+    _sprite.y_index = 0;
+}
+
+
+void ScaleSprite(Sprite &_sprite, Vector2 _scale) {
+    
+    _sprite.scale = _scale;
+    _sprite.center = { abs((_sprite.size.x * _sprite.scale.x)) * 0.5f, abs((_sprite.size.y * _sprite.scale.y)) * 0.5f };
+    _sprite.source = {
+        .x = 0,
+        .y = 0,
+        .width = _sprite.size.x,
+        .height = _sprite.size.y
+    };
+    _sprite.dest = {
+        _sprite.position.x,
+        _sprite.position.y,
+        _sprite.size.x * _sprite.scale.x,
+        _sprite.size.y * _sprite.scale.y  
+    };
+}
+
+void AnimateSprite(AnimatedSprite &_sprite) {
+ if(_sprite.last_frame_time + _sprite.frame_delay < GetTime()) {
+        _sprite.frame++;
+        _sprite.last_frame_time = GetTime();
+ 
+        if (_sprite.frame >= _sprite.max_frames) {
+            _sprite.frame = 0;
+        }
+         
+        _sprite.source.x = (_sprite.frame * _sprite.size.x);
+        _sprite.source.y = _sprite.y_index * _sprite.size.y;
+    }
+    _sprite.dest.x = _sprite.position.x;
+    _sprite.dest.y = _sprite.position.y;
+    
+}
+
+
+void DrawSprite(Sprite &_sprite) {
+    _sprite.dest.x = _sprite.position.x;
+    _sprite.dest.y = _sprite.position.y;
+    DrawTexturePro(_sprite.texture, _sprite.source, _sprite.dest, _sprite.center, _sprite.rotation, _sprite.modulate );       
+}
+
+void DrawSprite(AnimatedSprite &_sprite) {
+    _sprite.dest.x = _sprite.position.x;
+    _sprite.dest.y = _sprite.position.y;
+    DrawTexturePro(_sprite.texture, _sprite.source, _sprite.dest, _sprite.center, _sprite.rotation, _sprite.modulate );       
+}
+
+void SetAmination(AnimatedSprite &_sprite, int _y_index) {
+    _sprite.y_index = _y_index;
+}

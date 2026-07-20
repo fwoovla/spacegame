@@ -1,0 +1,31 @@
+{
+    "data":[
+        {
+            "id": "ENTITY_PLAYER",
+            "name": "Player",
+            "size_x": 32,
+            "size_y": 32,
+            "components" : {
+                "health": {
+                    "max": 10,
+                    "can_take_damage": true
+                },
+
+                "interaction": {
+                    "range": 16.0,
+                    "can_interact": true,
+                    "highlightable": true,
+                    "priority": 1,
+                    "type": 1
+                },
+                "movement": {
+                    "speed": 1800
+                },
+                "inventory": {
+                }
+            },
+
+            "obstructable": false
+        }
+    ]
+}
