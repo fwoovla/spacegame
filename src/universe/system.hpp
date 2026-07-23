@@ -9,7 +9,7 @@
 
 
 
-struct StarSystemData {
+struct SystemInstanceData {
     std::string name = "system";
     uint64_t seed;
     
@@ -50,7 +50,7 @@ class System {
         SystemBodyEntity * SpawnSystemBody(Vector2 position, BODY_TYPE type, int orbitals, SystemBodyEntity *parent_body);
         SystemBodyData GenerateSystemBodyInstance(Vector2 position, BODY_TYPE type, int orbitals);
 
-        StarSystemData system_data;
+        SystemInstanceData system_data;
 
         Signal landing_requested;
 };

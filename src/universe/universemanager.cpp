@@ -5,21 +5,48 @@
 void UniverseManager::CreateUniverse(std::string player_name) {
     printf("creating a  new universe for player:   %s\n", player_name.c_str());
 
+    universe_data.max_systems = 1;
+
+    OutlineUniverse();
+
+    GenerateNewSystem(universe_data.map_data[0].uid);
+
+    if(g_current_player != nullptr) {
+        g_current_player = current_system->SpawnPlayer(g_entity_template_data[ENTITY_PLAYER], 0, {current_system->system_data.radius - 500, current_system->system_data.radius}); 
+    }
+    else {
+        printf("could not find system\n");
+    }
+
+}
+
+//create the SystemMapData
+void UniverseManager::OutlineUniverse() {
+    for(int system_index = 0 ; system_index < universe_data.max_systems; system_index++) {
+        int system_uid = GetUID();
+        
+        SystemMapData new_data;
+        
+        new_data.uid = system_uid;
+        new_data.name = "system " + std::to_string(system_uid);
+        
+        universe_data.map_data[system_uid] = new_data;
+        printf("new system %i  %s\n", new_data.uid, new_data.name.c_str());
+    }
+
+}
+
+
+void UniverseManager::GenerateNewSystem(int system_uid) {
+
     current_system = std::make_unique<System>();
 
-
+    //GenerateNewSystem(universe_data.map_data[0].uid);
     current_system->GenerateSystem();
     current_system->landing_requested.Connect( [&]() { OnLandAtLocationRequested();});
 
-    
-
-
-/*     EntityData player_data = GenerateEntityInstance(g_entity_template_data[ENTITY_PLAYER], 0, {500, 500});
-    universe_data.system_data.entity_data[player_data.uid] = player_data;
-    */
-   g_current_player = current_system->SpawnPlayer(g_entity_template_data[ENTITY_PLAYER], 0, {current_system->system_data.radius - 500, current_system->system_data.radius}); 
-
 }
+
 
 void UniverseManager::Update() {
 

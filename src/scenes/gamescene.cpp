@@ -14,6 +14,11 @@ GameScene::GameScene() {
     //universe_manager.current_system->landing_requested.Connect( [&]() { OnLandingRequested();});
 
 
+    
+    //EntityData player_data = GenerateEntityInstance(g_entity_template_data[ENTITY_PLAYER], 0, {500, 500});
+    //universe_data.system_data.entity_data[player_data.uid] = player_data;
+    
+
     g_viewport.map_width =  universe_manager.current_system->system_data.radius * 2;
     g_viewport.map_height =  universe_manager.current_system->system_data.radius * 2;
 

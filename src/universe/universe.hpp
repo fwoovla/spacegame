@@ -13,15 +13,20 @@ struct Chunk {
 };
 
 
+struct SystemMapData {
+    int uid = -1;
+    std::string name = "system name";
+    Vector2 map_position;
+
+};
+
 
 struct UniverseData {
     uint64_t seed;
-    int max_systems = 2;
-    std::unordered_map<int, Vector2> ui_map_positions;
+    int max_systems = 0;
 
-    
-    
-    //StarSystemData system_data;
+    std::unordered_map<int, SystemMapData> map_data;
+
 };
 
 
@@ -30,6 +35,8 @@ class UniverseManager {
         UniverseManager(){};
         ~UniverseManager(){};
         void CreateUniverse(std::string player_name);
+        void OutlineUniverse();
+        void GenerateNewSystem(int system_uid);
 
         void Update();
         void Draw();
