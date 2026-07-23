@@ -10,11 +10,12 @@
 
 
 struct StarSystemData {
+    std::string name = "system";
     uint64_t seed;
     
     float radius;
 
-    Vector2 star_position;
+    Vector2 star_position;  //multiple stars coming soon
 
     std::vector<float> orbitals; 
 
@@ -26,10 +27,14 @@ struct StarSystemData {
 };
 
 
+
 class System {
     public:
         void GenerateSystem();
 
+        void Update();
+        void Draw();
+        void DrawUI();
 
         void GenerateBodies();
         void GenerateLandingSites();
@@ -49,6 +54,20 @@ class System {
 
         Signal landing_requested;
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

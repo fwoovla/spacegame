@@ -1,4 +1,4 @@
-#include "scenes.hpp"
+/* #include "scenes.hpp"
 #include "../game.h"
 
 
@@ -29,4 +29,4 @@ LocationScene::LocationScene() {
 
 void LocationScene::OnWorldTick() {
 
-}
+} */

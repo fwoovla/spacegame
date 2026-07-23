@@ -9,6 +9,7 @@ void UniverseManager::CreateUniverse(std::string player_name) {
 
 
     current_system->GenerateSystem();
+    current_system->landing_requested.Connect( [&]() { OnLandAtLocationRequested();});
 
     
 
@@ -17,54 +18,207 @@ void UniverseManager::CreateUniverse(std::string player_name) {
     universe_data.system_data.entity_data[player_data.uid] = player_data;
     */
    g_current_player = current_system->SpawnPlayer(g_entity_template_data[ENTITY_PLAYER], 0, {current_system->system_data.radius - 500, current_system->system_data.radius}); 
-    
-    //g_current_player = player;
-
-    //universe_data.system_data.entity_list.push_back(std::move(player));
-    //printf("player created with name  %s\n", g_current_player->entity_data->name.c_str());
-
 
 }
 
+void UniverseManager::Update() {
 
-void UniverseManager::UpdateBodies(Vector2 target_pos) {
-    for(auto &body : current_system->system_data.body_list) {
-        body->Update();
+    if(location_ready_to_destroy) {
+        current_location.reset();
+        location_ready_to_destroy = false;
+        return;
     }
-    //printf("updating chuks\n");
 
+
+    switch(location_active)
+    {
+        case false:
+            current_system->Update();
+            break;
+            
+        case true:
+            current_location->Update();
+            break;
+
+    }
 }
 
-void UniverseManager::UpdateEntities() {
 
-    auto &vec = current_system->system_data.entity_list;
 
-        for (auto &entity : vec)
-        {
-            entity->Update();
-        }
-        std::erase_if(vec, [](const std::unique_ptr<BaseEntity> &entity){return entity->should_delete;});
-}
+
+
+
 
 void UniverseManager::Draw() {
 
-    for(auto &body : current_system->system_data.body_list) {
-        body->Draw();
+
+
+    switch(location_active)
+    {
+        case false:
+            current_system->Draw();
+            break;
+        
+        case true:
+            current_location->Draw();
+            break;
     }
+
     
-    for(auto &entity : current_system->system_data.entity_list) {
-        entity->Draw();
-    }
 
 }
 
+
 void UniverseManager::DrawUI() {
 
-    for(auto &entity : current_system->system_data.entity_list) {
-        entity->DrawUI();
+    switch(location_active)
+    {
+        case false:
+            current_system->DrawUI();
+            break;
+        
+        case true:
+            current_location->DrawUI();
+            break;
     }
-    for(auto &body : current_system->system_data.body_list) {
-        body->DrawUI();
+}
+
+
+
+void UniverseManager::OnLandAtLocationRequested() {
+    if(location_active) {
+        return;
     }
+    LandAtLocation();
+
+}
+
+
+
+void UniverseManager::LandAtLocation() {
+
+
+    if(!location_active) {
+        location_active = true;
+
+        current_location = std::make_unique<Location>();
+        current_location->GenerateLocation();
+
+        int uid = g_current_player->entity_data->uid; 
+       
+        auto &old_data = current_system->system_data.entity_data[uid];
+
+        current_location->location_data.entity_data[uid] = std::move(old_data);
+
+        auto &new_data = current_location->location_data.entity_data[uid];
+
+        current_system->system_data.entity_data.erase(uid);
+
+
+        auto &system_entities = current_system->system_data.entity_list;
+
+        for(auto it = system_entities.begin(); it != system_entities.end(); ++it)
+        {
+            if(it->get() == g_current_player)
+            {
+                
+
+                // move ownership
+                current_location->location_data.entity_list.push_back(std::move(*it));
+                system_entities.erase(it);
+                break;
+            }
+        } 
+
+        g_current_player = dynamic_cast<PlayerCharacter*>(current_location->location_data.entity_list.back().get());
+        g_current_player->entity_data = &new_data;
+
+        g_current_player->entity_data->position = {0,0};
+
+        g_camera.target = g_current_player->entity_data->position;
+
+        current_location->launch_requested.Connect([&]() { LaunchFromLocationRequested();});
+        //location_scene = std::make_unique<LocationScene>();
+
+        printf("transition activated %i  %0.5f %0.5f\n", g_game_data.transition.location_id, g_game_data.transition.return_position.x, g_game_data.transition.return_position.y);
+    }
+}
+
+
+
+void UniverseManager::LaunchFromLocationRequested() {
+    if(!location_active) {
+        return;
+    }
+    LaunchFromLocation();
+}
+
+
+void UniverseManager::LaunchFromLocation() {
+    
+    if(!location_active)
+        return;
+
+    int uid = g_current_player->entity_data->uid;
+
+    // Save return position before moving anything
+    Vector2 return_position = g_game_data.transition.return_position;
+
+
+    // Move entity data back to the system
+    current_system->system_data.entity_data[uid] = std::move(current_location->location_data.entity_data[uid]);
+
+    current_location->location_data.entity_data.erase(uid);
+
+
+    // Move player entity ownership back
+    auto &location_entities = current_location->location_data.entity_list;
+
+    auto &system_entities = current_system->system_data.entity_list;
+
+
+    for(auto it = location_entities.begin(); it != location_entities.end(); ++it)
+    {
+        if(it->get() == g_current_player)
+        {
+            system_entities.push_back(std::move(*it));
+            location_entities.erase(it);
+            break;
+        }
+    }
+
+
+    // Re-acquire player pointer
+    g_current_player = dynamic_cast<PlayerCharacter*>(system_entities.back().get());
+
+    // Rebind entity data pointer
+    g_current_player->entity_data = &current_system->system_data.entity_data[uid];
+
+
+    // Restore position in system space
+    g_current_player->entity_data->position = return_position;
+
+
+    // Destroy location
+    if(save_location){ /*save here*/ };
+    location_active = false;
+
+
+    // Reset camera
+    g_camera.target = g_current_player->entity_data->position;
+
+
+    printf("returned to system %f %f\n",
+        return_position.x,
+        return_position.y);
+}
+
+
+
+void UniverseManager::TravelToSystemRequested() {
+
+}
+
+void UniverseManager::TravelToSystem() {
 
 }

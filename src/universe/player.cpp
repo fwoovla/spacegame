@@ -28,7 +28,7 @@ void PlayerCharacter::Draw() {
 
     //TraceLog(LOG_INFO, "drawing player %i", data.current_layer);
     //DrawSprite(sprite);
-    DrawCircleV({entity_data->position.x, entity_data->position.y}, 20, RED);
+    DrawCircleV({entity_data->position.x, entity_data->position.y}, 20, PINK);
 }
 
 void PlayerCharacter::DrawUI() {

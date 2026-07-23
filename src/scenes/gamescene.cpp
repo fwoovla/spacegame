@@ -2,8 +2,6 @@
 #include "../game.h"
 #include "../universe/entity.hpp"
 
-//#include "../../core/worldgen/worldmanager.hpp"
-
 
 GameScene::GameScene() {
 
@@ -13,7 +11,7 @@ GameScene::GameScene() {
 
     universe_manager.CreateUniverse(g_game_data.player_name);
 
-    universe_manager.current_system->landing_requested.Connect( [&]() { OnLandingRequested();});
+    //universe_manager.current_system->landing_requested.Connect( [&]() { OnLandingRequested();});
 
 
     g_viewport.map_width =  universe_manager.current_system->system_data.radius * 2;
@@ -38,7 +36,7 @@ GameScene::GameScene() {
 SCENE_ID GameScene::Update() {
     //return SCENE_NONE;
     return_scene = SCENE_NONE;
-
+/* 
 
     if(should_destroy_location) {
         location_scene.reset();
@@ -52,7 +50,7 @@ SCENE_ID GameScene::Update() {
         return return_scene;
     }
     
-    
+     */
     world_ticker.Update();
 
     HandleCamera();
@@ -63,10 +61,11 @@ SCENE_ID GameScene::Update() {
     }
 
 
-    universe_manager.UpdateEntities();
-
+    //universe_manager.UpdateEntities();
+    
     if(g_current_player != nullptr) {
-        universe_manager.UpdateBodies(g_current_player->entity_data->position);
+        universe_manager.Update();
+        //universe_manager.UpdateBodies(g_current_player->entity_data->position);
     }
  
 
@@ -76,11 +75,11 @@ SCENE_ID GameScene::Update() {
 
 void GameScene::DrawScene() {
 
-    if(location_active and location_scene != nullptr) {
+    /* if(location_active and location_scene != nullptr) {
 
         location_scene->DrawScene();
         return;
-    }
+    } */
     
     if(g_game_data.show_debug) {
 
@@ -120,11 +119,7 @@ void GameScene::DrawScene() {
 
 
 void GameScene::DrawUI() {
-    if(location_active and location_scene != nullptr) {
 
-        location_scene->DrawUI();
-        return;
-    }
     universe_manager.DrawUI();
     ui->Draw();
     
@@ -142,6 +137,13 @@ void GameScene::OnWorldTick() {
     //g_game_data.tick_count++;
 }
 
+
+
+
+
+
+
+/* 
 void GameScene::OnLandingRequested() {
     if(!location_active) {
         location_active = true;
@@ -248,3 +250,5 @@ void GameScene::OnTakeoffRequested() {
         return_position.x,
         return_position.y);
 }
+
+ */

@@ -59,24 +59,6 @@ class TitleScene : public  BaseScene{
 
 
 
-class LocationScene : public  BaseScene{
-    public:
-        LocationScene();
-        ~LocationScene(){};
-        SCENE_ID Update() override;
-        void DrawScene() override;
-        void DrawUI() override;
-
-        void OnWorldTick();
-
-        std::unique_ptr<GameUiLayer> ui;
-
-        Timer world_ticker;
-
-        LocationManager location_manager;
-
-};
-
 
 class GameScene : public  BaseScene{
     public:
@@ -87,8 +69,8 @@ class GameScene : public  BaseScene{
         void DrawUI() override;
 
         void OnWorldTick();
-        void OnLandingRequested();
-        void OnTakeoffRequested();
+        //void OnLandingRequested();
+        //void OnTakeoffRequested();
 
 
         
@@ -100,7 +82,6 @@ class GameScene : public  BaseScene{
 
         bool location_active = false;
         bool should_destroy_location = false;
-        std::unique_ptr<LocationScene> location_scene;
 
 };
 

@@ -56,7 +56,6 @@ enum BODY_TYPE {
 class SystemBodyEntity;
 
 struct SystemBodyData {
-    BODY_TYPE body_type;
     std::string name = "no name";
     int uid = -1;
     Vector2 position;
@@ -68,6 +67,7 @@ struct SystemBodyData {
     int orbiting_bodies_count = 0;
     float orbit_radius = 0.0f;
     float orbit_angle = 0.0f;
+    BODY_TYPE body_type;
 
     std::vector<float> orbitals;
     SystemBodyEntity* parent_body = nullptr;

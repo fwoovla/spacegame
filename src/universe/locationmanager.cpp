@@ -1,4 +1,4 @@
-#include "universe.hpp"
+/* #include "universe.hpp"
 #include "../game.h"
 
 
@@ -64,4 +64,4 @@ void LocationManager::DrawUI() {
 void LocationManager::OnLaunchRequested() {
 
     launch_requested.EmitSignal();
-}
+} */

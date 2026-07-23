@@ -119,6 +119,50 @@ void System::GenerateLandingSites() {
 }
 
 
+
+
+
+
+void System::Update() {
+    for(auto &body : system_data.body_list) {
+        body->Update();
+    }
+
+    auto &vec = system_data.entity_list;
+
+    for (auto &entity : vec) {
+        entity->Update();
+    }
+
+    std::erase_if(vec, [](const std::unique_ptr<BaseEntity> &entity){return entity->should_delete;});
+}
+
+
+
+void System::Draw() {
+
+    
+    for(auto &body : system_data.body_list) {
+        body->Draw();
+    }
+
+    for(auto &entity : system_data.entity_list) {
+        entity->Draw();
+    }
+}
+
+void System::DrawUI() {
+
+    for(auto &entity : system_data.entity_list) {
+        entity->DrawUI();
+    }
+    for(auto &body : system_data.body_list) {
+        body->DrawUI();
+    }
+}
+
+
+
 void System::OnTransitionClicked() {
 
     landing_requested.EmitSignal();

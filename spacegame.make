@@ -89,6 +89,7 @@ GENERATED += $(OBJDIR)/gamescene.o
 GENERATED += $(OBJDIR)/gameuilayer.o
 GENERATED += $(OBJDIR)/input.o
 GENERATED += $(OBJDIR)/label.o
+GENERATED += $(OBJDIR)/location.o
 GENERATED += $(OBJDIR)/locationmanager.o
 GENERATED += $(OBJDIR)/locationscene.o
 GENERATED += $(OBJDIR)/main.o
@@ -119,6 +120,7 @@ OBJECTS += $(OBJDIR)/gamescene.o
 OBJECTS += $(OBJDIR)/gameuilayer.o
 OBJECTS += $(OBJDIR)/input.o
 OBJECTS += $(OBJDIR)/label.o
+OBJECTS += $(OBJDIR)/location.o
 OBJECTS += $(OBJDIR)/locationmanager.o
 OBJECTS += $(OBJDIR)/locationscene.o
 OBJECTS += $(OBJDIR)/main.o
@@ -265,6 +267,9 @@ $(OBJDIR)/components.o: src/universe/components/components.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/entityutils.o: src/universe/entityutils.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/location.o: src/universe/location.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/locationmanager.o: src/universe/locationmanager.cpp
