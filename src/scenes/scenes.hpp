@@ -85,10 +85,3 @@ class GameScene : public  BaseScene{
 
 };
 
-
-
-/* void YSortEntities(World &world);
-
-void YSortEntities(Chunk &chunk);
-
-void YSortEntities(std::vector<BaseEntity *> draw_list); */

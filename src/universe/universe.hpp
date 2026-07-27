@@ -13,13 +13,6 @@ struct Chunk {
 };
 
 
-struct SystemMapData {
-    int uid = -1;
-    std::string name = "system name";
-    Vector2 map_position;
-
-};
-
 
 struct UniverseData {
     uint64_t seed;
@@ -64,21 +57,13 @@ class UniverseManager {
 };
 
 
-/* 
-class LocationManager {
-    public:
-        LocationManager();
-        ~LocationManager();
-        void CreateLocation();
-        void Update(Vector2 player_position);
 
-        void Draw();
-        void DrawUI();
-
-        void OnLaunchRequested();
+//PlayerCharacter * SpawnPlayer(EntityTemplateData &tmpl, int uid, Vector2 position);
+//void Spawnentity(EntityTemplateData &tmpl, int uid, Vector2 position);
+EntityData GenerateEntityInstance(EntityTemplateData &tmpl, int uid, Vector2 position);
 
 
-    LocationData location_data;
-    Signal launch_requested;
 
-}; */
+//SystemBodyEntity * SpawnSystemBody(Vector2 position, BODY_TYPE type, int num_bodies, SystemBodyEntity *parent_body);
+
+SystemBodyData GenerateSystemBodyData(BODY_TYPE type, int num_bodies);

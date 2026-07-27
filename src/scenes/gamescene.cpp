@@ -97,7 +97,7 @@ void GameScene::DrawScene() {
 
 
     if(g_game_data.show_debug) {
-
+/* 
         for(int orbit = 0; orbit < universe_manager.current_system->system_data.orbitals.size(); orbit++) {
             Vector2 sun_pos = universe_manager.current_system->system_data.star_position;
             float orbital =  universe_manager.current_system->system_data.orbitals[orbit];
@@ -108,9 +108,16 @@ void GameScene::DrawScene() {
             DrawLineV(body.body_data->position, g_current_player->entity_data->position, GRAY);
 
             for(int sub_orbital = 0; sub_orbital < body.body_data->orbitals.size();sub_orbital++) {
-                float orbital =  body.body_data->orbitals[sub_orbital];
-                DrawCircleLines(body.body_data->position.x, body.body_data->position.y, orbital, YELLOW);   
+                //float orbital =  body.body_data->orbitals[sub_orbital];
+                //DrawCircleLines(body.body_data->position.x, body.body_data->position.y, orbital, YELLOW);   
             }
+        }
+ */
+
+
+        for(int b = 0; b < universe_manager.current_system->system_data.body_list.size(); b++) {
+            SystemBodyEntity &body = *universe_manager.current_system->system_data.body_list[b];
+            DrawLineV(body.body_data->position, g_current_player->entity_data->position, GRAY);
         }
 
         DrawRectangleLines(0, 0, universe_manager.current_system.get()->system_data.radius * 2, universe_manager.current_system.get()->system_data.radius * 2, WHITE);

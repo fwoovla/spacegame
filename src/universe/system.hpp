@@ -5,12 +5,29 @@
 #include "../FastNoisLite.h"
 
 
+struct SystemMapData {
+    int uid = -1;
+    std::string name = "system name";
+    Vector2 map_position;
 
+    float radius = 0.0f;
+
+    Vector2 star_position;
+
+    int orbital_layer_count = 0;
+    float orbital_layer_delta = 0.0f;
+    int orbital_body_count = 0;
+
+    //std::vector<SystemBodyData> bodies;
+    std::unordered_map<int, SystemBodyData> body_data;
+
+};
 
 
 
 struct SystemInstanceData {
-    std::string name = "system";
+    int uid = -1;
+    std::string name = "system ";
     uint64_t seed;
     
     float radius;
@@ -30,7 +47,7 @@ struct SystemInstanceData {
 
 class System {
     public:
-        void GenerateSystem();
+        void GenerateSystem(SystemMapData &map_data);
 
         void Update();
         void Draw();
@@ -42,13 +59,16 @@ class System {
 
 
         PlayerCharacter * SpawnPlayer(EntityTemplateData &tmpl, int uid, Vector2 position);
+        SystemBodyEntity * SpawnSystemBody(SystemBodyData &data, SystemBodyEntity *parent_body);
+        SystemBodyEntity * GenerateAndSpawnSystemBody(Vector2 position, BODY_TYPE type, int num_bodies, SystemBodyEntity *parent_body);
+/*         
         void Spawnentity(EntityTemplateData &tmpl, int uid, Vector2 position);
         EntityData GenerateEntityInstance(EntityTemplateData &tmpl, int uid, Vector2 position);
 
 
 
-        SystemBodyEntity * SpawnSystemBody(Vector2 position, BODY_TYPE type, int orbitals, SystemBodyEntity *parent_body);
-        SystemBodyData GenerateSystemBodyInstance(Vector2 position, BODY_TYPE type, int orbitals);
+
+        SystemBodyData GenerateSystemBodyInstance(Vector2 position, BODY_TYPE type, int num_bodies); */
 
         SystemInstanceData system_data;
 

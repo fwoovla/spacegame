@@ -34,7 +34,6 @@ void Location::Update() {
 
 
 void Location::Draw() {
-    //BeginMode2D(g_camera);
 
     DrawCircleV({0,0}, location_data.radius, DARKGRAY);
     DrawCircle( location_data.launch_site->position.x, location_data.launch_site->position.y, location_data.launch_site->transition_area->size.x, RED);
@@ -44,7 +43,6 @@ void Location::Draw() {
     for (auto &entity : vec) {
         entity->Draw();
     }
-    //EndMode2D();
 
 }
 

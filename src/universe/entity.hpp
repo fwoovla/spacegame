@@ -59,17 +59,22 @@ struct SystemBodyData {
     std::string name = "no name";
     int uid = -1;
     Vector2 position;
-    Rectangle collision_rect;
     float radius = 0.0f;
-    bool obstructable = false;
     bool landable = false;
-    Color modulate;
-    int orbiting_bodies_count = 0;
     float orbit_radius = 0.0f;
     float orbit_angle = 0.0f;
     BODY_TYPE body_type;
-
-    std::vector<float> orbitals;
+    
+    int orbital_layer_count = 0;
+    float orbital_layer_delta;
+    std::vector<int> orbital_bodies_uid;
+    
+    bool obstructable = false;
+    Color modulate;
+    
+    int orbiting_bodies_count = 0;
+    
+    int parent_body_uid;
     SystemBodyEntity* parent_body = nullptr;
 };
 

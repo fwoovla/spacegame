@@ -1,30 +1,41 @@
 #include "system.hpp"
 #include "../game.h"
 
-void System::GenerateSystem() {
+void System::GenerateSystem(SystemMapData &map_data) {
 
-    system_data.radius = 5000.0f;
+    printf("generating system %i with  %i planets\n", map_data.uid, map_data.body_data.size());
+
+    system_data.uid = map_data.uid;
+
+    system_data.radius = map_data.radius;
     system_data.seed = GetRandomValue(100, 100000);
 
-    system_data.star_position = {system_data.radius, system_data.radius};
-    int num_planets = 10; GetRandomValue(1, 10);
+    system_data.star_position = map_data.star_position;    
 
-    SpawnSystemBody(system_data.star_position, BODY_STAR, num_planets, nullptr);
+    //system_data.body_data = map_data.body_data;
 
-    GenerateBodies();
+    for(auto &body : map_data.body_data) {
+        SpawnSystemBody(body.second, nullptr);
 
-    GenerateLandingSites();
+    }
+    //SpawnSystemBody(system_data.star_position, BODY_STAR, num_planets, nullptr);
 
+    //GeneratePlanets();
+    //GenerateBodies();
 
+    //GenerateLandingSites();
 }
 
+
+/* void System::GeneratePlanets() {
+
+} */
 
 
 
 void System::GenerateBodies() {
-
-{
-    int num_planets = 5; //GetRandomValue(1, 10);
+/*     
+    int num_planets = 10; //GetRandomValue(1, 10);
     SystemBodyEntity *sun = system_data.body_list[0].get();
     Vector2 sun_pos = sun->body_data->position;
     int p = 0;
@@ -66,7 +77,7 @@ void System::GenerateBodies() {
         int o = 0;
         int num_p_layers = 10;
 
-        float p_layer_size = (parent_body->body_data->radius * 10) / num_p_layers;
+        float p_layer_size = (parent_body->body_data->radius * (2 + GetRandomValue(1, 8))) / num_p_layers;
 
         for(int p_layer = 5; p_layer < num_p_layers; p_layer++) {
             if(GetRandomValue(0,100) > 0 and o < num_bodies ) {
@@ -75,7 +86,7 @@ void System::GenerateBodies() {
 
                 body->body_data->orbit_radius = p_layer * p_layer_size;
                 body->body_data->orbit_angle = DEG2RAD * GetRandomValue(0, 359);
-                parent_body->body_data->orbitals.push_back(body->body_data->orbit_radius);
+                //parent_body->body_data->orbitals.push_back(body->body_data->orbit_radius);
 
                 Vector2 pos;
 
@@ -88,7 +99,7 @@ void System::GenerateBodies() {
             }
         }
     }
-
+ */
 }
 
 
@@ -180,7 +191,7 @@ PlayerCharacter * System::SpawnPlayer(EntityTemplateData &tmpl, int uid, Vector2
     return ptr;
 }
 
-
+/* 
 void System::Spawnentity(EntityTemplateData &tmpl, int uid, Vector2 position) {
 
 
@@ -217,11 +228,24 @@ EntityData System::GenerateEntityInstance(EntityTemplateData &tmpl, int uid, Vec
     return instance_data;
 }
 
+ */
 
+ SystemBodyEntity * System::SpawnSystemBody(SystemBodyData &data, SystemBodyEntity *parent_body) {
 
-SystemBodyEntity * System::SpawnSystemBody(Vector2 position, BODY_TYPE type, int orbitals, SystemBodyEntity *parent_body) {
+    system_data.body_data[data.uid] = data;
 
-    SystemBodyData data = GenerateSystemBodyInstance(position, type, orbitals);
+    std::unique_ptr<SystemBodyEntity> body = std::make_unique<SystemBodyEntity>(&system_data.body_data[data.uid]);
+    SystemBodyEntity * ptr = body.get();
+
+    system_data.body_list.push_back(std::move(body));
+    printf("spawning body  %i", ptr->body_data->uid);
+    return ptr;
+
+ }
+
+SystemBodyEntity * System::GenerateAndSpawnSystemBody(Vector2 position, BODY_TYPE type, int num_bodies, SystemBodyEntity *parent_body) {
+
+    SystemBodyData data = GenerateSystemBodyData(type, num_bodies);
     system_data.body_data[data.uid] = data;
 
     std::unique_ptr<SystemBodyEntity> body = std::make_unique<SystemBodyEntity>(&system_data.body_data[data.uid]);
@@ -232,7 +256,7 @@ SystemBodyEntity * System::SpawnSystemBody(Vector2 position, BODY_TYPE type, int
 
 }
 
-SystemBodyData System::GenerateSystemBodyInstance(Vector2 position, BODY_TYPE type, int orbitals) {
+/* SystemBodyData System::GenerateSystemBodyInstance(Vector2 position, BODY_TYPE type, int num_bodies) {
 
 
 
@@ -258,7 +282,8 @@ SystemBodyData System::GenerateSystemBodyInstance(Vector2 position, BODY_TYPE ty
     }
 
 
-    instance_data.orbiting_bodies_count = orbitals;
+
+    instance_data.orbiting_bodies_count = num_bodies;
 
     return instance_data;
-}
+} */
