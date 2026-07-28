@@ -56,24 +56,22 @@ void UniverseManager::OutlineUniverse() {
         new_data.orbital_body_count = 5;
 
 
-        SystemBodyData star_data = GenerateSystemBodyData(BODY_STAR, new_data.orbital_body_count);
+        SystemBodyData star_data = GenerateSystemBodyData(BODY_STAR, 0, 0.0f, nullptr);
         star_data.position = new_data.star_position;
         new_data.body_data[star_data.uid] = star_data;
 
 
         //main bodies orbiting star
         int p_tally = 0;
+        SystemBodyData *star = &current_system->system_data.body_data[0];
+
         for(int o_layer = 5; o_layer < new_data.orbital_layer_count; o_layer++) {
 
             if(GetRandomValue(0,100) > 0 and p_tally < new_data.orbital_body_count) {
+                                
+                SystemBodyData body_data = GenerateSystemBodyData(BODY_PLANET, o_layer, new_data.orbital_layer_delta, star);
                 
-                //int orbitals = GetRandomValue(0, 2);
-                
-                int num_bodies = GetRandomValue(0, 5);
-
-                SystemBodyData body_data = GenerateSystemBodyData(BODY_PLANET, num_bodies);
-                
-                body_data.orbit_radius = o_layer * new_data.orbital_layer_delta;
+                /* body_data.orbit_radius = o_layer * new_data.orbital_layer_delta;
                 body_data.orbit_angle = DEG2RAD * GetRandomValue(0, 359);           
 
                 Vector2 pos;
@@ -81,10 +79,10 @@ void UniverseManager::OutlineUniverse() {
                 pos.x = new_data.star_position.x + cosf(body_data.orbit_angle) * body_data.orbit_radius;
                 pos.y = new_data.star_position.y + sinf(body_data.orbit_angle) * body_data.orbit_radius;
 
-                body_data.position = pos;
+                body_data.position = pos; */
 
                 p_tally++;
-                printf("planet #%i  %0.5f %0.5f\n", p_tally, pos.x, pos.y + o_layer);
+                
                 new_data.body_data[body_data.uid] = body_data;
             }
         }
@@ -101,6 +99,20 @@ void UniverseManager::OutlineUniverse() {
     }
     printf("\n\nEND OUTLINING UNIVERSE\n\n");
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 void UniverseManager::GenerateNewSystem(int system_uid) {
@@ -358,30 +370,50 @@ EntityData GenerateEntityInstance(EntityTemplateData &tmpl, int uid, Vector2 pos
 
 
 /*  */
-SystemBodyData GenerateSystemBodyData( BODY_TYPE type, int num_bodies) {
+SystemBodyData GenerateSystemBodyData( BODY_TYPE type, int layer, float layer_delta, SystemBodyData *parent) {
 
     SystemBodyData instance_data;
     instance_data.body_type = type;
     int uid = GetUID();
     instance_data.uid = uid;
-    instance_data.name = "star " + std::to_string(uid);
     instance_data.obstructable = false;
     instance_data.position = {0,0};  //set on return
 
     if(type == BODY_STAR) {
+        instance_data.name = "star " + std::to_string(uid);
         instance_data.modulate = ORANGE;
         instance_data.radius = 1500.0f;
+        instance_data.orbiting_bodies_count = GetRandomValue(0,8);
+        instance_data.parent = nullptr;
     }
     else if(type == BODY_PLANET) {
+        instance_data.name = "planet " + std::to_string(uid);
         instance_data.modulate = BLUE;
         instance_data.radius = 200.0f;
+        instance_data.orbiting_bodies_count = GetRandomValue(0,4);
+        instance_data.parent = parent;
     }
     else if(type == BODY_MOON) {
+        instance_data.name = "moon " + std::to_string(uid);
         instance_data.modulate = YELLOW;
         instance_data.radius = 50.0f;
+        instance_data.orbiting_bodies_count = 0;
+        instance_data.parent = parent;
+
     }
 
-    instance_data.orbiting_bodies_count = num_bodies;
+    instance_data.orbit_radius = layer * layer_delta;
+    instance_data.orbit_angle = DEG2RAD * GetRandomValue(0, 359);           
 
+    Vector2 pos = {0,0};
+
+    if(parent != nullptr) {
+        pos.x = parent->position.x + cosf(instance_data.orbit_angle) * instance_data.orbit_radius;
+        pos.y = parent->position.y + sinf(instance_data.orbit_angle) * instance_data.orbit_radius;
+    }
+
+    instance_data.position = pos;
+    
+    printf("body  %0.5f %0.5f\n", pos.x, pos.y + layer);
     return instance_data;
 }

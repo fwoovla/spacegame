@@ -66,4 +66,4 @@ EntityData GenerateEntityInstance(EntityTemplateData &tmpl, int uid, Vector2 pos
 
 //SystemBodyEntity * SpawnSystemBody(Vector2 position, BODY_TYPE type, int num_bodies, SystemBodyEntity *parent_body);
 
-SystemBodyData GenerateSystemBodyData(BODY_TYPE type, int num_bodies);
+SystemBodyData GenerateSystemBodyData(BODY_TYPE type, int layer, float layer_delta, SystemBodyData *parent);

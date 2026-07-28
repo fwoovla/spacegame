@@ -75,7 +75,7 @@ struct SystemBodyData {
     int orbiting_bodies_count = 0;
     
     int parent_body_uid;
-    SystemBodyEntity* parent_body = nullptr;
+    SystemBodyData* parent = nullptr;
 };
 
 
