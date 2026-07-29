@@ -51,6 +51,9 @@ class System {
 
         void Update();
         void Draw();
+        void DrawWorld();
+        void DrawOverlay();
+        void DrawDebug();
         void DrawUI();
 
         void GenerateBodies();

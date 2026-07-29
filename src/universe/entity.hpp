@@ -3,6 +3,7 @@
 #include "../resources/resources.h"
 #include "components/components.hpp"
 #include "../areas/areas.hpp"
+#include "../sprite/sprite.h"
 
 enum ENTITY_ID {
     ENTITY_NONE = -1,
@@ -16,6 +17,7 @@ struct EntityTemplateData {
     Vector2 size;
     float radius;
     bool obstructable;
+    RenderMode render_mode;
 
     uint32_t component_flags = 0;
 
@@ -37,6 +39,8 @@ struct EntityData {
     float radius = 0.0f;
     bool obstructable = false;
     bool obstructed = false;
+
+    RenderMode render_mode;
 
     uint32_t component_flags = 0;
 
@@ -85,7 +89,9 @@ class BaseEntity  {
         virtual ~BaseEntity() = default;
         virtual void Update() = 0;   
         virtual void Draw() = 0; 
+        virtual void DrawOverlay() = 0;
         virtual void DrawUI() = 0;
+        virtual float GetRenderScale() = 0;
 
 
         //virtual void TakeDamage(DamagePayload _payload) = 0;
@@ -93,6 +99,8 @@ class BaseEntity  {
         bool should_delete = false;
         bool is_on_screen = false;
         bool y_sort = false;
+
+        //RenderMode mode;
 
         EntityData *entity_data = nullptr;
         SystemBodyData *body_data = nullptr;
@@ -122,10 +130,13 @@ class PlayerCharacter : public CreatureEntity {
         ~PlayerCharacter() override;
         void Update() override;
         void Draw() override;
+        void DrawOverlay() override;
         void DrawUI()override;
 
         void UpdateMovement() override;
         void Die() override;
+
+        float GetRenderScale() override;
     
     
     
@@ -147,7 +158,10 @@ class SystemBodyEntity : public BaseEntity {
         ~SystemBodyEntity() = default;
         void Update() override;
         void Draw() override;
+        void DrawOverlay() override;
         void DrawUI()override;
+
+        float GetRenderScale() override;
 
         std::vector<std::unique_ptr<TransitionSite>> landing_sites;
 

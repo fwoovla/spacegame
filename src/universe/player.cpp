@@ -1,6 +1,9 @@
 #include "entity.hpp"
 #include "../game.h"
 
+
+float max_render_scale = 2.5f;
+
 PlayerCharacter::PlayerCharacter(EntityData *_data) {
 
     entity_data = _data;
@@ -29,6 +32,20 @@ void PlayerCharacter::Draw() {
     //TraceLog(LOG_INFO, "drawing player %i", data.current_layer);
     //DrawSprite(sprite);
     DrawCircleV({entity_data->position.x, entity_data->position.y}, 20, PINK);
+}
+
+
+
+void PlayerCharacter::DrawOverlay() {
+
+    //TraceLog(LOG_INFO, "drawing player %i", data.current_layer);
+    //DrawSprite(sprite);
+
+    float scale = GetRenderScale();
+
+    Vector2 screen = GetWorldToScreen2D(entity_data->position, g_camera);
+
+    DrawCircleV(screen, 20 * scale, PINK);
 }
 
 void PlayerCharacter::DrawUI() {
@@ -93,3 +110,14 @@ void PlayerCharacter::UpdateMovement() {
 }
 
 
+
+float PlayerCharacter::GetRenderScale()
+{
+    if(entity_data->render_mode == RENDER_WORLD)
+        return g_camera.zoom;
+
+    if(entity_data->render_mode == RENDER_CAPPED)
+        return std::min(g_camera.zoom, max_render_scale);
+
+    return 1.0f;
+}

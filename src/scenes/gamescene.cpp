@@ -41,21 +41,7 @@ GameScene::GameScene() {
 SCENE_ID GameScene::Update() {
     //return SCENE_NONE;
     return_scene = SCENE_NONE;
-/* 
 
-    if(should_destroy_location) {
-        location_scene.reset();
-        should_destroy_location = false;
-        return return_scene;
-    }
-
-    if(location_active and location_scene != nullptr) {
-
-        location_scene->Update();
-        return return_scene;
-    }
-    
-     */
     world_ticker.Update();
 
     HandleCamera();
@@ -65,12 +51,9 @@ SCENE_ID GameScene::Update() {
         g_current_player->entity_data->position.y = (float)GetRandomValue(100, 20000);
     }
 
-
-    //universe_manager.UpdateEntities();
     
     if(g_current_player != nullptr) {
         universe_manager.Update();
-        //universe_manager.UpdateBodies(g_current_player->entity_data->position);
     }
  
 
@@ -79,41 +62,17 @@ SCENE_ID GameScene::Update() {
 
 
 void GameScene::DrawScene() {
-
-    /* if(location_active and location_scene != nullptr) {
-
-        location_scene->DrawScene();
-        return;
-    } */
-    
+   
     if(g_game_data.show_debug) {
-
         DrawCircleV(g_input.screen_mouse_position, 6, YELLOW);
     }
 
     BeginMode2D(g_camera);
 
-    universe_manager.Draw();
-
-
+    universe_manager.DrawWorld();
+    
     if(g_game_data.show_debug) {
-/* 
-        for(int orbit = 0; orbit < universe_manager.current_system->system_data.orbitals.size(); orbit++) {
-            Vector2 sun_pos = universe_manager.current_system->system_data.star_position;
-            float orbital =  universe_manager.current_system->system_data.orbitals[orbit];
-            DrawCircleLines(sun_pos.x, sun_pos.y, orbital, WHITE);
-        }
-        for(int b = 0; b < universe_manager.current_system->system_data.body_list.size(); b++) {
-            SystemBodyEntity &body = *universe_manager.current_system->system_data.body_list[b];
-            DrawLineV(body.body_data->position, g_current_player->entity_data->position, GRAY);
-
-            for(int sub_orbital = 0; sub_orbital < body.body_data->orbitals.size();sub_orbital++) {
-                //float orbital =  body.body_data->orbitals[sub_orbital];
-                //DrawCircleLines(body.body_data->position.x, body.body_data->position.y, orbital, YELLOW);   
-            }
-        }
- */
-
+        universe_manager.DrawDebug();
 
         for(int b = 0; b < universe_manager.current_system->system_data.body_list.size(); b++) {
             SystemBodyEntity &body = *universe_manager.current_system->system_data.body_list[b];
@@ -123,9 +82,10 @@ void GameScene::DrawScene() {
         DrawRectangleLines(0, 0, universe_manager.current_system.get()->system_data.radius * 2, universe_manager.current_system.get()->system_data.radius * 2, WHITE);
         DrawCircleV(g_input.world_mouse_position, 4, GREEN);    
     }
-    
 
     EndMode2D();
+    
+    universe_manager.DrawOverlay();
 
 }
 

@@ -3,6 +3,13 @@
 #include <raymath.h>
 
 
+enum RenderMode
+{
+    RENDER_WORLD,
+    RENDER_CAPPED,
+    RENDER_SCREEN
+};
+
 struct SpriteDrawData
 {
     Texture2D texture;
@@ -11,6 +18,7 @@ struct SpriteDrawData
     Vector2 center;
     float rotation;
     Color modulate;
+    RenderMode mode;
 };
 
 
@@ -26,6 +34,7 @@ struct Sprite {
     Color modulate = WHITE;
     float frame_size = 0.0f;
     Vector2 pivot = Vector2{0,0};
+    RenderMode mode;
 };
 
 struct AnimatedSprite : public Sprite {

@@ -19,13 +19,14 @@
                     "type": 1
                 },
                 "movement": {
-                    "speed": 1800
+                    "speed": 5000
                 },
                 "inventory": {
                 }
             },
 
-            "obstructable": false
+            "obstructable": false,
+            "render_mode": 1
         }
     ]
 }

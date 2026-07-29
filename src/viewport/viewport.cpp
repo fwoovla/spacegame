@@ -4,8 +4,8 @@
 
 
 
-#define MAX_ZOOM 4.4f
-#define MIN_ZOOM 0.005f
+#define MAX_ZOOM 8.0f
+#define MIN_ZOOM 0.0025f
 #define ZOOM_STEP 0.05f
 
 
@@ -92,5 +92,7 @@ void HandleCamera() {
     g_current_player->entity_data->position.y); */
  
 }
+
+
 
 

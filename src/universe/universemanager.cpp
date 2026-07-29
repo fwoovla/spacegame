@@ -42,7 +42,7 @@ void UniverseManager::OutlineUniverse() {
         
         new_data.uid = system_uid;
         new_data.name = "system " + std::to_string(system_uid);
-        new_data.radius = 50000.0f;
+        new_data.radius = 500000.0f;
         
         new_data.star_position = {new_data.radius, new_data.radius};
 
@@ -63,13 +63,13 @@ void UniverseManager::OutlineUniverse() {
 
         //main bodies orbiting star
         int p_tally = 0;
-        SystemBodyData *star = &current_system->system_data.body_data[0];
+        //SystemBodyData *star = &current_system->system_data.body_data[0];
 
         for(int o_layer = 5; o_layer < new_data.orbital_layer_count; o_layer++) {
 
             if(GetRandomValue(0,100) > 0 and p_tally < new_data.orbital_body_count) {
                                 
-                SystemBodyData body_data = GenerateSystemBodyData(BODY_PLANET, o_layer, new_data.orbital_layer_delta, star);
+                SystemBodyData body_data = GenerateSystemBodyData(BODY_PLANET, o_layer, new_data.orbital_layer_delta, &star_data);
                 
                 /* body_data.orbit_radius = o_layer * new_data.orbital_layer_delta;
                 body_data.orbit_angle = DEG2RAD * GetRandomValue(0, 359);           
@@ -161,24 +161,68 @@ void UniverseManager::Update() {
 
 
 
-void UniverseManager::Draw() {
+void UniverseManager::DrawWorld() {
 
 
 
     switch(location_active)
     {
         case false:
-            current_system->Draw();
+            current_system->DrawWorld();
             break;
         
         case true:
-            current_location->Draw();
+            current_location->DrawWorld();
             break;
     }
 
     
 
 }
+
+
+void UniverseManager::DrawOverlay() {
+
+
+
+    switch(location_active)
+    {
+        case false:
+            current_system->DrawOverlay();
+            break;
+        
+        case true:
+            current_location->DrawOverlay();
+            break;
+    }
+
+    
+
+}
+
+
+
+void UniverseManager::DrawDebug() {
+
+
+
+    switch(location_active)
+    {
+        case false:
+            current_system->DrawDebug();
+            break;
+        
+        case true:
+            current_location->DrawDebug();
+            break;
+    }
+
+    
+
+}
+
+
+
 
 
 void UniverseManager::DrawUI() {
@@ -347,6 +391,7 @@ EntityData GenerateEntityInstance(EntityTemplateData &tmpl, int uid, Vector2 pos
     instance_data.id = tmpl.id;
     instance_data.obstructable = tmpl.obstructable;
     instance_data.position = position;
+    instance_data.render_mode = tmpl.render_mode;
 
 
     instance_data.component_flags = tmpl.component_flags;
@@ -382,21 +427,21 @@ SystemBodyData GenerateSystemBodyData( BODY_TYPE type, int layer, float layer_de
     if(type == BODY_STAR) {
         instance_data.name = "star " + std::to_string(uid);
         instance_data.modulate = ORANGE;
-        instance_data.radius = 1500.0f;
+        instance_data.radius = 3000.0f;
         instance_data.orbiting_bodies_count = GetRandomValue(0,8);
         instance_data.parent = nullptr;
     }
     else if(type == BODY_PLANET) {
         instance_data.name = "planet " + std::to_string(uid);
         instance_data.modulate = BLUE;
-        instance_data.radius = 200.0f;
+        instance_data.radius = 300.0f;
         instance_data.orbiting_bodies_count = GetRandomValue(0,4);
         instance_data.parent = parent;
     }
     else if(type == BODY_MOON) {
         instance_data.name = "moon " + std::to_string(uid);
         instance_data.modulate = YELLOW;
-        instance_data.radius = 50.0f;
+        instance_data.radius = 75.0f;
         instance_data.orbiting_bodies_count = 0;
         instance_data.parent = parent;
 

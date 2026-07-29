@@ -46,6 +46,30 @@ void Location::Draw() {
 
 }
 
+void Location::DrawWorld() {
+
+    DrawCircleV({0,0}, location_data.radius, DARKGRAY);
+    DrawCircle( location_data.launch_site->position.x, location_data.launch_site->position.y, location_data.launch_site->transition_area->size.x, RED);
+
+    for(auto &entity : location_data.entity_list) {
+        if(entity->entity_data->render_mode == RENDER_WORLD)
+            entity->Draw();
+    }
+}
+
+void Location::DrawOverlay() {
+
+    for(auto &entity : location_data.entity_list) {
+        if(entity->entity_data->render_mode != RENDER_WORLD)
+            entity->DrawOverlay();
+    }
+
+}
+
+void Location::DrawDebug() {
+
+}
+
 void Location::DrawUI() {
     for(auto &entity : location_data.entity_list) {
         entity->DrawUI();

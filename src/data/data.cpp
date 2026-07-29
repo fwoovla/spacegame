@@ -31,6 +31,8 @@ void LoadEntityData(std::string file_path) {
         new_template.name = e["name"];
 
         new_template.obstructable = e["obstructable"];
+        
+        new_template.render_mode = e["render_mode"];
 
         new_template.size.x = (float)e["size_x"];
         new_template.size.y = (float)e["size_y"];

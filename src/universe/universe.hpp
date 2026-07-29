@@ -32,7 +32,9 @@ class UniverseManager {
         void GenerateNewSystem(int system_uid);
 
         void Update();
-        void Draw();
+        void DrawWorld();
+        void DrawOverlay();
+        void DrawDebug();
         void DrawUI();
 
         void OnLandAtLocationRequested();

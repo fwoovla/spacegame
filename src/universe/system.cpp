@@ -162,6 +162,34 @@ void System::Draw() {
     }
 }
 
+
+void System::DrawWorld() {
+
+    
+    for(auto &body : system_data.body_list) {
+        body->Draw();
+    }
+
+    for(auto &entity : system_data.entity_list) {
+        if(entity->entity_data->render_mode == RENDER_WORLD)
+            entity->Draw();
+    }
+}
+
+void System::DrawOverlay() {
+
+    for(auto &entity : system_data.entity_list) {
+        if(entity->entity_data->render_mode != RENDER_WORLD)
+            entity->DrawOverlay();
+    }
+}
+
+
+void System::DrawDebug() {
+
+
+}
+
 void System::DrawUI() {
 
     for(auto &entity : system_data.entity_list) {
@@ -243,9 +271,9 @@ EntityData System::GenerateEntityInstance(EntityTemplateData &tmpl, int uid, Vec
 
  }
 
-SystemBodyEntity * System::GenerateAndSpawnSystemBody(Vector2 position, BODY_TYPE type, int num_bodies, SystemBodyEntity *parent_body) {
+/* SystemBodyEntity * System::GenerateAndSpawnSystemBody(Vector2 position, BODY_TYPE type, int num_bodies, SystemBodyEntity *parent_body) {
 
-    SystemBodyData data = GenerateSystemBodyData(type, num_bodies);
+    SystemBodyData data = GenerateSystemBodyData(type);
     system_data.body_data[data.uid] = data;
 
     std::unique_ptr<SystemBodyEntity> body = std::make_unique<SystemBodyEntity>(&system_data.body_data[data.uid]);
@@ -254,7 +282,7 @@ SystemBodyEntity * System::GenerateAndSpawnSystemBody(Vector2 position, BODY_TYP
     system_data.body_list.push_back(std::move(body));
     return ptr;
 
-}
+} */
 
 /* SystemBodyData System::GenerateSystemBodyInstance(Vector2 position, BODY_TYPE type, int num_bodies) {
 

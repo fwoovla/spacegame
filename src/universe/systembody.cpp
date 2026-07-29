@@ -23,9 +23,24 @@ void SystemBodyEntity::Draw() {
     }
 }
 
+void SystemBodyEntity::DrawOverlay() {
+
+}
+
 void SystemBodyEntity::DrawUI() {
 
     for(auto &site : landing_sites) {
         site->transition_area->Draw();
     }
+}
+
+float SystemBodyEntity::GetRenderScale() {
+/*     if(borender_mode == RENDER_WORLD)
+        return g_camera.zoom;
+
+    if(render_mode == RENDER_CAPPED)
+        return std::min(g_camera.zoom, max_render_scale);
+
+        */
+    return 1.0f;
 }
