@@ -69,10 +69,6 @@ class GameScene : public  BaseScene{
         void DrawUI() override;
 
         void OnWorldTick();
-        //void OnLandingRequested();
-        //void OnTakeoffRequested();
-
-
         
         std::unique_ptr<GameUiLayer> ui;
 

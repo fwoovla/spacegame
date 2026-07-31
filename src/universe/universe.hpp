@@ -29,6 +29,7 @@ class UniverseManager {
         ~UniverseManager(){};
         void CreateUniverse(std::string player_name);
         void OutlineUniverse();
+        void PopulateSystem(SystemMapData &map_data);
         void GenerateNewSystem(int system_uid);
 
         void Update();
@@ -43,6 +44,7 @@ class UniverseManager {
         void LaunchFromLocation();
         void TravelToSystemRequested();
         void TravelToSystem();
+        int SelectRandomSystem();
 
        
     UniverseData universe_data;
@@ -68,4 +70,9 @@ EntityData GenerateEntityInstance(EntityTemplateData &tmpl, int uid, Vector2 pos
 
 //SystemBodyEntity * SpawnSystemBody(Vector2 position, BODY_TYPE type, int num_bodies, SystemBodyEntity *parent_body);
 
+
+SystemBodyData GenerateSystemStarData(SystemMapData &map_data);
+
 SystemBodyData GenerateSystemBodyData(BODY_TYPE type, int layer, float layer_delta, SystemBodyData *parent);
+
+//TransitionSite GenerateLandingSiteData(const SystemBodyData &parent);

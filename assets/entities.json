@@ -19,7 +19,7 @@
                     "type": 1
                 },
                 "movement": {
-                    "speed": 5000
+                    "speed": 3000
                 },
                 "inventory": {
                 }

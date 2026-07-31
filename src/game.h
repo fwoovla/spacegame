@@ -20,6 +20,8 @@ struct DebugData {
 struct SharedTransitionData {
     Vector2 return_position;
     int location_id;
+    int body_id;
+    int system_id;
 };
 
 struct GameData {

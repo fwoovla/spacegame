@@ -3,6 +3,7 @@
 #include "entity.hpp"
 #include <vector>
 #include "../FastNoisLite.h"
+#include"location.hpp"
 
 
 struct SystemMapData {
@@ -18,7 +19,8 @@ struct SystemMapData {
     float orbital_layer_delta = 0.0f;
     int orbital_body_count = 0;
 
-    //std::vector<SystemBodyData> bodies;
+    std::unordered_map<int, LocationMapData> location_data;
+
     std::unordered_map<int, SystemBodyData> body_data;
 
 };
@@ -56,14 +58,14 @@ class System {
         void DrawDebug();
         void DrawUI();
 
-        void GenerateBodies();
-        void GenerateLandingSites();
         void OnTransitionClicked();
 
 
         PlayerCharacter * SpawnPlayer(EntityTemplateData &tmpl, int uid, Vector2 position);
-        SystemBodyEntity * SpawnSystemBody(SystemBodyData &data, SystemBodyEntity *parent_body);
-        SystemBodyEntity * GenerateAndSpawnSystemBody(Vector2 position, BODY_TYPE type, int num_bodies, SystemBodyEntity *parent_body);
+        SystemBodyEntity * SpawnSystemBody(SystemBodyData &data);
+
+        void ResolveBodyParents();
+        //SystemBodyEntity * GenerateAndSpawnSystemBody(Vector2 position, BODY_TYPE type, int num_bodies, SystemBodyEntity *parent_body);
 /*         
         void Spawnentity(EntityTemplateData &tmpl, int uid, Vector2 position);
         EntityData GenerateEntityInstance(EntityTemplateData &tmpl, int uid, Vector2 position);

@@ -26,7 +26,7 @@ GameScene::GameScene() {
     g_camera.target = g_current_player->entity_data->position;
     g_camera.offset = {g_viewport.resolution.x * 0.5f, g_viewport.resolution.y * 0.5f};
     g_camera.rotation = 0.0f;
-    g_camera.zoom = 2.0f;
+    g_camera.zoom = 0.5f;
     
     ui = std::make_unique<GameUiLayer>();
 
@@ -74,10 +74,8 @@ void GameScene::DrawScene() {
     if(g_game_data.show_debug) {
         universe_manager.DrawDebug();
 
-        for(int b = 0; b < universe_manager.current_system->system_data.body_list.size(); b++) {
-            SystemBodyEntity &body = *universe_manager.current_system->system_data.body_list[b];
-            DrawLineV(body.body_data->position, g_current_player->entity_data->position, GRAY);
-        }
+        printf("zoom : %0.5f\n", g_camera.zoom);
+        
 
         DrawRectangleLines(0, 0, universe_manager.current_system.get()->system_data.radius * 2, universe_manager.current_system.get()->system_data.radius * 2, WHITE);
         DrawCircleV(g_input.world_mouse_position, 4, GREEN);    

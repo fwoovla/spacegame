@@ -2,7 +2,9 @@
 #include "../game.h"
 
 
-float max_render_scale = 2.5f;
+float max_render_scale = 2.0f;
+float min_render_scale = 0.5f;
+
 
 PlayerCharacter::PlayerCharacter(EntityData *_data) {
 
@@ -116,8 +118,18 @@ float PlayerCharacter::GetRenderScale()
     if(entity_data->render_mode == RENDER_WORLD)
         return g_camera.zoom;
 
-    if(entity_data->render_mode == RENDER_CAPPED)
-        return std::min(g_camera.zoom, max_render_scale);
+    if(entity_data->render_mode == RENDER_CAPPED) {
+
+        if(g_camera.zoom > max_render_scale) {
+            return max_render_scale;
+        }
+        if(g_camera.zoom < min_render_scale) {
+            return min_render_scale;
+        }
+
+        //return std::min(g_camera.zoom, max_render_scale);
+        return g_camera.zoom;
+    }
 
     return 1.0f;
 }

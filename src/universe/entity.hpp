@@ -4,6 +4,7 @@
 #include "components/components.hpp"
 #include "../areas/areas.hpp"
 #include "../sprite/sprite.h"
+//#include "location.hpp"
 
 enum ENTITY_ID {
     ENTITY_NONE = -1,
@@ -57,29 +58,42 @@ enum BODY_TYPE {
     BODY_MOON,
 };
 
-class SystemBodyEntity;
+
+
+
 
 struct SystemBodyData {
     std::string name = "no name";
     int uid = -1;
     Vector2 position;
+
     float radius = 0.0f;
-    bool landable = false;
     float orbit_radius = 0.0f;
     float orbit_angle = 0.0f;
+
     BODY_TYPE body_type;
+
+    bool landable = false;
+
+    //std::vector<LandingSiteData> landing_sites;
+
+    //std::vector<LandingSiteData> landing_sites;
+
     
     int orbital_layer_count = 0;
     float orbital_layer_delta;
+    int orbital_body_count = 0;
     std::vector<int> orbital_bodies_uid;
     
     bool obstructable = false;
     Color modulate;
     
-    int orbiting_bodies_count = 0;
     
-    int parent_body_uid;
+    int parent_orbital = 0;  //where it is in relation to it's parent orbitals
+    int parent_body_uid = -1;
     SystemBodyData* parent = nullptr;
+
+
 };
 
 
@@ -145,16 +159,43 @@ class PlayerCharacter : public CreatureEntity {
 extern PlayerCharacter * g_current_player;
 
 
-
+/* 
 struct TransitionSite {
     Vector2 position;
     std::unique_ptr<TransitionArea> transition_area;
 };
+ */
+
+
+ struct LandingSite {
+    int uid = -1;
+    std::string name = "";
+    Vector2 position;
+    Label label;
+    std::unique_ptr<TransitionArea> transition_area;
+};
+
+
+struct BodyLocation {
+
+    int uid = -1;
+    std::string name = "";
+    Vector2 position;
+    Label label;
+    float radius = 0.0f;
+    MouseTriggerArea info_area;
+    Label info_label;
+    std::vector<std::unique_ptr<LandingSite>> landing_sites;
+
+};
+
+struct LocationMapData;
 
 class SystemBodyEntity : public BaseEntity {
     public:
     
         SystemBodyEntity(SystemBodyData *_data);
+        void GenerateLocation(LocationMapData &location);
         ~SystemBodyEntity() = default;
         void Update() override;
         void Draw() override;
@@ -163,9 +204,22 @@ class SystemBodyEntity : public BaseEntity {
 
         float GetRenderScale() override;
 
-        std::vector<std::unique_ptr<TransitionSite>> landing_sites;
+        void OnShowInfo();
+        void OnHideInfo();
+        void OnShowLocationInfo();
+        void OnHideLocationInfo();
+
+        //SystemBodyData* parent = nullptr;
+
+        bool show_info = false;
+        MouseTriggerArea info_area;
+        Label info_label;
+
+        bool show_location_info = false;
 
 
+        std::vector<std::unique_ptr<BodyLocation>> locations;
+        //std::vector<std::unique_ptr<LandingSite>> landing_sites;
 }; 
 
 

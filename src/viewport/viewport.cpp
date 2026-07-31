@@ -4,7 +4,7 @@
 
 
 
-#define MAX_ZOOM 8.0f
+#define MAX_ZOOM 20.0f
 #define MIN_ZOOM 0.0025f
 #define ZOOM_STEP 0.05f
 
@@ -43,8 +43,8 @@ void CalculateViewport(Vector2 resolution, float scale) {
 
 
 void HandleCamera() {
-
-    g_camera.zoom += g_input.mouse_wheel * ZOOM_STEP;
+    float zoom_factor = g_camera.zoom/1;
+    g_camera.zoom += g_input.mouse_wheel * (ZOOM_STEP) * zoom_factor;
 
     if (g_camera.zoom < MIN_ZOOM){g_camera.zoom = MIN_ZOOM;}
     if (g_camera.zoom > MAX_ZOOM){g_camera.zoom = MAX_ZOOM;}

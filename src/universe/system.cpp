@@ -12,97 +12,37 @@ void System::GenerateSystem(SystemMapData &map_data) {
 
     system_data.star_position = map_data.star_position;    
 
-    //system_data.body_data = map_data.body_data;
-
+    //system_data.body_data = map_data.body_data;    
+    
     for(auto &body : map_data.body_data) {
-        SpawnSystemBody(body.second, nullptr);
-
+        SpawnSystemBody(body.second);
     }
-    //SpawnSystemBody(system_data.star_position, BODY_STAR, num_planets, nullptr);
 
-    //GeneratePlanets();
-    //GenerateBodies();
+    ResolveBodyParents();
 
-    //GenerateLandingSites();
-}
-
-
-/* void System::GeneratePlanets() {
-
-} */
-
-
-
-void System::GenerateBodies() {
-/*     
-    int num_planets = 10; //GetRandomValue(1, 10);
-    SystemBodyEntity *sun = system_data.body_list[0].get();
-    Vector2 sun_pos = sun->body_data->position;
-    int p = 0;
-    int num_layers = 20;
-    float layer_size = system_data.radius/num_layers;
-
-    for(int o_layer = 5; o_layer < num_layers; o_layer++) {
-
-        if(GetRandomValue(0,100) > 0 and p < num_planets) {
-            
-            int orbitals = GetRandomValue(0, 2);
-            SystemBodyEntity *body = SpawnSystemBody({0,0}, BODY_PLANET, orbitals, sun);
-            
-            body->body_data->orbit_radius = o_layer * layer_size;
-            body->body_data->orbit_angle = DEG2RAD * GetRandomValue(0, 359);
-            system_data.orbitals.push_back(body->body_data->orbit_radius); 
-
-
-            Vector2 pos;
-
-            pos.x = sun_pos.x + cosf(body->body_data->orbit_angle) * body->body_data->orbit_radius;
-            pos.y = sun_pos.y + sinf(body->body_data->orbit_angle) * body->body_data->orbit_radius;
-
-            body->body_data->position = pos;
-            p++;
-            printf("planet   %0.5f %0.5f\n", pos.x, pos.y + o_layer);
-        }
-    }
-}
-    //orbiting bodies
-
-    int parentCount = system_data.body_list.size();
-    for(int planet = 1; planet < parentCount; planet++) {
-
-        SystemBodyEntity *parent_body = system_data.body_list[planet].get();
-        Vector2 parent_pos = parent_body->body_data->position;
-
-        int num_bodies = 1;
-        int o = 0;
-        int num_p_layers = 10;
-
-        float p_layer_size = (parent_body->body_data->radius * (2 + GetRandomValue(1, 8))) / num_p_layers;
-
-        for(int p_layer = 5; p_layer < num_p_layers; p_layer++) {
-            if(GetRandomValue(0,100) > 0 and o < num_bodies ) {
-
-                SystemBodyEntity *body = SpawnSystemBody({0,0}, BODY_MOON, 0, parent_body);
-
-                body->body_data->orbit_radius = p_layer * p_layer_size;
-                body->body_data->orbit_angle = DEG2RAD * GetRandomValue(0, 359);
-                //parent_body->body_data->orbitals.push_back(body->body_data->orbit_radius);
-
-                Vector2 pos;
-
-                pos.x = parent_pos.x + cosf(body->body_data->orbit_angle) * body->body_data->orbit_radius;
-                pos.y = parent_pos.y + sinf(body->body_data->orbit_angle) * body->body_data->orbit_radius;
-
-                body->body_data->position = pos;
-                o++;
-                printf("orbiting body   %0.5f %0.5f\n", pos.x, pos.y + p_layer);
+    for(auto &location : map_data.location_data) {
+        for(auto &body : system_data.body_list) {
+            if(location.second.body_uid == body->body_data->uid) {
+                body->GenerateLocation(location.second);
             }
         }
     }
- */
+
+    for(auto &body : system_data.body_list) {
+        for(auto &location : body->locations) {
+            for(auto &site : location->landing_sites) {
+                site->transition_area->area_activated.Connect([&](){OnTransitionClicked();});
+            }
+        }
+    }
+
 }
 
 
+
+
+
+/* 
 void System::GenerateLandingSites() {
 
     for(auto &body : system_data.body_list) {
@@ -129,7 +69,7 @@ void System::GenerateLandingSites() {
 
 }
 
-
+ */
 
 
 
@@ -182,6 +122,9 @@ void System::DrawOverlay() {
         if(entity->entity_data->render_mode != RENDER_WORLD)
             entity->DrawOverlay();
     }
+    for(auto &body : system_data.body_list) {
+        body->DrawOverlay();
+    }
 }
 
 
@@ -204,6 +147,8 @@ void System::DrawUI() {
 
 void System::OnTransitionClicked() {
 
+    //g_game_data.transition.location_id = ;
+
     landing_requested.EmitSignal();
 }
 
@@ -219,99 +164,31 @@ PlayerCharacter * System::SpawnPlayer(EntityTemplateData &tmpl, int uid, Vector2
     return ptr;
 }
 
-/* 
-void System::Spawnentity(EntityTemplateData &tmpl, int uid, Vector2 position) {
-
-
-}
-
-EntityData System::GenerateEntityInstance(EntityTemplateData &tmpl, int uid, Vector2 position) {
-
-    EntityData instance_data;
-
-
-    instance_data.uid = GetUID();
-    instance_data.name = tmpl.name;
-    instance_data.id = tmpl.id;
-    instance_data.obstructable = tmpl.obstructable;
-    instance_data.position = position;
-
-
-    instance_data.component_flags = tmpl.component_flags;
-
-    instance_data.health = tmpl.health;
-    instance_data.inventory = tmpl.inventory;
-    instance_data.movement = tmpl.movement;
-    instance_data.interaction = tmpl.interaction;
-
-    instance_data.collision_rect = {
-        position.x,
-        position.y,
-        tmpl.size.x,
-        tmpl.size.y
-    };
-
-    instance_data.radius = tmpl.size.x/2;
-
-    return instance_data;
-}
-
- */
-
- SystemBodyEntity * System::SpawnSystemBody(SystemBodyData &data, SystemBodyEntity *parent_body) {
+ SystemBodyEntity * System::SpawnSystemBody(SystemBodyData &data) {
 
     system_data.body_data[data.uid] = data;
+
 
     std::unique_ptr<SystemBodyEntity> body = std::make_unique<SystemBodyEntity>(&system_data.body_data[data.uid]);
     SystemBodyEntity * ptr = body.get();
 
     system_data.body_list.push_back(std::move(body));
-    printf("spawning body  %i", ptr->body_data->uid);
+    printf("spawning body  type: %i  |uid: %i   |parent uid: %i\n",ptr->body_data->body_type , ptr->body_data->uid, ptr->body_data->parent_body_uid);
     return ptr;
 
  }
 
-/* SystemBodyEntity * System::GenerateAndSpawnSystemBody(Vector2 position, BODY_TYPE type, int num_bodies, SystemBodyEntity *parent_body) {
 
-    SystemBodyData data = GenerateSystemBodyData(type);
-    system_data.body_data[data.uid] = data;
+ void System::ResolveBodyParents() {
+    for (auto &[uid, body] : system_data.body_data) {
+        body.parent = nullptr;
 
-    std::unique_ptr<SystemBodyEntity> body = std::make_unique<SystemBodyEntity>(&system_data.body_data[data.uid]);
-    SystemBodyEntity * ptr = body.get();
+        if (body.parent_body_uid == -1)
+            continue;
 
-    system_data.body_list.push_back(std::move(body));
-    return ptr;
+        auto it = system_data.body_data.find(body.parent_body_uid);
 
-} */
-
-/* SystemBodyData System::GenerateSystemBodyInstance(Vector2 position, BODY_TYPE type, int num_bodies) {
-
-
-
-    SystemBodyData instance_data;
-    instance_data.body_type = type;
-    int uid = GetUID();
-    instance_data.uid = uid;
-    instance_data.name = "star " + std::to_string(uid);
-    instance_data.obstructable = false;
-    instance_data.position = position;
-
-    if(type == BODY_STAR) {
-        instance_data.modulate = ORANGE;
-        instance_data.radius = 1500.0f;
+        if (it != system_data.body_data.end())
+            body.parent = &it->second;
     }
-    else if(type == BODY_PLANET) {
-        instance_data.modulate = BLUE;
-        instance_data.radius = 200.0f;
-    }
-    else if(type == BODY_MOON) {
-        instance_data.modulate = YELLOW;
-        instance_data.radius = 50.0f;
-    }
-
-
-
-    instance_data.orbiting_bodies_count = num_bodies;
-
-    return instance_data;
-} */
+}
