@@ -69,8 +69,12 @@ class GameScene : public  BaseScene{
         void DrawUI() override;
 
         void OnWorldTick();
+        void OnEnterShip();
+        void OnExitShip();
         
-        std::unique_ptr<GameUiLayer> ui;
+        //std::unique_ptr<GameUiLayer> ui;
+        GameUiLayer ui;
+        PlayerHUDLayer hud;
 
         Timer world_ticker;
 

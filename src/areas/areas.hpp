@@ -1,6 +1,17 @@
 #pragma once
+#include <raylib.h>
 #include "../ui/label.hpp"
 #include "../utils/utils.hpp"
+
+
+
+enum AREA_PRIORITY
+{
+    PRIORITY_BODY = 0,
+    PRIORITY_LOCATION = 10,
+    PRIORITY_LANDING_SITE = 20,
+    PRIORITY_NPC = 30
+};
 
 
 enum TRANSITION_TYPE {
@@ -12,12 +23,19 @@ enum TRANSITION_TYPE {
 
 class BaseArea {
     public:
+
+    enum SHAPE {
+            CIRCLE,
+            RECT,
+        };
         virtual ~BaseArea() = default;
         virtual void Update() = 0;
-        //virtual void Draw() = 0;
-        //virtual void Activate() = 0;
+        virtual bool Contains(Vector2 mouse_pos) = 0;
 
-        Vector2 position;
+        AREA_PRIORITY priority = PRIORITY_BODY;
+
+        SHAPE shape;
+        RAYLIB_H::Vector2 position;
         Vector2 size;
         float radius = 0.0f;
         bool collided = false;
@@ -35,10 +53,10 @@ class TransitionArea : public BaseArea {
         TransitionArea(){};
         ~TransitionArea() override;
         void Update() override;
-        //void Draw() override;
-        //void Activate() override;
+        bool Contains(Vector2 mouse_pos) override;
 
         TRANSITION_TYPE type;
+
         int location_uid = -1;
         int body_id = -1;
         int system_id = -1;
@@ -55,21 +73,14 @@ class TransitionArea : public BaseArea {
 
     public:
 
-        enum SHAPE {
-            CIRCLE,
-            RECT,
-        };
-
         MouseTriggerArea(){};
         ~MouseTriggerArea() override;
         void Update() override;
-        //void Draw() override;
-        //void Activate() override;
+        bool Contains(Vector2 mouse_pos) override;
+
         int location_id = -1;
 
         bool mouse_hovering = false;
-
-        SHAPE shape;
 
         Signal mouse_entered;
         Signal mouse_exited;

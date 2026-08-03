@@ -1,9 +1,9 @@
 {
     "data":[
         {
-            "id": "ENTITY_PLAYER",
-            "name": "Player",
-            "credits":0,
+            "id": "CHARACTER_PLAYER",
+            "name": "Player character",
+            "speed":300,
 
             "obstructable": false,
             "render_mode": 1

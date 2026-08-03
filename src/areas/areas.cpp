@@ -3,7 +3,7 @@
 
 /////TRANSITION AREA
 TransitionArea::~TransitionArea() {
-    TraceLog(LOG_INFO, "TransitionArea AREA DESTROYED");
+    //TraceLog(LOG_INFO, "TransitionArea AREA DESTROYED");
 }
 
 void TransitionArea::Update() {
@@ -53,30 +53,27 @@ void TransitionArea::Update() {
     }
     //printf("area update %0.5f %0.5f\n", area_rect.x, area_rect.y);
 }
-/* 
-void TransitionArea::Draw() {
-    if(hovered) {
-        if(in_range) {
-            label.default_color = GREEN;
-        }
-        else {
-            label.default_color = WHITE;
-        }
-        DrawLabelCenteredWithBG(label, g_font, BLACK);
 
-        if(time_pressed > 0) {
-            Rectangle rect = {
-                .x = label.position.x - 20,
-                .y = label.position.y - 30,
-                .width = (20 * 2) * time_pressed,
-                .height = 8
-            };
-            DrawRectangleRec(rect, RED);
-        }
+
+
+bool TransitionArea::Contains(Vector2 mouse_pos)
+{
+    switch(shape)
+    {
+        case CIRCLE:
+            return CheckCollisionPointCircle(mouse_pos, position, radius);
+
+        case RECT:
+            return CheckCollisionPointRec(mouse_pos, {
+                position.x,
+                position.y,
+                size.x,
+                size.y
+            });
     }
-}
 
- */
+    return false;
+}
 
 
 
@@ -89,7 +86,7 @@ void TransitionArea::Draw() {
 
 
 MouseTriggerArea::~MouseTriggerArea() {
-    TraceLog(LOG_INFO, "MouseTriggerArea AREA DESTROYED");
+    //TraceLog(LOG_INFO, "MouseTriggerArea AREA DESTROYED");
 }
 
 void MouseTriggerArea::Update() {
@@ -140,33 +137,27 @@ void MouseTriggerArea::Update() {
     }
 }
 
-    //printf("area update %0.5f %0.5f\n", area_rect.x, area_rect.y);
 
-/* 
-void MouseTriggerArea::Draw() {
-    if(hovered) {
-        if(in_range) {
-            label.default_color = GREEN;
-        }
-        else {
-            label.default_color = WHITE;
-        }
-        DrawLabelCenteredWithBG(label, g_font, BLACK);
 
-        if(time_pressed > 0) {
-            Rectangle rect = {
-                .x = label.position.x - 20,
-                .y = label.position.y - 30,
-                .width = (20 * 2) * time_pressed,
-                .height = 8
-            };
-            DrawRectangleRec(rect, RED);
-        }
+
+bool MouseTriggerArea::Contains(Vector2 mouse_pos)
+{
+    switch(shape)
+    {
+        case CIRCLE:
+            return CheckCollisionPointCircle(mouse_pos, position, radius);
+
+        case RECT:
+            return CheckCollisionPointRec(mouse_pos, {
+                position.x,
+                position.y,
+                size.x,
+                size.y
+            });
     }
+
+    return false;
 }
-
- */
-
 
 
 

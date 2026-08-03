@@ -4,6 +4,8 @@
 #include <vector>
 #include "../FastNoisLite.h"
 #include"location.hpp"
+#include "../input/selectionmanager.hpp"
+
 
 
 struct SystemMapData {
@@ -49,7 +51,7 @@ struct SystemInstanceData {
 
 class System {
     public:
-        void GenerateSystem(SystemMapData &map_data);
+        void GenerateSystem(SystemMapData &map_data, SelectionManager *sm);
 
         void Update();
         void Draw();
@@ -65,15 +67,8 @@ class System {
         SystemBodyEntity * SpawnSystemBody(SystemBodyData &data);
 
         void ResolveBodyParents();
-        //SystemBodyEntity * GenerateAndSpawnSystemBody(Vector2 position, BODY_TYPE type, int num_bodies, SystemBodyEntity *parent_body);
-/*         
-        void Spawnentity(EntityTemplateData &tmpl, int uid, Vector2 position);
-        EntityData GenerateEntityInstance(EntityTemplateData &tmpl, int uid, Vector2 position);
 
-
-
-
-        SystemBodyData GenerateSystemBodyInstance(Vector2 position, BODY_TYPE type, int num_bodies); */
+        SelectionManager *selection_manager = nullptr;
 
         SystemInstanceData system_data;
 

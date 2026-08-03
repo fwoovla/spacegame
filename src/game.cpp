@@ -9,6 +9,8 @@ Camera2D g_camera;
 Viewport g_viewport;
 PlayerCharacter *g_current_player;
 std::unordered_map<int, EntityTemplateData> g_entity_template_data;
+std::unordered_map<int, ShipTemplateData> g_ship_template_data;
+std::unordered_map<int, CharacterTemplateData> g_character_template_data;
 
 Game::Game() {
     printf("game created\n");

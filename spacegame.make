@@ -80,6 +80,8 @@ OBJECTS :=
 
 GENERATED += $(OBJDIR)/areas.o
 GENERATED += $(OBJDIR)/button.o
+GENERATED += $(OBJDIR)/characters.o
+GENERATED += $(OBJDIR)/characterutils.o
 GENERATED += $(OBJDIR)/components.o
 GENERATED += $(OBJDIR)/data.o
 GENERATED += $(OBJDIR)/debuguilayer.o
@@ -94,10 +96,14 @@ GENERATED += $(OBJDIR)/locationmanager.o
 GENERATED += $(OBJDIR)/locationscene.o
 GENERATED += $(OBJDIR)/main.o
 GENERATED += $(OBJDIR)/player.o
+GENERATED += $(OBJDIR)/playerhudlayer.o
 GENERATED += $(OBJDIR)/render.o
 GENERATED += $(OBJDIR)/resource_loader.o
 GENERATED += $(OBJDIR)/scenemanager.o
 GENERATED += $(OBJDIR)/sceneutils.o
+GENERATED += $(OBJDIR)/selectionmanager.o
+GENERATED += $(OBJDIR)/ships.o
+GENERATED += $(OBJDIR)/shiputils.o
 GENERATED += $(OBJDIR)/signal.o
 GENERATED += $(OBJDIR)/splashscene.o
 GENERATED += $(OBJDIR)/sprite.o
@@ -111,6 +117,8 @@ GENERATED += $(OBJDIR)/universemanager.o
 GENERATED += $(OBJDIR)/viewport.o
 OBJECTS += $(OBJDIR)/areas.o
 OBJECTS += $(OBJDIR)/button.o
+OBJECTS += $(OBJDIR)/characters.o
+OBJECTS += $(OBJDIR)/characterutils.o
 OBJECTS += $(OBJDIR)/components.o
 OBJECTS += $(OBJDIR)/data.o
 OBJECTS += $(OBJDIR)/debuguilayer.o
@@ -125,10 +133,14 @@ OBJECTS += $(OBJDIR)/locationmanager.o
 OBJECTS += $(OBJDIR)/locationscene.o
 OBJECTS += $(OBJDIR)/main.o
 OBJECTS += $(OBJDIR)/player.o
+OBJECTS += $(OBJDIR)/playerhudlayer.o
 OBJECTS += $(OBJDIR)/render.o
 OBJECTS += $(OBJDIR)/resource_loader.o
 OBJECTS += $(OBJDIR)/scenemanager.o
 OBJECTS += $(OBJDIR)/sceneutils.o
+OBJECTS += $(OBJDIR)/selectionmanager.o
+OBJECTS += $(OBJDIR)/ships.o
+OBJECTS += $(OBJDIR)/shiputils.o
 OBJECTS += $(OBJDIR)/signal.o
 OBJECTS += $(OBJDIR)/splashscene.o
 OBJECTS += $(OBJDIR)/sprite.o
@@ -206,6 +218,12 @@ endif
 $(OBJDIR)/areas.o: src/areas/areas.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/characters.o: src/characters/characters.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/characterutils.o: src/characters/characterutils.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/data.o: src/data/data.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -213,6 +231,9 @@ $(OBJDIR)/game.o: src/game.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/input.o: src/input/input.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/selectionmanager.o: src/input/selectionmanager.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/main.o: src/main.cpp
@@ -242,6 +263,12 @@ $(OBJDIR)/splashscene.o: src/scenes/splashscene.cpp
 $(OBJDIR)/titlescene.o: src/scenes/titlescene.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/ships.o: src/ships/ships.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/shiputils.o: src/ships/shiputils.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/sprite.o: src/sprite/sprite.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -258,6 +285,9 @@ $(OBJDIR)/debuguilayer.o: src/uilayers/debuguilayer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/gameuilayer.o: src/uilayers/gameuilayer.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/playerhudlayer.o: src/uilayers/playerhudlayer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/titleuilayer.o: src/uilayers/titleuilayer.cpp

@@ -1,9 +1,11 @@
 #include "system.hpp"
 #include "../game.h"
 
-void System::GenerateSystem(SystemMapData &map_data) {
+void System::GenerateSystem(SystemMapData &map_data, SelectionManager *sm) {
 
     printf("generating system %i with  %i planets\n", map_data.uid, map_data.body_data.size());
+
+    selection_manager = sm;
 
     system_data.uid = map_data.uid;
 
@@ -16,6 +18,12 @@ void System::GenerateSystem(SystemMapData &map_data) {
     
     for(auto &body : map_data.body_data) {
         SpawnSystemBody(body.second);
+
+    }
+
+    for(auto &body : system_data.body_list) {
+        printf("area priprity: %i\n", body->info_area.priority);
+        selection_manager->Register(&body->info_area);
     }
 
     ResolveBodyParents();
@@ -30,8 +38,11 @@ void System::GenerateSystem(SystemMapData &map_data) {
 
     for(auto &body : system_data.body_list) {
         for(auto &location : body->locations) {
-            for(auto &site : location->landing_sites) {
-                site->transition_area->area_activated.Connect([&](){OnTransitionClicked();});
+            
+            selection_manager->Register(&location.info_area);
+
+            for(auto &site : location.landing_sites) {
+                site.transition_area.area_activated.Connect([&](){OnTransitionClicked();});
             }
         }
     }

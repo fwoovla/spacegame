@@ -5,6 +5,8 @@
 #include "../ui/label.hpp"
 #include "../ui/button.hpp"
 #include "../ui/textinput.hpp"
+#include "../ships/ships.hpp"
+#include "../universe/components/components.hpp"
 
 
 class UILayer{
@@ -74,4 +76,30 @@ class GameUiLayer : public UILayer {
     void Draw() override;
 
     Label scene_label;
+};
+
+
+class PlayerHUDLayer : public UILayer {
+    public:
+
+    PlayerHUDLayer();
+    ~PlayerHUDLayer() override;
+    void Update() override;
+    void Draw() override;
+    void SetTarget(ShipData *ship_data);
+    void ClearTarget();
+
+    Label speed_label;
+    Label heading_label;
+    Label throttle_label;
+    Label ship_target_label;
+    Label distance_label;
+    Label eta_label;
+    Label autopilot_state_label;
+    Label altitude_label;
+
+    Label target_label;
+
+    ShipData *ship_target = nullptr;
+
 };

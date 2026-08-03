@@ -40,11 +40,15 @@ class UniverseManager {
 
         void OnLandAtLocationRequested();
         void LandAtLocation();
+
         void LaunchFromLocationRequested();
         void LaunchFromLocation();
+
         void TravelToSystemRequested();
         void TravelToSystem();
+
         int SelectRandomSystem();
+        
 
        
     UniverseData universe_data;
@@ -58,21 +62,18 @@ class UniverseManager {
 
     bool location_ready_to_destroy = false;
     bool system_ready_to_destroy = false;
+
+    Signal enter_ship;
+    Signal exit_ship;
+
+    SelectionManager selection_manager;
 };
 
 
 
-//PlayerCharacter * SpawnPlayer(EntityTemplateData &tmpl, int uid, Vector2 position);
-//void Spawnentity(EntityTemplateData &tmpl, int uid, Vector2 position);
 EntityData GenerateEntityInstance(EntityTemplateData &tmpl, int uid, Vector2 position);
-
-
-
-//SystemBodyEntity * SpawnSystemBody(Vector2 position, BODY_TYPE type, int num_bodies, SystemBodyEntity *parent_body);
-
 
 SystemBodyData GenerateSystemStarData(SystemMapData &map_data);
 
 SystemBodyData GenerateSystemBodyData(BODY_TYPE type, int layer, float layer_delta, SystemBodyData *parent);
 
-//TransitionSite GenerateLandingSiteData(const SystemBodyData &parent);

@@ -2,16 +2,26 @@
 
 
 
-void Signal::Connect(std::function<void()> const& callback) {
-    callbacks.push_back(callback);
+int Signal::Connect(std::function<void()> const& callback) {
+    connections.push_back({next_id++, callback});
+    return next_id++;
 }
 
 void Signal::DisconnectAll() {
-    callbacks.clear();
+    connections.clear();
 }
 
 void Signal::EmitSignal() {
-    for(int i = 0; i < callbacks.size(); i++) {
-        callbacks[i]();
+    for(int i = 0; i < connections.size(); i++) {
+        connections[i].callback();
     }
 }   
+
+
+void Signal::Disconnect(int id) {
+    std::erase_if(connections,
+        [id](const Connection &c)
+        {
+            return c.id == id;
+        });
+}

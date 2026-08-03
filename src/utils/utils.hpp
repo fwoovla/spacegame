@@ -36,11 +36,21 @@ enum SIGNAL {
 
 class Signal {
     public:
-    void Connect(std::function<void()> const& callback);
+    int Connect(std::function<void()> const& callback);
+    void Disconnect(int id);
     void DisconnectAll();
     void EmitSignal();    
 
-    std::vector<std::function<void()>> callbacks;
+
+    struct Connection
+    {
+        int id;
+        std::function<void()> callback;
+    };
+
+    std::vector<Connection> connections;
+
+    int next_id = 0;
 };
 
 

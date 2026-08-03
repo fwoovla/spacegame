@@ -73,23 +73,17 @@ void HandleCamera() {
     else if(mouse_offset.x > 115) {mouse_offset.x = 115;}
 
     if(mouse_offset.y < -70) {mouse_offset.y = -70;}
-
     else if(mouse_offset.y >= 70) {mouse_offset.y = 70;}
     
     new_camera_target = Vector2Add(new_camera_target, mouse_offset);
 
     new_camera_target.x = std::clamp(new_camera_target.x, 0.0f, (float)g_viewport.map_width);
     new_camera_target.y = std::clamp(new_camera_target.y, 0.0f, (float)g_viewport.map_height);
-    
-    g_camera.target.x = Lerp(g_camera.target.x, new_camera_target.x, 0.04f);
-    g_camera.target.y = Lerp(g_camera.target.y, new_camera_target.y, 0.04f);
 
-/*     printf("camera target %0.5f %0.5f   mouse offset %0.5f %0.5f\n", g_camera.target.x, g_camera.target.y, mouse_offset.x, mouse_offset.y);
-    printf("player ptr %p data %p pos %f %f\n",
-    g_current_player,
-    g_current_player->entity_data,
-    g_current_player->entity_data->position.x,
-    g_current_player->entity_data->position.y); */
+    float lerp_factor = 0.1f;
+    
+    g_camera.target.x = Lerp(g_camera.target.x, new_camera_target.x, lerp_factor);
+    g_camera.target.y = Lerp(g_camera.target.y, new_camera_target.y, lerp_factor);
  
 }
 

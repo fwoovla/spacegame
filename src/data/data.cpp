@@ -8,6 +8,8 @@ using json = nlohmann::json;
 
 void LoadData() {
     LoadEntityData("assets/entities.json");
+    LoadShipData("assets/ships.json");
+    LoadCharacterData("assets/characters.json");
 }
 
 void LoadEntityData(std::string file_path) {
@@ -34,43 +36,87 @@ void LoadEntityData(std::string file_path) {
         
         new_template.render_mode = e["render_mode"];
 
-        new_template.size.x = (float)e["size_x"];
-        new_template.size.y = (float)e["size_y"];
-
-
-        if (e.contains("components")) {
-
-            auto &c = e["components"];
-
-            if(c.contains("health")) {
-                //new_template.has_health = true;
-                new_template.component_flags |= HAS_HEALTH;
-                new_template.health.max_health = c["health"]["max"];
-            }
-            if(c.contains("movement")) {
-                //new_template.has_movement = true;
-                new_template.component_flags |= HAS_MOVEMENT;
-                new_template.movement.speed = c["movement"]["speed"];
-                printf("speed = %0.3f\n", new_template.movement.speed);
-            }
-            if(c.contains("inventory")) {
-                //new_template.has_inventory = true;
-                new_template.component_flags |= HAS_INVENTORY;
-            }
-            if(c.contains("interaction")) {
-                //new_template.has_interaction = true;
-                new_template.component_flags |= HAS_INTERACTION;
-                new_template.interaction.range = c["interaction"]["range"];
-                new_template.interaction.can_interact = c["interaction"]["can_interact"];
-                new_template.interaction.highlightable = c["interaction"]["highlightable"];
-                new_template.interaction.priority = c["interaction"]["priority"];
-                new_template.interaction.type = c["interaction"]["type"];
-            }
-        }
 
         g_entity_template_data[new_template.id] = new_template;
         
         printf("--ENTITY LOADED: id: %i  name: %s\n", new_template.id, new_template.name.c_str());   
     }
     printf("LOADED: %i ENTITIES\n\n", g_entity_template_data.size());
+}
+
+
+void LoadShipData(std::string file_path) {
+
+
+    std::ifstream cfile(file_path);
+    if (!cfile.is_open()) {
+        TraceLog(LOG_INFO, "CANNOT OPEN SHIPS DATA FILE");
+        return;
+    }
+
+    printf("\n\nLOADING SHIPS DATA FROM %s\n", file_path.c_str());
+
+    json j;
+    cfile>>j;
+
+    for(auto &e : j["data"]) {
+        
+        ShipTemplateData new_template;
+
+        new_template.id = StrToShipId(e["id"]);
+        new_template.name = e["name"];
+
+
+        new_template.value = e["value"];
+        new_template.movement.max_speed = e["max_speed"];
+        new_template.movement.thrust = e["thrust"];
+        new_template.movement.reverse_thrust = e["reverse_thrust"];
+        new_template.movement.turn_speed = e["turn_speed"];
+
+        g_ship_template_data[new_template.id] = new_template;
+        
+        printf("--SHIP DATA LOADED: id: %i  name: %s\n", new_template.id, new_template.name.c_str());   
+    }
+
+    printf("LOADED: %i SHIPS\n\n", g_ship_template_data.size());
+
+
+
+}
+
+
+
+
+
+void LoadCharacterData(std::string file_path) {
+
+
+    std::ifstream cfile(file_path);
+    if (!cfile.is_open()) {
+        TraceLog(LOG_INFO, "CANNOT OPEN CHARACTER DATA FILE");
+        return;
+    }
+
+    printf("\n\nLOADING CHARACTER DATA FROM %s\n", file_path.c_str());
+
+    json j;
+    cfile>>j;
+
+    for(auto &e : j["data"]) {
+        
+        CharacterTemplateData new_template;
+
+        new_template.id = StrToCharacterId(e["id"]);
+        new_template.name = e["name"];
+
+        new_template.movement.speed = e["speed"];
+        
+
+        g_character_template_data[new_template.id] = new_template;
+        
+        printf("--CHARACTER DATA LOADED: id: %i  name: %s\n", new_template.id, new_template.name.c_str());   
+    }
+    printf("LOADED: %i CHARACTERS\n\n", g_character_template_data.size());
+
+
 }

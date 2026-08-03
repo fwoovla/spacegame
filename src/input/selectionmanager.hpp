@@ -1,0 +1,35 @@
+#pragma once
+#include "../utils/utils.hpp"
+//#include <raymath.h>
+
+#include "../utils/utils.hpp"
+#include "../areas/areas.hpp"
+
+
+
+struct AreaResult
+{
+    MouseTriggerArea* area = nullptr;
+    float distance = std::numeric_limits<float>::max();
+    int priority = 0;
+};
+
+
+
+class SelectionManager {
+    public:
+    SelectionManager();
+    ~SelectionManager() {};
+    void Update();
+
+    AreaResult GetSelection(Vector2 mouse_pos);
+
+    void Register(MouseTriggerArea *area);
+    void Unregister(MouseTriggerArea *area);
+
+    std::vector<MouseTriggerArea*> areas;
+
+    MouseTriggerArea* current_hover = nullptr;
+
+
+};

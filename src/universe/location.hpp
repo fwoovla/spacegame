@@ -58,7 +58,7 @@ class Location {
 
         LocationInstanceData location_data;
 
-        std::vector<std::unique_ptr<LandingSite>> landing_sites;
+        std::vector<LandingSite> landing_sites;
 
         Signal launch_requested;
 };

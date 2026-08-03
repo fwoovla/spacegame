@@ -1,0 +1,20 @@
+{
+    "data":[
+        {
+            "id": "SHIP_1",
+            "name": "ship 1",
+
+            "value":100,
+
+            "thrust": 600.0,
+            "reverse_thrust": 300.0,
+            "max_speed": 3000.0,
+            "turn_speed": 3.14159,
+
+            "obstructable": false,
+            "render_mode": 1
+        }
+    ]
+}
+
+

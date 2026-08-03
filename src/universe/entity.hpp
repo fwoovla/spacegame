@@ -4,7 +4,8 @@
 #include "components/components.hpp"
 #include "../areas/areas.hpp"
 #include "../sprite/sprite.h"
-//#include "location.hpp"
+#include "../ships/ships.hpp"
+#include "../characters/characters.hpp"
 
 enum ENTITY_ID {
     ENTITY_NONE = -1,
@@ -15,40 +16,25 @@ enum ENTITY_ID {
 struct EntityTemplateData {
     std::string name = "no name";
     ENTITY_ID id;
-    Vector2 size;
-    float radius;
+    int credits = 0;
+
     bool obstructable;
     RenderMode render_mode;
-
-    uint32_t component_flags = 0;
-
-    HealthComponent health;
-    InventoryComponent inventory;
-    MovementComponent movement;
-    InteractComponent interaction;
-
 };
 
 extern std::unordered_map<int, EntityTemplateData> g_entity_template_data;
 
 struct EntityData {
+    int uid;
     std::string name = "no name";
     ENTITY_ID id;
-    int uid;
+    int credits = 0;
+
     Vector2 position;
-    Rectangle collision_rect;
-    float radius = 0.0f;
     bool obstructable = false;
     bool obstructed = false;
 
     RenderMode render_mode;
-
-    uint32_t component_flags = 0;
-
-    HealthComponent health;
-    InventoryComponent inventory;
-    MovementComponent movement;
-    InteractComponent interaction;
 };
 
 
@@ -74,11 +60,6 @@ struct SystemBodyData {
     BODY_TYPE body_type;
 
     bool landable = false;
-
-    //std::vector<LandingSiteData> landing_sites;
-
-    //std::vector<LandingSiteData> landing_sites;
-
     
     int orbital_layer_count = 0;
     float orbital_layer_delta;
@@ -107,33 +88,43 @@ class BaseEntity  {
         virtual void DrawUI() = 0;
         virtual float GetRenderScale() = 0;
 
-
-        //virtual void TakeDamage(DamagePayload _payload) = 0;
-
         bool should_delete = false;
         bool is_on_screen = false;
         bool y_sort = false;
-
-        //RenderMode mode;
 
         EntityData *entity_data = nullptr;
         SystemBodyData *body_data = nullptr;
 };
 
 
-
 class CreatureEntity : public BaseEntity {
     public:
+        enum MOVEMENT_TYPE {
+            MOVEMENT_CHARACTER,
+            MOVEMENT_SHIP,
+        };
     
         ~CreatureEntity() = default;
 
-        virtual void UpdateMovement() = 0;;
-        virtual void Die() {};
+        virtual void UpdateMovement() = 0;
+        //virtual void UpdateShipMovement() = 0;
+        //virtual void UpdateCharacterMovement() = 0;
+        virtual void EnterShip() = 0;
+        virtual void ExitShip() = 0;
+        virtual void Die() = 0;
+
+        MOVEMENT_TYPE movement_type = MOVEMENT_SHIP;
+
+
+        std::unique_ptr<Ship> ship;
+        std::unique_ptr<Character> character;
 
         Vector2 velocity = {0,0};
 
         bool is_stunned = false;
         RayCast raycast;
+
+
 }; 
 
 
@@ -148,23 +139,17 @@ class PlayerCharacter : public CreatureEntity {
         void DrawUI()override;
 
         void UpdateMovement() override;
+        void EnterShip() override;
+        void ExitShip() override;
+        //void UpdateShipMovement() override;
+        //void UpdateCharacterMovement() override;
         void Die() override;
 
         float GetRenderScale() override;
-    
-    
-    
+
 }; 
 
 extern PlayerCharacter * g_current_player;
-
-
-/* 
-struct TransitionSite {
-    Vector2 position;
-    std::unique_ptr<TransitionArea> transition_area;
-};
- */
 
 
  struct LandingSite {
@@ -172,7 +157,7 @@ struct TransitionSite {
     std::string name = "";
     Vector2 position;
     Label label;
-    std::unique_ptr<TransitionArea> transition_area;
+    TransitionArea transition_area;
 };
 
 
@@ -185,7 +170,7 @@ struct BodyLocation {
     float radius = 0.0f;
     MouseTriggerArea info_area;
     Label info_label;
-    std::vector<std::unique_ptr<LandingSite>> landing_sites;
+    std::vector<LandingSite> landing_sites;
 
 };
 
@@ -209,17 +194,13 @@ class SystemBodyEntity : public BaseEntity {
         void OnShowLocationInfo();
         void OnHideLocationInfo();
 
-        //SystemBodyData* parent = nullptr;
-
         bool show_info = false;
         MouseTriggerArea info_area;
         Label info_label;
 
         bool show_location_info = false;
 
-
-        std::vector<std::unique_ptr<BodyLocation>> locations;
-        //std::vector<std::unique_ptr<LandingSite>> landing_sites;
+        std::vector<BodyLocation> locations;
 }; 
 
 

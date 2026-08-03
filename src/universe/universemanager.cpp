@@ -166,7 +166,7 @@ void UniverseManager::GenerateNewSystem(int system_uid) {
     printf("generating  system     %i\n", system_uid);
 
     current_system = std::make_unique<System>();
-    current_system->GenerateSystem(universe_data.map_data[system_uid]);
+    current_system->GenerateSystem(universe_data.map_data[system_uid], &selection_manager);
     current_system->landing_requested.Connect( [&]() { OnLandAtLocationRequested();});
 }
 
@@ -194,6 +194,8 @@ void UniverseManager::Update() {
             break;
 
     }
+
+    selection_manager.Update();
 }
 
 
@@ -271,7 +273,6 @@ void UniverseManager::OnLandAtLocationRequested() {
         return;
     }
     LandAtLocation();
-
 }
 
 
@@ -284,18 +285,10 @@ void UniverseManager::LandAtLocation() {
 
         current_location = std::make_unique<Location>();
 
-
-/*         printf("g_game_data.transition.location_id = %i\n", current_system->system_data.uid);
-        printf("g_game_data.transition.body_id = %i\n", g_game_data.transition.body_id);
-        printf("g_game_data.transition.system_id = %i\n", g_game_data.transition.system_id);
-        printf("universe_data.map_data[g_game_data.transition.system_id].location_data[g_game_data.transition.location_id].uid = %i\n", universe_data.map_data[g_game_data.transition.system_id].location_data[g_game_data.transition.location_id].uid);
- */
         LocationMapData &map_data = universe_data.map_data[current_system->system_data.uid].location_data[g_game_data.transition.location_id];
-
 
         current_location->GenerateLocation( map_data );
         
-
         int uid = g_current_player->entity_data->uid; 
        
         auto &old_data = current_system->system_data.entity_data[uid];
@@ -331,7 +324,10 @@ void UniverseManager::LandAtLocation() {
         g_camera.zoom = 1.0f;
 
         current_location->launch_requested.Connect([&]() { LaunchFromLocationRequested();});
-        //location_scene = std::make_unique<LocationScene>();
+
+        g_current_player->ExitShip();
+
+        exit_ship.EmitSignal();
 
         printf("transition activated %i  %0.5f %0.5f\n", g_game_data.transition.location_id, g_game_data.transition.return_position.x, g_game_data.transition.return_position.y);
     }
@@ -401,6 +397,10 @@ void UniverseManager::LaunchFromLocation() {
     g_camera.target = g_current_player->entity_data->position;
 
 
+    g_current_player->EnterShip();
+
+    enter_ship.EmitSignal();
+
     printf("returned to system %f %f\n",
         return_position.x,
         return_position.y);
@@ -437,7 +437,6 @@ int UniverseManager::SelectRandomSystem() {
 
 
 
-
 /*  */
 EntityData GenerateEntityInstance(EntityTemplateData &tmpl, int uid, Vector2 position) {
 
@@ -449,22 +448,6 @@ EntityData GenerateEntityInstance(EntityTemplateData &tmpl, int uid, Vector2 pos
     instance_data.obstructable = tmpl.obstructable;
     instance_data.position = position;
     instance_data.render_mode = tmpl.render_mode;
-
-    instance_data.component_flags = tmpl.component_flags;
-
-    instance_data.health = tmpl.health;
-    instance_data.inventory = tmpl.inventory;
-    instance_data.movement = tmpl.movement;
-    instance_data.interaction = tmpl.interaction;
-
-    instance_data.collision_rect = {
-        position.x,
-        position.y,
-        tmpl.size.x,
-        tmpl.size.y
-    };
-
-    instance_data.radius = tmpl.size.x/2;
 
     return instance_data;
 }
@@ -487,8 +470,7 @@ SystemBodyData GenerateSystemStarData(SystemMapData &map_data) {
 
     instance_data.name = "star " + std::to_string(uid);
     instance_data.modulate = ORANGE;
-    instance_data.radius = 5000.0f;
-
+    instance_data.radius = 6000.0f;
 
     instance_data.orbital_body_count = GetRandomValue(1,10);
     instance_data.orbital_layer_count = 20; //GetRandomValue(5, 20);
@@ -515,7 +497,7 @@ SystemBodyData GenerateSystemBodyData( BODY_TYPE type, int layer, float layer_de
     if(type == BODY_PLANET) {
         instance_data.name = "planet " + std::to_string(uid);
         instance_data.modulate = BLUE;
-        instance_data.radius = 1000.0f;
+        instance_data.radius = 2000.0f;
         instance_data.orbital_body_count = GetRandomValue(0,5);
         instance_data.orbital_layer_count = 20; //GetRandomValue(5, 20);
         instance_data.orbital_layer_delta = (instance_data.radius * 10) /instance_data.orbital_layer_count;
@@ -524,7 +506,7 @@ SystemBodyData GenerateSystemBodyData( BODY_TYPE type, int layer, float layer_de
     else if(type == BODY_MOON) {
         instance_data.name = "moon " + std::to_string(uid);
         instance_data.modulate = YELLOW;
-        instance_data.radius = 400.0f;
+        instance_data.radius = 800.0f;
         instance_data.orbital_body_count = 0;
     }
 
@@ -548,9 +530,4 @@ SystemBodyData GenerateSystemBodyData( BODY_TYPE type, int layer, float layer_de
 }
 
 
-/* TransitionSite GenerateLandingSiteData(const SystemBodyData &parent) {
 
-    TransitionSite new_site;
-    return new_site;
-
-} */
