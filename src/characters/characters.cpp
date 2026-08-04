@@ -4,7 +4,6 @@
 Character::Character(CharacterData _data) {
 
     character_data = _data;
-    
 }
 
 Character::~Character() {
@@ -13,9 +12,7 @@ Character::~Character() {
 
 void Character::Update(Vector2 &position) {
 
-
- Vector2 input_dir = {0,0};
-
+    Vector2 input_dir = {0,0};
 
     if(g_input.key_up) {input_dir.y = -1;}
     if(g_input.key_down) {input_dir.y = 1;}
@@ -42,10 +39,11 @@ void Character::Update(Vector2 &position) {
     if (abs(character_data.movement.velocity.y) < 4.0f) {
         character_data.movement.velocity.y = {0.0};
     }
-
 }
 
-void Character::Draw() {
+void Character::Draw(Vector2 &position, float scale) {
+    Vector2 screen = GetWorldToScreen2D(position, g_camera);    
+    DrawCircleV(screen, 20 * scale, RAYWHITE);
 
 }
 

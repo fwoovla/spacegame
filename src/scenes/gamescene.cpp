@@ -80,10 +80,7 @@ void GameScene::DrawScene() {
     universe_manager.DrawWorld();
     
     if(g_game_data.show_debug) {
-        universe_manager.DrawDebug();
-
-        printf("zoom : %0.5f\n", g_camera.zoom);
-        
+        universe_manager.DrawDebug();        
 
         DrawRectangleLines(0, 0, universe_manager.current_system.get()->system_data.radius * 2, universe_manager.current_system.get()->system_data.radius * 2, WHITE);
         //DrawCircleV(g_input.world_mouse_position, 4, GREEN);    

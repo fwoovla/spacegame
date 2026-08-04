@@ -20,6 +20,9 @@ struct ShipMovement {
     float turn_speed = DEG2RAD * 180.0f;
     float drag = 0.1f;             // gameplay drag
     float throttle = 0.0f;          // 0-1
+    bool throttle_override = false;
+    bool autopiolot_on = false;
+    bool flight_assist_on = false;
 };
 
 
@@ -65,7 +68,7 @@ class Ship {
         Ship(ShipData _data);
         ~Ship();
         void Update(Vector2 &position);
-        void Draw();
+        void Draw(Vector2 &position, float scale);
 
         ShipData ship_data;
 };

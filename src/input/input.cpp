@@ -73,9 +73,9 @@ void GetInputFromPlayer() {
     g_input.key_left = IsKeyDown(KEY_A);
     g_input.key_right = IsKeyDown(KEY_D);
 
-    g_input.key_sprint = IsKeyDown(KEY_LEFT_SHIFT);
+    g_input.key_throttle_up = IsKeyDown(KEY_Q);
 
-    g_input.key_use = IsKeyDown(KEY_SPACE);
+    g_input.key_throttle_down = IsKeyDown(KEY_Z);
 
     g_input.key_switch_weapon = IsKeyDown(KEY_Q);
 

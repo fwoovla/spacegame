@@ -46,7 +46,7 @@ class Character {
         Character(CharacterData _data);
         ~Character();
         void Update(Vector2 &position);
-        void Draw();
+        void Draw(Vector2 &position, float scale);
 
         CharacterData character_data;
 };

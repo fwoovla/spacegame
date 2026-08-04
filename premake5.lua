@@ -13,7 +13,8 @@ project "spacegame"
          }
    
    links {
-      "raylib"
+      "raylib",
+      "X11"
    }
 
    postbuildcommands {

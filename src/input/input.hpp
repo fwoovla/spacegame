@@ -27,9 +27,9 @@ struct PlayerInput {
     bool key_left;
     bool key_right;
 
-    bool key_sprint;
+    bool key_throttle_up;
 
-    bool key_use;
+    bool key_throttle_down;
 
     bool key_switch_weapon;
     bool key_reload;

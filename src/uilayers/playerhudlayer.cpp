@@ -59,7 +59,7 @@ void PlayerHUDLayer::Update() {
         distance_label.text = "distance: " + std::to_string(ship_target->movement.max_speed);
         eta_label.text = "eta: " + std::to_string(ship_target->movement.turn_speed);
         autopilot_state_label.text = "autopilot state: " + std::to_string(ship_target->movement.drag);
-        altitude_label.text = "altitude: " + std::to_string(ship_target->movement.throttle);
+        //altitude_label.text = "altitude: " + std::to_string(ship_target->movement.);
         target_label.text = "target name: " + ship_target->target_data.name;
     } else {
         speed_label.text = "speed: N/A";

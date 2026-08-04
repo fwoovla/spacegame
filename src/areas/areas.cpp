@@ -41,7 +41,7 @@ void TransitionArea::Update() {
         hovered = false;
 
     }
-    if(hovered and g_input.key_use and in_range) {
+    if(hovered and g_input.mouse_left_down and in_range) {
         time_pressed += 1.0f * GetFrameTime();
         if(time_pressed > 1.0f) {
             time_pressed = 1.0f;

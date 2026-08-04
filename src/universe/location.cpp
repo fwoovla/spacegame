@@ -65,7 +65,7 @@ void Location::DrawWorld() {
 
     for(auto &site : landing_sites) {
         DrawCircle( site.position.x, site.position.y, site.transition_area.size.x, RED);
-        printf("landing site draw\n");
+        //printf("landing site draw\n");
 
     }
 

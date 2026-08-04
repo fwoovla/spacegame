@@ -46,15 +46,25 @@ void PlayerCharacter::Draw() {
 void PlayerCharacter::DrawOverlay() {
 
     float scale = GetRenderScale();
+    if (movement_type == MOVEMENT_SHIP and ship != nullptr) {
+        ship->Draw(entity_data->position, scale);
+        //UpdateShipMovement();
+    } else if (movement_type == MOVEMENT_CHARACTER and character != nullptr) {
+        character->Draw(entity_data->position, scale);
+        //UpdateCharacterMovement();
+    }
+    else {
+        TraceLog(LOG_INFO, "PlayerCharacter::DrawOverlay() movement_type is invalid or ship/character is null");
+    }
 
-    Vector2 screen = GetWorldToScreen2D(entity_data->position, g_camera);
+/*     Vector2 screen = GetWorldToScreen2D(entity_data->position, g_camera);
     Vector2 forward = {cosf(ship->ship_data.movement.rotation) * 100.0f, 
         sinf(ship->ship_data.movement.rotation) * 100.0f};
 
     forward = Vector2Add(screen, forward);
     
     DrawCircleV(screen, 20 * scale, PINK);
-    DrawLineV(screen, forward, RED);
+    DrawLineV(screen, forward, RED); */
 }
 
 void PlayerCharacter::DrawUI() {
