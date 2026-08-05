@@ -6,6 +6,7 @@
 #include "../sprite/sprite.h"
 #include "../ships/ships.hpp"
 #include "../characters/characters.hpp"
+#include "../input/selectionmanager.hpp"
 
 enum ENTITY_ID {
     ENTITY_NONE = -1,
@@ -87,6 +88,7 @@ class BaseEntity  {
         virtual void DrawOverlay() = 0;
         virtual void DrawUI() = 0;
         virtual float GetRenderScale() = 0;
+        virtual void RegisterWithManagers(SelectionManager *sm) = 0;
 
         bool should_delete = false;
         bool is_on_screen = false;
@@ -94,6 +96,7 @@ class BaseEntity  {
 
         EntityData *entity_data = nullptr;
         SystemBodyData *body_data = nullptr;
+        SelectionManager *selection_manager = nullptr;
 };
 
 
@@ -146,6 +149,7 @@ class PlayerCharacter : public CreatureEntity {
         void Die() override;
 
         float GetRenderScale() override;
+        void RegisterWithManagers(SelectionManager *sm) override;
 
 }; 
 
@@ -183,11 +187,12 @@ class SystemBodyEntity : public BaseEntity {
         void GenerateLocation(LocationMapData &location);
         ~SystemBodyEntity() = default;
         void Update() override;
-        void Draw() override;
+        void Draw() override;        
         void DrawOverlay() override;
         void DrawUI()override;
 
         float GetRenderScale() override;
+        void RegisterWithManagers(SelectionManager *sm) override;
 
         void OnShowInfo();
         void OnHideInfo();

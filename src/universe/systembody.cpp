@@ -39,6 +39,7 @@ void SystemBodyEntity::GenerateLocation(LocationMapData &location) {
         new_site.transition_area.position.x = new_site.position.x - (new_site.transition_area.size.x * 0.5f);
         new_site.transition_area.position.y = new_site.position.y - (new_site.transition_area.size.y * 0.5f);
         new_site.transition_area.type = LANDING;
+        new_site.transition_area.priority = PRIORITY_LANDING_SITE;
 
         CreateLabel(new_site.label, {0,0}, 50, GRAY, new_site.name.c_str());
         printf("new site instance    name: %s    uid:  %i\n", new_site.label.text.c_str(), new_site.uid);
@@ -166,6 +167,19 @@ float SystemBodyEntity::GetRenderScale() {
 
     return 1.0f;
 }
+
+void SystemBodyEntity::RegisterWithManagers(SelectionManager *sm) {
+    selection_manager = sm;
+    selection_manager->Register(&info_area);
+    for(auto &location : locations) {
+        selection_manager->Register(&location.info_area);
+        for(auto &site : location.landing_sites) {
+            //site.transition_area.area_activated.Connect([&](){OnTransitionClicked();});
+        }
+    }
+}
+
+
 
 void SystemBodyEntity::OnShowInfo() {
     show_info = true;

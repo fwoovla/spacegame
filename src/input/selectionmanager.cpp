@@ -29,6 +29,9 @@ void SelectionManager::Update() {
         {
             current_hover->mouse_hovering = true;
             current_hover->mouse_entered.EmitSignal();
+            if(g_input.mouse_left) {
+                current_hover->mouse_triggered.EmitSignal();
+            }
         }
     }
 }

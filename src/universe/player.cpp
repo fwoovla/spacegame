@@ -115,6 +115,12 @@ float PlayerCharacter::GetRenderScale()
 }
 
 
+void PlayerCharacter::RegisterWithManagers(SelectionManager *sm) {
+    selection_manager = sm;
+
+}
+
+
 void PlayerCharacter::EnterShip() {
     
 

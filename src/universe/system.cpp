@@ -21,10 +21,6 @@ void System::GenerateSystem(SystemMapData &map_data, SelectionManager *sm) {
 
     }
 
-    for(auto &body : system_data.body_list) {
-        printf("area priprity: %i\n", body->info_area.priority);
-        selection_manager->Register(&body->info_area);
-    }
 
     ResolveBodyParents();
 
@@ -37,14 +33,7 @@ void System::GenerateSystem(SystemMapData &map_data, SelectionManager *sm) {
     }
 
     for(auto &body : system_data.body_list) {
-        for(auto &location : body->locations) {
-            
-            selection_manager->Register(&location.info_area);
-
-            for(auto &site : location.landing_sites) {
-                site.transition_area.area_activated.Connect([&](){OnTransitionClicked();});
-            }
-        }
+        body->RegisterWithManagers(selection_manager);
     }
 
 }

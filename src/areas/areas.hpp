@@ -82,6 +82,7 @@ class TransitionArea : public BaseArea {
 
         bool mouse_hovering = false;
 
+        Signal mouse_triggered;
         Signal mouse_entered;
         Signal mouse_exited;
 
