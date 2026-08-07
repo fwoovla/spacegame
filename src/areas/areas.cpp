@@ -90,7 +90,7 @@ MouseTriggerArea::~MouseTriggerArea() {
 }
 
 void MouseTriggerArea::Update() {
-    hovered = false;
+/*     hovered = false;
 
     if(shape == RECT) {
         Rectangle area_rect = {
@@ -131,10 +131,12 @@ void MouseTriggerArea::Update() {
 
     }
     if(hovered and !mouse_hovering) {
-        g_game_data.transition.location_id = location_id;
+        g_game_data.transition.body_id = body_payload;
+        g_game_data.transition.location_id = location_payload;
+        g_game_data.transition.site_id = landing_site_payload;
         mouse_hovering = true;
         mouse_entered.EmitSignal();
-    }
+    } */
 }
 
 

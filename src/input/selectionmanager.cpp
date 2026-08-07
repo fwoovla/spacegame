@@ -20,18 +20,32 @@ void SelectionManager::Update() {
         if(current_hover)
         {
             current_hover->mouse_hovering = false;
+            current_hover->selected = false;
             current_hover->mouse_exited.EmitSignal();
         }
 
         current_hover = new_hover;
 
-        if(current_hover)
-        {
+        if(current_hover) {
+            //printf("area %i\n", current_hover->landing_site_payload);
+            //printf("hovered area:---- body:%i  location:%i  site:%i\n", current_hover->body_payload, current_hover->location_payload, current_hover->landing_site_payload);
+            g_game_data.transition.body_id = current_hover->body_payload;
+            g_game_data.transition.location_id = current_hover->location_payload;
+            g_game_data.transition.site_id = current_hover->landing_site_payload;
+
             current_hover->mouse_hovering = true;
             current_hover->mouse_entered.EmitSignal();
-            if(g_input.mouse_left) {
-                current_hover->mouse_triggered.EmitSignal();
-            }
+        }
+    }
+    if(current_hover) {
+
+        if(g_input.mouse_left) {
+            /*  g_game_data.transition.body_id = current_hover->body_payload;
+            g_game_data.transition.location_id = current_hover->location_payload;
+            g_game_data.transition.site_id = current_hover->landing_site_payload; */
+            current_hover->mouse_triggered.EmitSignal();
+            current_hover->selected = true;
+            printf("hovered area clicked:---- body:%i  location:%i  site:%i\n", current_hover->body_payload, current_hover->location_payload, current_hover->landing_site_payload);
         }
     }
 }
@@ -40,8 +54,8 @@ void SelectionManager::Update() {
 AreaResult SelectionManager::GetSelection(Vector2 mouse_pos) {
     AreaResult result;
 
-    for(MouseTriggerArea* area : areas)
-    {
+    for(MouseTriggerArea* area : areas) {
+
         if(area == nullptr)
             continue;
 
@@ -71,6 +85,7 @@ AreaResult SelectionManager::GetSelection(Vector2 mouse_pos) {
 
 void SelectionManager::Register(MouseTriggerArea *area) {
     areas.push_back(area);
+    printf("registering area:---- body:%i  location:%i  site:%i\n", area->body_payload, area->location_payload, area->landing_site_payload);
 }
 
 void SelectionManager::Unregister(MouseTriggerArea *area) {

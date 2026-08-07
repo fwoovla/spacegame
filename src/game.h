@@ -19,6 +19,7 @@ struct DebugData {
 
 struct SharedTransitionData {
     Vector2 return_position;
+    int site_id;
     int location_id;
     int body_id;
     int system_id;

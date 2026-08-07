@@ -17,10 +17,10 @@ void Location::GenerateLocation(LocationMapData &map_data) {
         new_site.position = {0,0};
         new_site.name = site.name;
         new_site.uid = site.uid;
-        new_site.transition_area.size = {50, 50};
-        new_site.transition_area.position = {-20 ,-20};
-        new_site.transition_area.type = LAUNCHING;
-        new_site.transition_area.area_activated.Connect([&]() { OnLaunchRequested();});
+        new_site.info_area.size = {50, 50};
+        new_site.info_area.position = {-20 ,-20};
+        //new_site.info_area.type = LAUNCHING;
+        new_site.info_area.mouse_triggered.Connect([&]() { OnLaunchRequested();});
 
         landing_sites.push_back(new_site);
     }
@@ -39,7 +39,7 @@ void Location::Update() {
     std::erase_if(vec, [](const std::unique_ptr<BaseEntity> &entity){return entity->should_delete;});
 
     for(auto &site : landing_sites) {
-        site.transition_area.Update();
+        //site.transition_area.Update();
     }
 
     //location_data.launch_site->transition_area->Update();
@@ -64,7 +64,7 @@ void Location::DrawWorld() {
     DrawCircleV({0,0}, location_data.radius, DARKGRAY);
 
     for(auto &site : landing_sites) {
-        DrawCircle( site.position.x, site.position.y, site.transition_area.size.x, RED);
+        DrawCircleV( site.position, site.info_area.radius, RED);
         //printf("landing site draw\n");
 
     }

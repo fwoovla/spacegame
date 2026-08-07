@@ -70,11 +70,9 @@ struct SystemBodyData {
     bool obstructable = false;
     Color modulate;
     
-    
     int parent_orbital = 0;  //where it is in relation to it's parent orbitals
     int parent_body_uid = -1;
     SystemBodyData* parent = nullptr;
-
 
 };
 
@@ -93,6 +91,9 @@ class BaseEntity  {
         bool should_delete = false;
         bool is_on_screen = false;
         bool y_sort = false;
+
+        MouseTriggerArea info_area;
+        Label info_label;
 
         EntityData *entity_data = nullptr;
         SystemBodyData *body_data = nullptr;
@@ -160,17 +161,16 @@ extern PlayerCharacter * g_current_player;
     int uid = -1;
     std::string name = "";
     Vector2 position;
-    Label label;
-    TransitionArea transition_area;
+    MouseTriggerArea info_area;
+    Label info_label;
+    //TransitionArea transition_area;
 };
 
 
 struct BodyLocation {
-
     int uid = -1;
     std::string name = "";
     Vector2 position;
-    Label label;
     float radius = 0.0f;
     MouseTriggerArea info_area;
     Label info_label;
@@ -184,7 +184,7 @@ class SystemBodyEntity : public BaseEntity {
     public:
     
         SystemBodyEntity(SystemBodyData *_data);
-        void GenerateLocation(LocationMapData &location);
+        void GenerateLocation(LocationMapData &location, std::function<void()> const& transition_callback);
         ~SystemBodyEntity() = default;
         void Update() override;
         void Draw() override;        
@@ -198,12 +198,12 @@ class SystemBodyEntity : public BaseEntity {
         void OnHideInfo();
         void OnShowLocationInfo();
         void OnHideLocationInfo();
+        void OnShowSiteInfo();
+        void OnHideSiteInfo();        
 
         bool show_info = false;
-        MouseTriggerArea info_area;
-        Label info_label;
-
         bool show_location_info = false;
+        bool show_site_info = false;
 
         std::vector<BodyLocation> locations;
 }; 

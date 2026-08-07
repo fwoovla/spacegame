@@ -25,6 +25,7 @@ void GetInputFromPlayer() {
 
 
     g_input.mouse_left = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+    //printf("mouse left %i\n", g_input.mouse_left);
 
     if(g_input.mouse_left) {
         g_input.mouse_left_clicked_screen_position = g_input.screen_mouse_position;

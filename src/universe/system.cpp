@@ -27,7 +27,7 @@ void System::GenerateSystem(SystemMapData &map_data, SelectionManager *sm) {
     for(auto &location : map_data.location_data) {
         for(auto &body : system_data.body_list) {
             if(location.second.body_uid == body->body_data->uid) {
-                body->GenerateLocation(location.second);
+                body->GenerateLocation(location.second, [this](){OnTransitionClicked();});
             }
         }
     }
@@ -39,7 +39,7 @@ void System::GenerateSystem(SystemMapData &map_data, SelectionManager *sm) {
 }
 
 
-
+//site.info_area.mouse_triggered.Connect([&](){OnTransitionClicked();});
 
 
 /* 
@@ -148,7 +148,7 @@ void System::DrawUI() {
 void System::OnTransitionClicked() {
 
     //g_game_data.transition.location_id = ;
-
+    printf("click\n");
     landing_requested.EmitSignal();
 }
 
@@ -167,7 +167,6 @@ PlayerCharacter * System::SpawnPlayer(EntityTemplateData &tmpl, int uid, Vector2
  SystemBodyEntity * System::SpawnSystemBody(SystemBodyData &data) {
 
     system_data.body_data[data.uid] = data;
-
 
     std::unique_ptr<SystemBodyEntity> body = std::make_unique<SystemBodyEntity>(&system_data.body_data[data.uid]);
     SystemBodyEntity * ptr = body.get();

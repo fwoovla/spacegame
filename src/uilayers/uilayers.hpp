@@ -101,5 +101,6 @@ class PlayerHUDLayer : public UILayer {
     Label target_label;
 
     ShipData *ship_target = nullptr;
+    //SelectionManager *selection_manager = nullptr;
 
 };

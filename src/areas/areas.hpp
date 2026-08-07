@@ -78,9 +78,12 @@ class TransitionArea : public BaseArea {
         void Update() override;
         bool Contains(Vector2 mouse_pos) override;
 
-        int location_id = -1;
+        int body_payload = -1;
+        int location_payload = -1;
+        int landing_site_payload = -1;
 
         bool mouse_hovering = false;
+        bool selected = false;
 
         Signal mouse_triggered;
         Signal mouse_entered;
