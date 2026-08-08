@@ -5,11 +5,16 @@
 #include "../FastNoisLite.h"
 
 
-struct LandingSiteData {
+struct LandingSiteMapData {
     int uid = -1;
     std::string name = "";
     Vector2 position;
     //std::unique_ptr<TransitionArea> transition_area;
+};
+
+struct LandingSiteData {
+    int uid = -1;
+    std::string name = "no site name";
 };
 
 struct LocationMapData {
@@ -22,11 +27,16 @@ struct LocationMapData {
     float location_radius = 0.0f;
     float system_radius = 0.0f;
 
-    std::vector<LandingSiteData> landing_sites;
+    std::vector<LandingSiteMapData> landing_sites;
 
     //std::vector<SystemBodyData> bodies;
 };
 
+
+struct LocalData {
+    int uid = -1;
+    std::string name = "no local name";
+};
 
 struct LocationInstanceData {
     std::string name = "location";

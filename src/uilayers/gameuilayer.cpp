@@ -14,7 +14,7 @@ GameUiLayer::~GameUiLayer() {
 }
 
 void GameUiLayer::Draw() {
-    DrawLabelCenteredWithBG(scene_label, g_font, BLUE);
+    //DrawLabelCenteredWithBG(scene_label, g_font, BLUE);
 }
 
 void GameUiLayer::Update() {

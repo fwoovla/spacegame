@@ -14,22 +14,34 @@ struct AreaResult
     int priority = 0;
 };
 
-
+/* struct BodySelectionResult {
+    MouseTriggerArea* area = nullptr;
+    int body_uid = -1;
+    int location_uid = -1;
+    int site_uid = -1;
+};
+ */
 
 class SelectionManager {
     public:
     SelectionManager();
     ~SelectionManager() {};
     void Update();
-
+    void DrawUI();
     AreaResult GetSelection(Vector2 mouse_pos);
 
     void Register(MouseTriggerArea *area);
     void Unregister(MouseTriggerArea *area);
 
+    //void OnAreaSelected();
+
     std::vector<MouseTriggerArea*> areas;
 
     MouseTriggerArea* current_hover = nullptr;
 
+    MouseTriggerArea* selection = nullptr;
+
+    Signal selected;
+    Signal deselected;
 
 };

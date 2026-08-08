@@ -20,6 +20,9 @@ void UniverseManager::CreateUniverse(std::string player_name) {
     else {
         printf("could not find system\n");
     }
+
+    hud.SetTarget(g_current_player, current_system.get(), &selection_manager);
+    //hud.selection_manager = &selection_manager;
 }
 
 //create the SystemMapData
@@ -111,14 +114,18 @@ void UniverseManager::PopulateSystem(SystemMapData &map_data) {
     int s = 1;
     for (SystemBodyData *body : bodies) {
 
+        LocalData new_local;
+        new_local.uid = GetUID();
+        new_local.name = "station " + std::to_string(s);
+        map_data.local_data[new_local.uid] = new_local;
 
 
         LocationMapData new_location;
+        new_location.uid = new_local.uid;
+        new_location.name = new_local.name;
 
         new_location.location_radius = 500;
         new_location.system_radius = 50;
-        new_location.name = "station " + std::to_string(s);
-        new_location.uid = GetUID();
         new_location.body_uid = body->uid;
         new_location.position = body->position;
 
@@ -130,10 +137,18 @@ void UniverseManager::PopulateSystem(SystemMapData &map_data) {
 
 
 
-        LandingSiteData l_site;
 
-        l_site.uid = GetUID();
-        l_site.name = "landing pad @ station " + std::to_string(s);
+
+        LandingSiteData new_site;
+        new_site.uid = GetUID();
+        new_site.name = "landing pad @ station " + std::to_string(s);
+        map_data.site_data[new_site.uid] = new_site;
+
+
+        LandingSiteMapData l_site;
+
+        l_site.uid = new_site.uid;
+        l_site.name = new_site.name;
         l_site.position = new_location.position;
         Vector2 site_pos = {0,0};
         float s_angle = GetRandomValue(0, 360) * DEG2RAD;
@@ -160,13 +175,12 @@ void UniverseManager::PopulateSystem(SystemMapData &map_data) {
 
 
 
-
-
 void UniverseManager::GenerateNewSystem(int system_uid) {
     printf("generating  system     %i\n", system_uid);
 
-    current_system = std::make_unique<System>();
-    current_system->GenerateSystem(universe_data.map_data[system_uid], &selection_manager);
+    current_system = std::make_unique<System>(universe_data.map_data[system_uid]);
+
+    current_system->GenerateSystem(&selection_manager);
     current_system->landing_requested.Connect( [&]() { OnLandAtLocationRequested();});
 }
 
@@ -196,6 +210,7 @@ void UniverseManager::Update() {
     }
 
     selection_manager.Update();
+    hud.Update();
 }
 
 
@@ -264,6 +279,8 @@ void UniverseManager::DrawUI() {
             current_location->DrawUI();
             break;
     }
+    selection_manager.DrawUI();
+    hud.Draw();
 }
 
 

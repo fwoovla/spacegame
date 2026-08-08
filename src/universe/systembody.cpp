@@ -11,8 +11,8 @@ SystemBodyEntity::SystemBodyEntity(SystemBodyData *_data) {
 
     info_area.body_payload = body_data->uid;
 
-    info_area.mouse_entered.Connect( [this]() { OnShowInfo();});
-    info_area.mouse_exited.Connect( [this]() { OnHideInfo();});
+    //info_area.mouse_entered.Connect( [this]() { OnShowInfo();});
+    //info_area.mouse_exited.Connect( [this]() { OnHideInfo();});
     //info_area.mouse_triggered.Connect();
 
     CreateLabel(info_label, body_data->position, 40, WHITE, body_data->name.c_str());
@@ -20,7 +20,7 @@ SystemBodyEntity::SystemBodyEntity(SystemBodyData *_data) {
 }
 
 
-void SystemBodyEntity::GenerateLocation(LocationMapData &location,  std::function<void()> const& transition_callback) {
+void SystemBodyEntity::GenerateLocation(LocationMapData &location) {
 
     BodyLocation new_location;
     new_location.name = location.name;
@@ -39,13 +39,7 @@ void SystemBodyEntity::GenerateLocation(LocationMapData &location,  std::functio
     new_location.info_area.location_payload = new_location.uid;
     new_location.info_area.body_payload = body_data->uid;
 
-    new_location.info_area.mouse_entered.Connect( [this]() { OnShowLocationInfo();});
-    new_location.info_area.mouse_exited.Connect( [this]() { OnHideLocationInfo();});
-
-    //new_location.info_area.mouse_triggered.Connect(transition_callback);
-
     CreateLabel(new_location.info_label, new_location.position, 40, WHITE, new_location.name.c_str());
-
 
     for(auto & site : location.landing_sites) {
         LandingSite new_site;
@@ -63,20 +57,16 @@ void SystemBodyEntity::GenerateLocation(LocationMapData &location,  std::functio
         new_site.info_area.location_payload = location.uid;
         new_site.info_area.landing_site_payload = new_site.uid;
 
-        new_site.info_area.mouse_entered.Connect( [this]() { OnShowSiteInfo();});
-        new_site.info_area.mouse_exited.Connect( [this]() { OnHideSiteInfo();});
-
-        //new_site.info_area.mouse_triggered.Connect(transition_callback);
-        
-        
         CreateLabel(new_site.info_label, {0,0}, 50, RAYWHITE, new_site.name.c_str());
-        printf("new site instance    name: %s    uid:  %i\n", new_site.info_label.text.c_str(), new_site.uid);
 
+        printf("new site instance    name: %s    uid:  %i\n", new_site.info_label.text.c_str(), new_site.uid);
         new_location.landing_sites.push_back(std::move(new_site));
 
+        //new_site.info_area.mouse_triggered.Connect(selection_callback);
     }
     
     locations.push_back(new_location);
+
 
 }
 
@@ -85,14 +75,6 @@ void SystemBodyEntity::GenerateLocation(LocationMapData &location,  std::functio
 
 
 void SystemBodyEntity::Update() {
-    //for(auto &location : locations) {
-        //location.info_area.Update();
-        //for(auto &site : location.landing_sites)
-        //site.i.Update();
-        //printf("landing site\n");
-
-    //}
-    //info_area.Update();
 
 }
 
@@ -141,35 +123,44 @@ void SystemBodyEntity::Draw() {
 
 void SystemBodyEntity::DrawOverlay() {
     
-    if(show_location_info) {
-        for(auto &location : locations) {
-            if(location.uid == g_game_data.transition.location_id) {
-                Vector2 screen = GetWorldToScreen2D(location.position, g_camera);
-                location.info_label.position = screen;
-                location.info_label.position.y -= 50;
-                DrawLabelCenteredWithBG(location.info_label, g_font, DARKGRAY);
+
+    for(auto &location : locations) {
+        if(location.info_area.mouse_hovering or location.info_area.selected) {
+            Vector2 screen = GetWorldToScreen2D(location.position, g_camera);
+            location.info_label.position = screen;
+            location.info_label.position.y -= 50;
+            Color color = DARKGRAY;
+            if(location.info_area.selected) {
+                color = GRAY;
             }
+            DrawLabelCenteredWithBG(location.info_label, g_font, color);
         }
     }
 
-    if(show_site_info) {
-        for(auto &location : locations) {
-            for(auto &site : location.landing_sites) {
-                if(site.uid == g_game_data.transition.site_id) {
-                    Vector2 screen = GetWorldToScreen2D(site.position, g_camera);
-                    site.info_label.position = screen;
-                    site.info_label.position.y -= 50;
-                    DrawLabelCenteredWithBG(site.info_label, g_font, DARKGRAY);
+
+    for(auto &location : locations) {
+        for(auto &site : location.landing_sites) {
+            if(site.info_area.mouse_hovering or site.info_area.selected) {
+                Vector2 screen = GetWorldToScreen2D(site.position, g_camera);
+                site.info_label.position = screen;
+                site.info_label.position.y -= 50;
+                Color color = DARKGRAY;
+                if(site.info_area.selected) {
+                    color = GRAY;
                 }
-            
+                DrawLabelCenteredWithBG(site.info_label, g_font, color);
             }
         }
     }
 
-    if(show_info) {
+    if(info_area.mouse_hovering or info_area.selected) {
         Vector2 screen = GetWorldToScreen2D(body_data->position, g_camera);
         info_label.position = screen;
-        DrawLabelCenteredWithBG(info_label, g_font, DARKGRAY);
+        Color color = DARKGRAY;
+        if(info_area.selected) {
+            color = GRAY;
+        }
+        DrawLabelCenteredWithBG(info_label, g_font, color);
     }
 
 }
@@ -192,48 +183,9 @@ void SystemBodyEntity::RegisterWithManagers(SelectionManager *sm) {
         selection_manager->Register(&location.info_area);
         for(auto &site : location.landing_sites) {
             selection_manager->Register(&site.info_area);
-            //site.transition_area.area_activated.Connect([&](){OnTransitionClicked();});
             
         }
     }
 }
 
 
-
-void SystemBodyEntity::OnShowInfo() {
-    show_info = true;
-}
-
-
-void SystemBodyEntity::OnHideInfo() {
-    show_info = false;
-}
-
-
-void SystemBodyEntity::OnShowLocationInfo() {
-    if(!show_location_info) {
-        show_location_info = true;
-    }
-}
-
-
-void SystemBodyEntity::OnHideLocationInfo() {
-    if(show_location_info) {
-        show_location_info = false;
-    }
-}
-
-
-void SystemBodyEntity::OnShowSiteInfo() {
-    if(!show_site_info) {
-        show_site_info = true;
-        
-    }
-}
-
-
-void SystemBodyEntity::OnHideSiteInfo() {
-    if(show_site_info) {
-        show_site_info = false;
-    }
-}

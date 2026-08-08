@@ -184,7 +184,7 @@ class SystemBodyEntity : public BaseEntity {
     public:
     
         SystemBodyEntity(SystemBodyData *_data);
-        void GenerateLocation(LocationMapData &location, std::function<void()> const& transition_callback);
+        void GenerateLocation(LocationMapData &location);
         ~SystemBodyEntity() = default;
         void Update() override;
         void Draw() override;        
@@ -194,12 +194,12 @@ class SystemBodyEntity : public BaseEntity {
         float GetRenderScale() override;
         void RegisterWithManagers(SelectionManager *sm) override;
 
-        void OnShowInfo();
+/*         void OnShowInfo();
         void OnHideInfo();
         void OnShowLocationInfo();
         void OnHideLocationInfo();
         void OnShowSiteInfo();
-        void OnHideSiteInfo();        
+        void OnHideSiteInfo();  */       
 
         bool show_info = false;
         bool show_location_info = false;

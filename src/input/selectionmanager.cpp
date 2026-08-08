@@ -20,18 +20,13 @@ void SelectionManager::Update() {
         if(current_hover)
         {
             current_hover->mouse_hovering = false;
-            current_hover->selected = false;
+            //current_hover->selected = false;
             current_hover->mouse_exited.EmitSignal();
         }
 
         current_hover = new_hover;
 
         if(current_hover) {
-            //printf("area %i\n", current_hover->landing_site_payload);
-            //printf("hovered area:---- body:%i  location:%i  site:%i\n", current_hover->body_payload, current_hover->location_payload, current_hover->landing_site_payload);
-            g_game_data.transition.body_id = current_hover->body_payload;
-            g_game_data.transition.location_id = current_hover->location_payload;
-            g_game_data.transition.site_id = current_hover->landing_site_payload;
 
             current_hover->mouse_hovering = true;
             current_hover->mouse_entered.EmitSignal();
@@ -40,15 +35,23 @@ void SelectionManager::Update() {
     if(current_hover) {
 
         if(g_input.mouse_left) {
-            /*  g_game_data.transition.body_id = current_hover->body_payload;
-            g_game_data.transition.location_id = current_hover->location_payload;
-            g_game_data.transition.site_id = current_hover->landing_site_payload; */
-            current_hover->mouse_triggered.EmitSignal();
+            if(selection != nullptr) {
+                deselected.EmitSignal();
+                selection->selected = false;
+            }
             current_hover->selected = true;
+            selection = current_hover;
             printf("hovered area clicked:---- body:%i  location:%i  site:%i\n", current_hover->body_payload, current_hover->location_payload, current_hover->landing_site_payload);
+            selected.EmitSignal();
         }
     }
+    else if(!current_hover and g_input.mouse_left) {
+        deselected.EmitSignal();
+        selection->selected = false;
+        selection = nullptr;
+    }
 }
+
 
 
 AreaResult SelectionManager::GetSelection(Vector2 mouse_pos) {
@@ -82,6 +85,16 @@ AreaResult SelectionManager::GetSelection(Vector2 mouse_pos) {
 
 
 
+void SelectionManager::DrawUI() {
+    if(selection == nullptr) {
+        return;
+    }
+
+    printf("selection: %i  %i  %i\n", selection->body_payload, selection->location_payload, selection->landing_site_payload);
+
+}
+
+
 
 void SelectionManager::Register(MouseTriggerArea *area) {
     areas.push_back(area);
@@ -91,3 +104,4 @@ void SelectionManager::Register(MouseTriggerArea *area) {
 void SelectionManager::Unregister(MouseTriggerArea *area) {
     std::erase(areas, area);
 }
+

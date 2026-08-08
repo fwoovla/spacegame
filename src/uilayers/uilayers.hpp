@@ -2,10 +2,12 @@
 
 #include <memory>
 #include <raylib.h>
+#include "../universe/system.hpp"
 #include "../ui/label.hpp"
 #include "../ui/button.hpp"
 #include "../ui/textinput.hpp"
 #include "../ships/ships.hpp"
+#include "../universe/entity.hpp"
 #include "../universe/components/components.hpp"
 
 
@@ -86,21 +88,36 @@ class PlayerHUDLayer : public UILayer {
     ~PlayerHUDLayer() override;
     void Update() override;
     void Draw() override;
-    void SetTarget(ShipData *ship_data);
+    void SetTarget(CreatureEntity *_entity, System *sys, SelectionManager *sm);
     void ClearTarget();
 
+    void OnBodySelected();
+    void OnBodyDeSelected();
+
+
+
+    Vector2 ship_pos;
+    
+    Label ship_target_label;
     Label speed_label;
     Label heading_label;
     Label throttle_label;
-    Label ship_target_label;
-    Label distance_label;
-    Label eta_label;
     Label autopilot_state_label;
+    
     Label altitude_label;
 
+    Vector2 target_pos;
+
+    Label eta_label;
+    Label distance_label;
     Label target_label;
 
-    ShipData *ship_target = nullptr;
-    //SelectionManager *selection_manager = nullptr;
+    CreatureEntity *entity;
+    SelectionManager *selection_manager = nullptr;
+    System *system = nullptr;
+
+    LandingSite *location_site = nullptr;
+    BodyLocation *body_location = nullptr;
+    SystemBodyData *body_data = nullptr;
 
 };

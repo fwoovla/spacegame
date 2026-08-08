@@ -25,6 +25,14 @@ struct SharedTransitionData {
     int system_id;
 };
 
+struct SharedSelectionData {
+    Vector2 return_position;
+    int site_id;
+    int location_id;
+    int body_id;
+    int system_id;
+};
+
 struct GameData {
     std::string player_name = "no name";
     int tick_rate  = 10;
@@ -33,6 +41,7 @@ struct GameData {
     DebugData debug_data;
 
     SharedTransitionData transition;
+    SharedSelectionData selection;
     
 };
 

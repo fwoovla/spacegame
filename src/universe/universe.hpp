@@ -2,6 +2,7 @@
 
 #include "entity.hpp"
 //#include "../scenes/scenes.hpp"
+#include "../uilayers/uilayers.hpp"
 #include "system.hpp"
 #include "location.hpp"
 #include <vector>
@@ -65,6 +66,8 @@ class UniverseManager {
 
     Signal enter_ship;
     Signal exit_ship;
+
+    PlayerHUDLayer hud;
 
     SelectionManager selection_manager;
 };

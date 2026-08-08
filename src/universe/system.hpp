@@ -23,6 +23,10 @@ struct SystemMapData {
 
     std::unordered_map<int, LocationMapData> location_data;
 
+    std::unordered_map<int, LocalData> local_data;
+
+    std::unordered_map<int, LandingSiteData> site_data;
+
     std::unordered_map<int, SystemBodyData> body_data;
 
 };
@@ -45,13 +49,16 @@ struct SystemInstanceData {
 
     std::unordered_map<int, SystemBodyData> body_data;
     std::vector<std::unique_ptr<SystemBodyEntity>> body_list;
+
+
 };
 
 
 
 class System {
     public:
-        void GenerateSystem(SystemMapData &map_data, SelectionManager *sm);
+        System(SystemMapData &_map_data);
+        void GenerateSystem(SelectionManager *sm);
 
         void Update();
         void Draw();
@@ -59,9 +66,6 @@ class System {
         void DrawOverlay();
         void DrawDebug();
         void DrawUI();
-
-        void OnTransitionClicked();
-
 
         PlayerCharacter * SpawnPlayer(EntityTemplateData &tmpl, int uid, Vector2 position);
         SystemBodyEntity * SpawnSystemBody(SystemBodyData &data);
@@ -71,6 +75,8 @@ class System {
         SelectionManager *selection_manager = nullptr;
 
         SystemInstanceData system_data;
+
+        SystemMapData &map_data;
 
         Signal landing_requested;
 };

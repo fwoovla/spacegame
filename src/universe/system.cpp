@@ -1,7 +1,10 @@
 #include "system.hpp"
 #include "../game.h"
 
-void System::GenerateSystem(SystemMapData &map_data, SelectionManager *sm) {
+System::System( SystemMapData &_map_data ) : map_data(_map_data) {
+}
+
+void System::GenerateSystem(SelectionManager *sm) {
 
     printf("generating system %i with  %i planets\n", map_data.uid, map_data.body_data.size());
 
@@ -27,7 +30,7 @@ void System::GenerateSystem(SystemMapData &map_data, SelectionManager *sm) {
     for(auto &location : map_data.location_data) {
         for(auto &body : system_data.body_list) {
             if(location.second.body_uid == body->body_data->uid) {
-                body->GenerateLocation(location.second, [this](){OnTransitionClicked();});
+                body->GenerateLocation(location.second);
             }
         }
     }
@@ -37,40 +40,6 @@ void System::GenerateSystem(SystemMapData &map_data, SelectionManager *sm) {
     }
 
 }
-
-
-//site.info_area.mouse_triggered.Connect([&](){OnTransitionClicked();});
-
-
-/* 
-void System::GenerateLandingSites() {
-
-    for(auto &body : system_data.body_list) {
-        if(body->body_data->body_type != BODY_STAR) {
-            if(GetRandomValue(0, 100) > 0) {
-                body->body_data->landable = true;
-
-                std::unique_ptr<TransitionSite> new_site = std::make_unique<TransitionSite>();
-                new_site->transition_area = std::make_unique<TransitionArea>();
-                
-                new_site->transition_area->size = {20, 20};
-                new_site->position.x = (float)GetRandomValue(-body->body_data->radius, body->body_data->radius) + body->body_data->position.x;
-                new_site->transition_area->position.x = new_site->position.x - (new_site->transition_area->size.x * 0.5f);
-
-                new_site->position.y = (float)GetRandomValue(-body->body_data->radius, body->body_data->radius) + body->body_data->position.y;
-                new_site->transition_area->position.y = new_site->position.y - (new_site->transition_area->size.y * 0.5f);
-
-                new_site->transition_area->type = LANDING;
-                new_site->transition_area->area_activated.Connect([&](){OnTransitionClicked();});
-                body->landing_sites.push_back(std::move(new_site));
-            }
-        }
-    }
-
-}
-
- */
-
 
 
 
@@ -143,14 +112,6 @@ void System::DrawUI() {
     }
 }
 
-
-
-void System::OnTransitionClicked() {
-
-    //g_game_data.transition.location_id = ;
-    printf("click\n");
-    landing_requested.EmitSignal();
-}
 
 PlayerCharacter * System::SpawnPlayer(EntityTemplateData &tmpl, int uid, Vector2 position) {
 
