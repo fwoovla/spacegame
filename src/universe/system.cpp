@@ -6,7 +6,7 @@ System::System( SystemMapData &_map_data ) : map_data(_map_data) {
 
 void System::GenerateSystem(SelectionManager *sm) {
 
-    printf("generating system %i with  %i planets\n", map_data.uid, map_data.body_data.size());
+    printf("generating system %i with  %i planets\n", map_data.uid, map_data.bodies.size());
 
     selection_manager = sm;
 
@@ -19,21 +19,27 @@ void System::GenerateSystem(SelectionManager *sm) {
 
     //system_data.body_data = map_data.body_data;    
     
-    for(auto &body : map_data.body_data) {
+    for(auto &body : map_data.bodies) {
         SpawnSystemBody(body.second);
-
     }
 
+    for(auto &location : map_data.locations) {
+        SpawnSystemLocation(location.second);
+    }
 
-    ResolveBodyParents();
+    for(auto &site : map_data.sites) {
+        SpawnSystemSite(site.second);
+    }
 
-    for(auto &location : map_data.location_data) {
+    ResolveParents();
+
+/*     for(auto &location : map_data.location_data) {
         for(auto &body : system_data.body_list) {
             if(location.second.body_uid == body->body_data->uid) {
                 body->GenerateLocation(location.second);
             }
         }
-    }
+    } */
 
     for(auto &body : system_data.body_list) {
         body->RegisterWithManagers(selection_manager);
@@ -127,28 +133,49 @@ PlayerCharacter * System::SpawnPlayer(EntityTemplateData &tmpl, int uid, Vector2
 
  SystemBodyEntity * System::SpawnSystemBody(SystemBodyData &data) {
 
-    system_data.body_data[data.uid] = data;
-
-    std::unique_ptr<SystemBodyEntity> body = std::make_unique<SystemBodyEntity>(&system_data.body_data[data.uid]);
+    std::unique_ptr<SystemBodyEntity> body = std::make_unique<SystemBodyEntity>(data);
     SystemBodyEntity * ptr = body.get();
 
     system_data.body_list.push_back(std::move(body));
-    printf("spawning body  type: %i  |uid: %i   |parent uid: %i\n",ptr->body_data->body_type , ptr->body_data->uid, ptr->body_data->parent_body_uid);
+    printf("spawning body  type: %i  |uid: %i   |parent uid: %i\n",ptr->body_data->body_type , ptr->body_data->uid, ptr->body_data->parent_uid);
     return ptr;
 
  }
 
 
- void System::ResolveBodyParents() {
-    for (auto &[uid, body] : system_data.body_data) {
-        body.parent = nullptr;
 
-        if (body.parent_body_uid == -1)
+SystemLocationEntity * System::SpawnSystemLocation(SystemLocationData &data) {
+    std::unique_ptr<SystemLocationEntity> location = std::make_unique<SystemLocationEntity>(data);
+    SystemLocationEntity * ptr = location.get();
+
+    system_data.location_list.push_back(std::move(location));
+    printf("spawning location   |uid: %i   |body uid: %i\n", ptr->location_data->uid, ptr->location_data->body_uid);
+    return ptr;
+}
+
+
+SystemSiteEntity * System::SpawnSystemSite(SystemSiteData &data) {
+    std::unique_ptr<SystemSiteEntity> site = std::make_unique<SystemSiteEntity>(data);
+    SystemSiteEntity * ptr = site.get();
+
+    system_data.site_list.push_back(std::move(site));
+    printf("spawning location   |uid: %i   |body uid: %i\n", ptr->site_data->uid, ptr->site_data->body_uid);
+    return ptr;
+}
+
+
+
+ void System::ResolveParents() {
+
+    for (auto &body : system_data.body_list) {
+        body->parent = nullptr;
+
+        if (body->body_data->parent_uid == -1)
             continue;
 
-        auto it = system_data.body_data.find(body.parent_body_uid);
+        auto it = map_data.bodies.find(body->body_data->parent_uid);
 
-        if (it != system_data.body_data.end())
-            body.parent = &it->second;
+        if (it != map_data.bodies.end())
+            body->parent = &it->second;
     }
 }

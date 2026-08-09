@@ -1,7 +1,7 @@
 #pragma once 
 #include <raylib.h>
 #include "../resources/resources.h"
-#include "components/components.hpp"
+//#include "components/components.hpp"
 #include "../areas/areas.hpp"
 #include "../sprite/sprite.h"
 #include "../ships/ships.hpp"
@@ -48,10 +48,18 @@ enum BODY_TYPE {
 
 
 
+//struct SystemBodyMapData;
+struct SystemBodyLocalData;
 
 struct SystemBodyData {
-    std::string name = "no name";
+    SystemBodyLocalData local_data;  //economy population etc...
+
     int uid = -1;
+    int system_uid;
+    std::string name = "no body name";
+
+    //SystemBodyMapData map_data;
+
     Vector2 position;
 
     float radius = 0.0f;
@@ -65,16 +73,54 @@ struct SystemBodyData {
     int orbital_layer_count = 0;
     float orbital_layer_delta;
     int orbital_body_count = 0;
-    std::vector<int> orbital_bodies_uid;
+    std::vector<int> orbital_body_uids;
+    std::vector<int> location_uids;
     
     bool obstructable = false;
     Color modulate;
     
     int parent_orbital = 0;  //where it is in relation to it's parent orbitals
-    int parent_body_uid = -1;
-    SystemBodyData* parent = nullptr;
+    int parent_uid = -1;
+
+    
+};
+
+
+
+//struct SystemBodyMapData;
+struct SystemLocationLocalData;
+
+struct SystemLocationData {
+    SystemLocationLocalData local_data;  //economy population etc...
+
+    int uid = -1;
+    int body_uid = -1;
+    int system_uid = -1;
+    std::string name = "no location name";
+    Vector2 position;
+
+    float system_radius = 0.0f;
+    float location_radius = 0.0f;
 
 };
+
+
+struct SystemSiteLocalData;
+
+struct SystemSiteData {
+    SystemSiteLocalData local_data;
+    int uid = -1;
+    int location_uid = -1;
+    int body_uid = -1;
+    int system_uid = -1;
+    std::string name = "no site name";
+    Vector2 position;
+
+    float system_radius = 0.0f;
+    float location_radius = 0.0f;
+};
+
+
 
 
 
@@ -95,8 +141,8 @@ class BaseEntity  {
         MouseTriggerArea info_area;
         Label info_label;
 
-        EntityData *entity_data = nullptr;
-        SystemBodyData *body_data = nullptr;
+        //EntityData *entity_data = nullptr;
+        //SystemBodyInstanceData *body_data = nullptr;
         SelectionManager *selection_manager = nullptr;
 };
 
@@ -117,8 +163,9 @@ class CreatureEntity : public BaseEntity {
         virtual void ExitShip() = 0;
         virtual void Die() = 0;
 
-        MOVEMENT_TYPE movement_type = MOVEMENT_SHIP;
+        EntityData *entity_data = nullptr;
 
+        MOVEMENT_TYPE movement_type = MOVEMENT_SHIP;
 
         std::unique_ptr<Ship> ship;
         std::unique_ptr<Character> character;
@@ -127,8 +174,6 @@ class CreatureEntity : public BaseEntity {
 
         bool is_stunned = false;
         RayCast raycast;
-
-
 }; 
 
 
@@ -157,34 +202,11 @@ class PlayerCharacter : public CreatureEntity {
 extern PlayerCharacter * g_current_player;
 
 
- struct LandingSite {
-    int uid = -1;
-    std::string name = "";
-    Vector2 position;
-    MouseTriggerArea info_area;
-    Label info_label;
-    //TransitionArea transition_area;
-};
-
-
-struct BodyLocation {
-    int uid = -1;
-    std::string name = "";
-    Vector2 position;
-    float radius = 0.0f;
-    MouseTriggerArea info_area;
-    Label info_label;
-    std::vector<LandingSite> landing_sites;
-
-};
-
-struct LocationMapData;
 
 class SystemBodyEntity : public BaseEntity {
     public:
-    
         SystemBodyEntity(SystemBodyData *_data);
-        void GenerateLocation(LocationMapData &location);
+        //void GenerateLocation(LocationMapData &location);
         ~SystemBodyEntity() = default;
         void Update() override;
         void Draw() override;        
@@ -194,21 +216,47 @@ class SystemBodyEntity : public BaseEntity {
         float GetRenderScale() override;
         void RegisterWithManagers(SelectionManager *sm) override;
 
-/*         void OnShowInfo();
-        void OnHideInfo();
-        void OnShowLocationInfo();
-        void OnHideLocationInfo();
-        void OnShowSiteInfo();
-        void OnHideSiteInfo();  */       
+        SystemBodyData *body_data = nullptr;
 
-        bool show_info = false;
-        bool show_location_info = false;
-        bool show_site_info = false;
-
-        std::vector<BodyLocation> locations;
+        SystemBodyEntity *parent;
 }; 
 
 
+class SystemLocationEntity : public BaseEntity {
+    public:
+        SystemLocationEntity(SystemLocationData *_data);
+        //void GenerateLocation(LocationMapData &location);
+        ~SystemLocationEntity() = default;
+        void Update() override;
+        void Draw() override;        
+        void DrawOverlay() override;
+        void DrawUI()override;
+
+        float GetRenderScale() override;
+        void RegisterWithManagers(SelectionManager *sm) override;
+
+        SystemLocationData *location_data = nullptr;
+
+        SystemBodyEntity *parent;
+}; 
+
+class SystemSiteEntity : public BaseEntity {
+    public:
+        SystemSiteEntity(SystemSiteData *_data);
+        //void GenerateLocation(LocationMapData &location);
+        ~SystemSiteEntity() = default;
+        void Update() override;
+        void Draw() override;        
+        void DrawOverlay() override;
+        void DrawUI()override;
+
+        float GetRenderScale() override;
+        void RegisterWithManagers(SelectionManager *sm) override;
+
+        SystemSiteData *site_data = nullptr;
+
+        SystemBodyEntity *parent;
+}; 
 
 int GetUID();
 ENTITY_ID StrToEntityId(const std::string& s);

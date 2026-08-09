@@ -133,6 +133,9 @@ void PlayerHUDLayer::OnBodySelected() {
 
         if(selected_area->landing_site_payload != -1) {
             for(auto &location : system->system_data.body_list[selected_area->body_payload]->locations) {
+
+                //auto &sites = ;
+
                 for(auto &site : system->system_data.body_list[selected_area->body_payload]->locations[location.uid].landing_sites) {
                     if(site.uid == selected_area->landing_site_payload) {
                         location_site = &site;

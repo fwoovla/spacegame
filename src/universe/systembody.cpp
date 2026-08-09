@@ -19,7 +19,7 @@ SystemBodyEntity::SystemBodyEntity(SystemBodyData *_data) {
 
 }
 
-
+/* 
 void SystemBodyEntity::GenerateLocation(LocationMapData &location) {
 
     BodyLocation new_location;
@@ -71,7 +71,7 @@ void SystemBodyEntity::GenerateLocation(LocationMapData &location) {
 }
 
     
-
+ */
 
 
 void SystemBodyEntity::Update() {
@@ -90,7 +90,7 @@ void SystemBodyEntity::Draw() {
 
         Color color = RED;
 
-        if(show_info) {
+        if(info_area.mouse_hovering) {
             color =GREEN;
         }
 
@@ -99,11 +99,11 @@ void SystemBodyEntity::Draw() {
 
     }
 
-    if(body_data->parent != nullptr and g_game_data.show_debug) {
-        DrawLineV(body_data->position, body_data->parent->position, RED);
+    if(body_data->parent_uid != body_data->uid and g_game_data.show_debug) {
+        DrawLineV(body_data->position,  parent->body_data->position, RED);
     }
 
-    for(auto &location : locations) {
+    /* for(auto &location : locations) {
 
         Color l_color = DARKBROWN;
         if(location.info_area.mouse_hovering) {
@@ -118,13 +118,13 @@ void SystemBodyEntity::Draw() {
             }
             DrawCircleV(site.position, site.info_area.radius, color);
         }
-    }
+    } */
 }
 
 void SystemBodyEntity::DrawOverlay() {
     
 
-    for(auto &location : locations) {
+/*     for(auto &location : locations) {
         if(location.info_area.mouse_hovering or location.info_area.selected) {
             Vector2 screen = GetWorldToScreen2D(location.position, g_camera);
             location.info_label.position = screen;
@@ -151,7 +151,7 @@ void SystemBodyEntity::DrawOverlay() {
                 DrawLabelCenteredWithBG(site.info_label, g_font, color);
             }
         }
-    }
+    } */
 
     if(info_area.mouse_hovering or info_area.selected) {
         Vector2 screen = GetWorldToScreen2D(body_data->position, g_camera);
@@ -179,13 +179,13 @@ float SystemBodyEntity::GetRenderScale() {
 void SystemBodyEntity::RegisterWithManagers(SelectionManager *sm) {
     selection_manager = sm;
     selection_manager->Register(&info_area);
-    for(auto &location : locations) {
+/*     for(auto &location : locations) {
         selection_manager->Register(&location.info_area);
         for(auto &site : location.landing_sites) {
             selection_manager->Register(&site.info_area);
             
         }
-    }
+    } */
 }
 
 
