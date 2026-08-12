@@ -70,6 +70,10 @@ class Ship {
         void Update(Vector2 &position);
         void Draw(Vector2 &position, float scale);
 
+
+        bool ToggleAutoPilot();
+        bool ToggleFlightAssist();
+
         ShipData ship_data;
 };
 

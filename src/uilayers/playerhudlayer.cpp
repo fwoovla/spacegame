@@ -1,4 +1,4 @@
-    #include "uilayers.hpp"
+/*     #include "uilayers.hpp"
     #include "../game.h"
     #include <string>
     
@@ -56,6 +56,26 @@ void PlayerHUDLayer::Draw() {
     //DrawLabel(eta_label, g_font);
     //DrawLineV(entity);
 
+    if(g_game_data.show_debug) {
+        Vector2 p1 = GetWorldToScreen2D(g_current_player->entity_data->position, g_camera);
+
+        Vector2 p2;
+        if(site != nullptr) {
+            p2 = GetWorldToScreen2D(site->position, g_camera);
+        }
+
+        if(location != nullptr) {
+            p2 = GetWorldToScreen2D(location->position, g_camera);
+        }
+
+        if(body != nullptr) {
+            p2 = GetWorldToScreen2D(body->position, g_camera);
+        }
+
+        DrawLineV(p1, p2, GREEN);
+
+        //printf("p1 %0.5f    p2 %0.5f\n", p1, p2);
+    }
 
 }
 
@@ -68,26 +88,24 @@ void PlayerHUDLayer::Update() {
         throttle_label.text = "throttle: " + std::to_string(entity->ship->ship_data.movement.throttle);
         ship_target_label.text = "hud target: " + entity->entity_data->name;
         distance_label.text = "distance: " + std::to_string(entity->ship->ship_data.movement.max_speed);
-        //eta_label.text = "eta: " + std::to_string(entity->ship->ship_data.movement.turn_speed);
         autopilot_state_label.text = "autopilot state: " + std::to_string(entity->ship->ship_data.movement.drag);
-        //altitude_label.text = "altitude: " + std::to_string(ship_target->movement.);
         
 
-        if(location_site != nullptr) {
-            target_label.text = location_site->name;
-            std::string dist = TextFormat("%0.4f", Vector2Distance(entity->entity_data->position, location_site->position));
+        if(site != nullptr) {
+            target_label.text = site->name;
+            std::string dist = TextFormat("%0.4f", Vector2Distance(entity->entity_data->position, site->position));
             distance_label.text = dist;
         }
 
-        if(body_location != nullptr) {
-            target_label.text = body_location->name;
-            std::string dist = TextFormat("%0.4f", Vector2Distance(entity->entity_data->position, body_location->position));
+        if(location != nullptr) {
+            target_label.text = location->name;
+            std::string dist = TextFormat("%0.4f", Vector2Distance(entity->entity_data->position, location->position));
             distance_label.text = dist;
         }
 
-        if(body_data != nullptr) {
-            target_label.text = body_data->name;
-            std::string dist = TextFormat("%0.4f", Vector2Distance(entity->entity_data->position, body_data->position));
+        if(body != nullptr) {
+            target_label.text = body->name;
+            std::string dist = TextFormat("%0.4f", Vector2Distance(entity->entity_data->position, body->position));
             distance_label.text = dist;
         }
 
@@ -122,49 +140,34 @@ void PlayerHUDLayer::ClearTarget() {
     entity = nullptr;
     selection_manager = nullptr;
     system = nullptr;
-    body_data = nullptr;
-    body_location = nullptr;
-    location_site = nullptr;
+    body = nullptr;
+    location = nullptr;
+    site = nullptr;
 }
 
 void PlayerHUDLayer::OnBodySelected() {
+
     if(selection_manager->selection) {
         MouseTriggerArea *selected_area = selection_manager->selection;
-
+        
         if(selected_area->landing_site_payload != -1) {
-            for(auto &location : system->system_data.body_list[selected_area->body_payload]->locations) {
-
-                //auto &sites = ;
-
-                for(auto &site : system->system_data.body_list[selected_area->body_payload]->locations[location.uid].landing_sites) {
-                    if(site.uid == selected_area->landing_site_payload) {
-                        location_site = &site;
-                    }
-                }
-            }
+            site = &system->map_data.sites[selected_area->landing_site_payload];
         }
         else if(selected_area->location_payload != -1) {
-            for(auto &location : system->system_data.body_list[selected_area->body_payload]->locations) {
-                if(location.uid == selected_area->location_payload) {
-                     body_location = &location;
-                }
-            }
+            location = &system->map_data.locations[selected_area->location_payload];
         }
         else if(selected_area->body_payload != -1) {
-            for(auto &body : system->system_data.body_list) {
-                if(body->body_data->uid == selected_area->body_payload) {
-                    body_data = body->body_data;
-                }
-            }
+            body = &system->map_data.bodies[selected_area->body_payload];
         }
     }
+
 }
 
 
 void PlayerHUDLayer::OnBodyDeSelected() {
 
-    body_data = nullptr;
-    body_location = nullptr;
-    location_site = nullptr;
+    body = nullptr;
+    location = nullptr;
+    site = nullptr;
 
-}
+} */

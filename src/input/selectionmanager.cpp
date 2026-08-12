@@ -47,7 +47,9 @@ void SelectionManager::Update() {
     }
     else if(!current_hover and g_input.mouse_left) {
         deselected.EmitSignal();
-        selection->selected = false;
+        if(selection != nullptr) {
+            selection->selected = false;
+        }
         selection = nullptr;
     }
 }
@@ -90,7 +92,7 @@ void SelectionManager::DrawUI() {
         return;
     }
 
-    printf("selection: %i  %i  %i\n", selection->body_payload, selection->location_payload, selection->landing_site_payload);
+    //printf("selection: %i  %i  %i\n", selection->body_payload, selection->location_payload, selection->landing_site_payload);
 
 }
 

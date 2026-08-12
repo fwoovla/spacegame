@@ -88,3 +88,15 @@ void Ship::Draw(Vector2 &position, float scale) {
     DrawCircleV(screen, 20 * scale, PINK);
     DrawLineV(screen, forward, RED);
 }
+
+
+bool Ship::ToggleAutoPilot() {
+    ship_data.movement.autopiolot_on = !ship_data.movement.autopiolot_on;
+    return ship_data.movement.autopiolot_on;
+
+}
+
+bool Ship::ToggleFlightAssist() {
+    ship_data.movement.flight_assist_on = !ship_data.movement.flight_assist_on;
+    return ship_data.movement.flight_assist_on;
+}

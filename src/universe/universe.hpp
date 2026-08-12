@@ -3,6 +3,7 @@
 #include "entity.hpp"
 //#include "../scenes/scenes.hpp"
 #include "../uilayers/uilayers.hpp"
+#include "../uilayers/flightcontrol/flightcontrol.hpp"
 #include "system.hpp"
 #include "location.hpp"
 #include <vector>
@@ -34,7 +35,7 @@ class UniverseManager {
         void GenerateLocations(SystemMapData &map_data);
         void GenerateSites(SystemMapData &map_data);
 
-        void PopulateSystem(SystemMapData &map_data);
+        //void PopulateSystem(SystemMapData &map_data);
         void GenerateNewSystem(int system_uid);
 
         void Update();
@@ -71,7 +72,7 @@ class UniverseManager {
     Signal enter_ship;
     Signal exit_ship;
 
-    PlayerHUDLayer hud;
+    FlightControl hud;
 
     SelectionManager selection_manager;
 };

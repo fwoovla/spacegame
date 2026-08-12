@@ -106,57 +106,36 @@ void UniverseManager::OutlineUniverse() {
 
 
 
-void GenerateLocations(SystemMapData &map_data) {
+void UniverseManager::GenerateLocations(SystemMapData &map_data) {
     std::vector<SystemBodyData*> bodies;
 
     for (auto &[uid, body] : map_data.bodies) {
             if (body.landable == true)
                 bodies.push_back(&body);
-                printf("planet added name: %s\n", body.name.c_str());
+                //printf("location added --- name: %s\n", body.name.c_str());
         }
 
     int s = 1;
     for (SystemBodyData *body : bodies) {
 
         SystemLocationData new_location = GenerateSystemLocationData(body);
-        map_data.locations[new_location.uid] = new_location;
-
-/* 
-        new_location.uid = GetUID();
-        new_location.body_uid = body->uid;
-        new_location.system_uid = body->system_uid
-        new_location.name = "location " + std::to_string(s);;
-
-        new_location.location_radius = 500;
-        new_location.system_radius = 50;
-        new_location.position = body->position;
-
-        Vector2 location_pos = {0,0};
-        float l_angle = GetRandomValue(0, 360) * DEG2RAD;
-        location_pos.x = new_location.position.x + cosf(l_angle) * (body->radius - GetRandomValue(0, (int)body->radius) );
-        location_pos.y = new_location.position.y + sinf(l_angle) * (body->radius - GetRandomValue(0, (int)body->radius));
-        new_location.position = location_pos;
- */
-        
+        map_data.locations[new_location.uid] = new_location;  
 
     }
 
 }
 
-
-void GenerateSites(SystemMapData &map_data) {
+void UniverseManager::GenerateSites(SystemMapData &map_data) {
 
     std::vector<SystemLocationData*> locations;
 
     for (auto &[uid, body] : map_data.locations) {
         locations.push_back(&body);
-        printf("locations added name: %s\n", body.name.c_str());
-
-    int s = 1;
-    
-        for (SystemLocationData *location : locations) {
-            SystemSiteData new_site = GenerateSystemSiteData(location);
-        }
+        //printf("locations added name: %s\n", body.name.c_str());
+    }
+    for (SystemLocationData *location : locations) {
+        SystemSiteData new_site = GenerateSystemSiteData(location);
+        map_data.sites[new_site.uid] = new_site; 
     }
 }
 
@@ -240,7 +219,7 @@ void UniverseManager::DrawDebug() {
         case false:
             current_system->DrawDebug();
             for(int b = 0; b < current_system->system_data.body_list.size(); b++) {
-                SystemBodyEntity &body = *current_system->system_data.body_list[b];
+                SystemBody &body = *current_system->system_data.body_list[b];
                 DrawLineV(body.body_data->position, g_current_player->entity_data->position, GRAY);
             }
             break;
@@ -527,7 +506,7 @@ SystemBodyData GenerateSystemBodyData( BODY_TYPE type, int layer, float layer_de
         instance_data.parent_orbital = layer;
     }
 
-    printf("body  %0.5f %0.5f  delta %0.5f\n", instance_data.position.x, instance_data.position.y + layer, instance_data.orbital_layer_delta);
+    printf("body data created  %0.5f %0.5f  delta %0.5f\n", instance_data.position.x, instance_data.position.y + layer, instance_data.orbital_layer_delta);
     return instance_data;
 }
 
@@ -552,7 +531,7 @@ SystemLocationData GenerateSystemLocationData(SystemBodyData *body) {
     location_pos.y = data.position.y + sinf(l_angle) * (body->radius - GetRandomValue(0, (int)body->radius));
     data.position = location_pos;
 
-    printf("location  %0.5f %0.5f name: %s\n", data.position.x, data.position.y, data.name.c_str());
+    printf("location data created   name: %s\n", data.name.c_str());
     return data;
 }
 
@@ -564,9 +543,11 @@ SystemSiteData GenerateSystemSiteData(SystemLocationData *location) {
     new_site.location_uid = location->uid;
     new_site.body_uid = location->body_uid;
     new_site.system_uid = location->system_uid;
-    new_site.name = "site @ station " + std::to_string(location->uid);
+    new_site.name = "site" +   std::to_string(new_site.uid) +  " @ location " + std::to_string(location->uid);
 
 
+    new_site.location_radius = 50;
+    new_site.system_radius = 10;
     new_site.position = location->position;
 
     Vector2 site_pos = {0,0};
@@ -575,7 +556,8 @@ SystemSiteData GenerateSystemSiteData(SystemLocationData *location) {
     site_pos.y = new_site.position.y + sinf(s_angle) * (location->system_radius - GetRandomValue(0, (int)location->system_radius));
     new_site.position = site_pos;
 
-    printf("new site     name: %s  uid: %i \n", new_site.name.c_str(), new_site.uid);
+    printf("site data created    name: %s  uid: %i \n", new_site.name.c_str(), new_site.uid);
+    return new_site;
 
 
 }

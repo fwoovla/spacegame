@@ -9,6 +9,8 @@
 
 #define MAX_SIGNAL_CONNECTIONS 256
 
+int GetUID();
+
 
 enum STAT_ID {
     STAT_DAMAGE,

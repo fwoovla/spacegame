@@ -1,6 +1,7 @@
 #pragma once
 
 #include "entity.hpp"
+#include "system.hpp"
 #include <vector>
 #include "../FastNoisLite.h"
 
@@ -14,14 +15,14 @@ struct LocationInstanceData {
     int uid;
     float radius = 0.0f;
     std::unordered_map<int, EntityData> entity_data;
-    std::vector<std::unique_ptr<BaseEntity>> entity_list;
+    std::vector<std::unique_ptr<CreatureEntity>> entity_list;
 
     //std::vector<LandingSiteData> landing_sites;
 };
 
 class Location {
     public:
-        void GenerateLocation(LocationMapData &map_data);
+        void GenerateLocation(SystemLocationData &map_data);
 
         void Update();
         void Draw();
@@ -38,7 +39,7 @@ class Location {
 
         LocationInstanceData location_data;
 
-        std::vector<LandingSite> landing_sites;
+        //std::vector<LandingSite> landing_sites;
 
         Signal launch_requested;
 };

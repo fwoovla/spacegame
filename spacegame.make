@@ -86,6 +86,7 @@ GENERATED += $(OBJDIR)/components.o
 GENERATED += $(OBJDIR)/data.o
 GENERATED += $(OBJDIR)/debuguilayer.o
 GENERATED += $(OBJDIR)/entityutils.o
+GENERATED += $(OBJDIR)/flightcontrol.o
 GENERATED += $(OBJDIR)/game.o
 GENERATED += $(OBJDIR)/gamescene.o
 GENERATED += $(OBJDIR)/gameuilayer.o
@@ -95,6 +96,7 @@ GENERATED += $(OBJDIR)/location.o
 GENERATED += $(OBJDIR)/locationmanager.o
 GENERATED += $(OBJDIR)/locationscene.o
 GENERATED += $(OBJDIR)/main.o
+GENERATED += $(OBJDIR)/navigation.o
 GENERATED += $(OBJDIR)/player.o
 GENERATED += $(OBJDIR)/playerhudlayer.o
 GENERATED += $(OBJDIR)/render.o
@@ -102,6 +104,7 @@ GENERATED += $(OBJDIR)/resource_loader.o
 GENERATED += $(OBJDIR)/scenemanager.o
 GENERATED += $(OBJDIR)/sceneutils.o
 GENERATED += $(OBJDIR)/selectionmanager.o
+GENERATED += $(OBJDIR)/shipinfo.o
 GENERATED += $(OBJDIR)/ships.o
 GENERATED += $(OBJDIR)/shiputils.o
 GENERATED += $(OBJDIR)/signal.o
@@ -109,11 +112,15 @@ GENERATED += $(OBJDIR)/splashscene.o
 GENERATED += $(OBJDIR)/sprite.o
 GENERATED += $(OBJDIR)/system.o
 GENERATED += $(OBJDIR)/systembody.o
+GENERATED += $(OBJDIR)/systemlocation.o
+GENERATED += $(OBJDIR)/systemsite.o
+GENERATED += $(OBJDIR)/targetscreen.o
 GENERATED += $(OBJDIR)/textinput.o
 GENERATED += $(OBJDIR)/timer.o
 GENERATED += $(OBJDIR)/titlescene.o
 GENERATED += $(OBJDIR)/titleuilayer.o
 GENERATED += $(OBJDIR)/universemanager.o
+GENERATED += $(OBJDIR)/utils.o
 GENERATED += $(OBJDIR)/viewport.o
 OBJECTS += $(OBJDIR)/areas.o
 OBJECTS += $(OBJDIR)/button.o
@@ -123,6 +130,7 @@ OBJECTS += $(OBJDIR)/components.o
 OBJECTS += $(OBJDIR)/data.o
 OBJECTS += $(OBJDIR)/debuguilayer.o
 OBJECTS += $(OBJDIR)/entityutils.o
+OBJECTS += $(OBJDIR)/flightcontrol.o
 OBJECTS += $(OBJDIR)/game.o
 OBJECTS += $(OBJDIR)/gamescene.o
 OBJECTS += $(OBJDIR)/gameuilayer.o
@@ -132,6 +140,7 @@ OBJECTS += $(OBJDIR)/location.o
 OBJECTS += $(OBJDIR)/locationmanager.o
 OBJECTS += $(OBJDIR)/locationscene.o
 OBJECTS += $(OBJDIR)/main.o
+OBJECTS += $(OBJDIR)/navigation.o
 OBJECTS += $(OBJDIR)/player.o
 OBJECTS += $(OBJDIR)/playerhudlayer.o
 OBJECTS += $(OBJDIR)/render.o
@@ -139,6 +148,7 @@ OBJECTS += $(OBJDIR)/resource_loader.o
 OBJECTS += $(OBJDIR)/scenemanager.o
 OBJECTS += $(OBJDIR)/sceneutils.o
 OBJECTS += $(OBJDIR)/selectionmanager.o
+OBJECTS += $(OBJDIR)/shipinfo.o
 OBJECTS += $(OBJDIR)/ships.o
 OBJECTS += $(OBJDIR)/shiputils.o
 OBJECTS += $(OBJDIR)/signal.o
@@ -146,11 +156,15 @@ OBJECTS += $(OBJDIR)/splashscene.o
 OBJECTS += $(OBJDIR)/sprite.o
 OBJECTS += $(OBJDIR)/system.o
 OBJECTS += $(OBJDIR)/systembody.o
+OBJECTS += $(OBJDIR)/systemlocation.o
+OBJECTS += $(OBJDIR)/systemsite.o
+OBJECTS += $(OBJDIR)/targetscreen.o
 OBJECTS += $(OBJDIR)/textinput.o
 OBJECTS += $(OBJDIR)/timer.o
 OBJECTS += $(OBJDIR)/titlescene.o
 OBJECTS += $(OBJDIR)/titleuilayer.o
 OBJECTS += $(OBJDIR)/universemanager.o
+OBJECTS += $(OBJDIR)/utils.o
 OBJECTS += $(OBJDIR)/viewport.o
 
 # Rules
@@ -284,6 +298,18 @@ $(OBJDIR)/textinput.o: src/ui/textinput.cpp
 $(OBJDIR)/debuguilayer.o: src/uilayers/debuguilayer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/flightcontrol.o: src/uilayers/flightcontrol/flightcontrol.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/navigation.o: src/uilayers/flightcontrol/navigation.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/shipinfo.o: src/uilayers/flightcontrol/shipinfo.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/targetscreen.o: src/uilayers/flightcontrol/targetscreen.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/gameuilayer.o: src/uilayers/gameuilayer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -311,7 +337,13 @@ $(OBJDIR)/player.o: src/universe/player.cpp
 $(OBJDIR)/system.o: src/universe/system.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/systembody.o: src/universe/systembody.cpp
+$(OBJDIR)/systembody.o: src/universe/systemobject/systembody.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/systemlocation.o: src/universe/systemobject/systemlocation.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/systemsite.o: src/universe/systemobject/systemsite.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/universemanager.o: src/universe/universemanager.cpp
@@ -321,6 +353,9 @@ $(OBJDIR)/signal.o: src/utils/signal.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/timer.o: src/utils/timer.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/utils.o: src/utils/utils.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/viewport.o: src/viewport/viewport.cpp

@@ -3,7 +3,7 @@
 
 
 
-void Location::GenerateLocation(LocationMapData &map_data) {
+void Location::GenerateLocation(SystemLocationData &map_data) {
 
 
     location_data.uid = map_data.uid;
@@ -11,9 +11,9 @@ void Location::GenerateLocation(LocationMapData &map_data) {
     location_data.radius = map_data.location_radius;
     location_data.seed = GetRandomValue(100, 100000);
 
-    for(auto &site : map_data.landing_sites) {
+    //for(auto &site : map_data.landing_sites) {
 
-        LandingSite new_site;
+/*         LandingSite new_site;
         new_site.position = {0,0};
         new_site.name = site.name;
         new_site.uid = site.uid;
@@ -22,8 +22,8 @@ void Location::GenerateLocation(LocationMapData &map_data) {
         //new_site.info_area.type = LAUNCHING;
         new_site.info_area.mouse_triggered.Connect([&]() { OnLaunchRequested();});
 
-        landing_sites.push_back(new_site);
-    }
+        landing_sites.push_back(new_site); */
+    //}
 
 }
 
@@ -36,11 +36,11 @@ void Location::Update() {
         entity->Update();
     }
 
-    std::erase_if(vec, [](const std::unique_ptr<BaseEntity> &entity){return entity->should_delete;});
+    std::erase_if(vec, [](const std::unique_ptr<CreatureEntity> &entity){return entity->should_delete;});
 
-    for(auto &site : landing_sites) {
+/*     for(auto &site : landing_sites) {
         //site.transition_area.Update();
-    }
+    } */
 
     //location_data.launch_site->transition_area->Update();
 }
@@ -62,7 +62,7 @@ void Location::Draw() {
 void Location::DrawWorld() {
 
     DrawCircleV({0,0}, location_data.radius, DARKGRAY);
-
+/* 
     for(auto &site : landing_sites) {
         DrawCircleV( site.position, site.info_area.radius, RED);
         //printf("landing site draw\n");
@@ -73,14 +73,16 @@ void Location::DrawWorld() {
         if(entity->entity_data->render_mode == RENDER_WORLD)
             entity->Draw();
     }
+    */
 }
+
 
 void Location::DrawOverlay() {
 
     for(auto &entity : location_data.entity_list) {
         if(entity->entity_data->render_mode != RENDER_WORLD)
             entity->DrawOverlay();
-    }
+    } 
 
 }
 

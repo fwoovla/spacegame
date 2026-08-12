@@ -9,6 +9,7 @@
 #include "../ships/ships.hpp"
 #include "../universe/entity.hpp"
 #include "../universe/components/components.hpp"
+#include "../colordefs.hpp"
 
 
 class UILayer{
@@ -81,6 +82,9 @@ class GameUiLayer : public UILayer {
 };
 
 
+
+
+/* 
 class PlayerHUDLayer : public UILayer {
     public:
 
@@ -116,8 +120,8 @@ class PlayerHUDLayer : public UILayer {
     SelectionManager *selection_manager = nullptr;
     System *system = nullptr;
 
-    LandingSite *location_site = nullptr;
-    BodyLocation *body_location = nullptr;
-    SystemBodyData *body_data = nullptr;
+    SystemSiteData *site = nullptr;
+    SystemLocationData *location = nullptr;
+    SystemBodyData *body = nullptr;
 
-};
+}; */
