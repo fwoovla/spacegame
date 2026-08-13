@@ -49,6 +49,10 @@ void Navigation::Draw() {
     nav_target_label.position = {(bounds.width/2) + bounds.x, bounds.y + 40};
     DrawLabelCentered(nav_target_label, g_font);
 
+
+
+    
+
 }
 
 void Navigation::CreateSystemList(System *system) {

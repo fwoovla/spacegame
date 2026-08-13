@@ -1,8 +1,8 @@
 #pragma once
 #include "../resources/resources.h"
+#include "../universe/entity.hpp"
 #include "../ships/ships.hpp"
 #include "../characters/characters.hpp"
-
 
 void LoadData();
 

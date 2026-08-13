@@ -98,12 +98,16 @@ void System::DrawWorld() {
     
     for(auto &body : system_data.body_list) {
         body->Draw();
-    }
-    for(auto &site : system_data.site_list) {
-        site->Draw();
+        //DrawCircleLinesV(body->body_data->position, body->detect_radius, WHITE);
     }
     for(auto &location : system_data.location_list) {
         location->Draw();
+        DrawCircleLinesV(location->location_data->position, location->detect_radius, WHITE);
+    }
+
+    for(auto &site : system_data.site_list) {
+        site->Draw();
+        DrawCircleLinesV(site->site_data->position, site->detect_radius, WHITE);
     }
     
     for(auto &entity : system_data.entity_list) {

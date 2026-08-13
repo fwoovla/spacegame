@@ -80,3 +80,20 @@ class Timer{
 
 
 
+
+Color BlendColors(Color a, Color b, float t);
+
+Vector2 vClamp(Vector2 v, float maxLength);
+
+float GetAngleFromTo(Vector2 from, Vector2 to);
+
+
+float WrapAngle(float a);
+
+
+float ShortestAngleDiffRad(float from, float to);
+
+
+float RotateTowardsRad(float current, float target, float maxTurn, float dt);
+
+float RectCenterDistSq(const Rectangle& a, const Rectangle& b);

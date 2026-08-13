@@ -1,21 +1,6 @@
 #pragma once
 #include "../uilayers.hpp"
-
-
-enum COMPONENT_STATE {
-    HIDDEN,
-    MINIMIZED,
-    FOCUSED
-};
-
-class FlightComponent : public UILayer {
-    public:
-    virtual ~FlightComponent() = default;
-    COMPONENT_STATE state = MINIMIZED;
-    Rectangle min_bounds;
-    Rectangle max_bounds;
-    Label top_label;
-};
+#include "autppilot.hpp"
 
 
 struct ListSite {
@@ -49,6 +34,23 @@ struct NavTargetSharedData {
 
 };
 
+//========================= components =========================
+
+enum COMPONENT_STATE {
+    HIDDEN,
+    MINIMIZED,
+    FOCUSED
+};
+
+class FlightComponent : public UILayer {
+    public:
+    virtual ~FlightComponent() = default;
+    COMPONENT_STATE state = MINIMIZED;
+    Rectangle min_bounds;
+    Rectangle max_bounds;
+    Label top_label;
+};
+
 
 
 class Navigation : public FlightComponent{
@@ -70,6 +72,8 @@ class Navigation : public FlightComponent{
     SystemList system_list;
 
     Signal system_object_selected;
+
+    
     
 };
 
@@ -133,6 +137,7 @@ class FlightControl : public UILayer {
 
         FlightComponent *focused_component = nullptr;
 
+        
 
         Label throttle_label;
 
@@ -142,5 +147,7 @@ class FlightControl : public UILayer {
         Rectangle flight_assist_indicator;
         Label flight_assist_label;
 
+        Rectangle flight_mode_indicator;
+        Label flight_mode_label;
 
 };

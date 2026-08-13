@@ -4,6 +4,9 @@
 SystemBody::SystemBody(SystemBodyData *_data) {
     body_data = _data;
 
+    detect_radius = body_data->radius * DETECT_RADIUS_FACTOR;
+
+
     info_area.shape = MouseTriggerArea::CIRCLE;
     info_area.position = body_data->position;
     info_area.radius = body_data->radius;
@@ -23,23 +26,14 @@ void SystemBody::Update() {
 void SystemBody::Draw() {
     DrawCircleV(body_data->position, body_data->radius, body_data->modulate);
 
-    for(int r = 0; r < 360; r +=10) {
+    /* Color color = RED;
 
-        Vector2 end_pos;
-        end_pos.x = body_data->position.x + cosf(r * DEG2RAD) * body_data->radius;
-        end_pos.y = body_data->position.y + sinf(r * DEG2RAD) * body_data->radius;
-
-
-        Color color = RED;
-
-        if(info_area.mouse_hovering) {
-            color =GREEN;
-        }
-
-
-        DrawLineV(body_data->position,  end_pos, color);
-
+    if(info_area.mouse_hovering) {
+        color =GREEN;
     }
+
+    DrawCircleLinesV(body_data->position, body_data->radius + 10, color); */
+
 
     if(body_data->parent_uid != body_data->uid and g_game_data.show_debug) {
         DrawLineV(body_data->position,  parent_data->position, RED);
@@ -50,14 +44,22 @@ void SystemBody::Draw() {
 void SystemBody::DrawOverlay() {
 
     if(info_area.mouse_hovering or info_area.selected) {
-        Vector2 screen = GetWorldToScreen2D(body_data->position, g_camera);
-        info_label.position = screen;
-        Color color = DARKGRAY;
-        if(info_area.selected) {
-            color = GRAY;
+        
+        Vector2 top = body_data->position;
+        top.y -= body_data->radius - 20;
+        
+        top = GetWorldToScreen2D(top, g_camera);
+        if(info_area.mouse_hovering) {
+            info_label.position = top;
+            DrawLabelCenteredWithBG(info_label, g_font, TRANSDARKERGRAY);
         }
-        DrawLabelCenteredWithBG(info_label, g_font, color);
+        
+        if(info_area.selected) {
+            Vector2 center = GetWorldToScreen2D(body_data->position, g_camera);
+            DrawCircleLinesV(center, (body_data->radius * 1.25f) * g_camera.zoom, GREEN);
+        }
     }
+    
 
 }
 

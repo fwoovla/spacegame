@@ -1,8 +1,8 @@
 #pragma once
 
-#include "entity.hpp"
+//#include "entity.hpp"
 //#include "../scenes/scenes.hpp"
-#include "../uilayers/uilayers.hpp"
+//#include "../uilayers/uilayers.hpp"
 #include "../uilayers/flightcontrol/flightcontrol.hpp"
 #include "system.hpp"
 #include "location.hpp"

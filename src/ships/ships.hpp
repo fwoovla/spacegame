@@ -1,31 +1,13 @@
 #pragma once 
 #include <raylib.h>
 #include "../resources/resources.h"
-#include "../universe/components/components.hpp"
+#include "../uilayers/flightcontrol/autppilot.hpp"
+
 
 enum SHIP_ID {
     SHIP_NONE = -1,
     SHIP_1,
 };
-
-
-
-
-struct ShipMovement {
-    Vector2 velocity = {0,0};
-    float rotation = 0.0f;          // radians
-    float thrust = 600.0f;          // acceleration
-    float reverse_thrust = 300.0f;
-    float max_speed = 3000.0f;
-    float turn_speed = DEG2RAD * 180.0f;
-    float drag = 0.1f;             // gameplay drag
-    float throttle = 0.0f;          // 0-1
-    bool throttle_override = false;
-    bool autopiolot_on = false;
-    bool flight_assist_on = false;
-};
-
-
 
 
 
@@ -36,7 +18,8 @@ struct ShipTemplateData {
 
     int value = 0;
 
-    ShipMovement movement;
+    FlightMode system_drive;
+    FlightMode planet_drive;
 
 };
 
@@ -56,11 +39,13 @@ struct ShipData {
 
     int value = 0;
 
+    FLIGHT_MODE flight_mode = SYSTEM_FLIGHT_MODE;
+
     TargetData target_data;
-    ShipMovement movement;
 
+    std::array<FlightMode, 2> flight_modes; 
+    
 };
-
 
 class Ship {
     
@@ -71,10 +56,22 @@ class Ship {
         void Draw(Vector2 &position, float scale);
 
 
-        bool ToggleAutoPilot();
+        bool ToggleAutoPilot(AutopilotTarget &target);
         bool ToggleFlightAssist();
+        void SetFlightMode(FLIGHT_MODE mode);
+
+        void ManualFlightInput(float dt);
+        void FlightUpdate(Vector2 &position, float dt);
+        void AutopilotUpdate(Vector2 position);
+        void FlightAssistUpdateUpdate(Vector2 &position);
 
         ShipData ship_data;
+        FlightMode *current_mode = nullptr;
+        
+        Autopilot autopilot;
+
+        bool autopilot_on = false;
+        bool flight_assist_on = false;
 };
 
 

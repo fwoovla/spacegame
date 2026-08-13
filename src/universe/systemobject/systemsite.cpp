@@ -4,6 +4,8 @@
 SystemSite::SystemSite(SystemSiteData *_data) {
     site_data = _data;
 
+    detect_radius = site_data->system_radius * DETECT_RADIUS_FACTOR;
+
     info_area.shape = MouseTriggerArea::CIRCLE;
     info_area.position = site_data->position;
     info_area.radius = site_data->system_radius;
@@ -28,37 +30,26 @@ void SystemSite::Update() {
 void SystemSite::Draw() {
     DrawCircleV(site_data->position, site_data->system_radius, BROWN);
 
-    for(int r = 0; r < 360; r +=10) {
-
-        Vector2 end_pos;
-        end_pos.x = site_data->position.x + cosf(r * DEG2RAD) * site_data->system_radius;
-        end_pos.y = site_data->position.y + sinf(r * DEG2RAD) * site_data->system_radius;
-
-
-        Color color = RED;
-
-        if(info_area.mouse_hovering) {
-            color =GREEN;
-        }
-
-
-        DrawLineV(site_data->position,  end_pos, color);
-
-    }
+    
 }
 
 void SystemSite::DrawOverlay() {
 
     if(info_area.mouse_hovering or info_area.selected) {
-        Vector2 screen = GetWorldToScreen2D(site_data->position, g_camera);
-        info_label.position = screen;
-        Color color = DARKGRAY;
-        if(info_area.selected) {
-            color = GRAY;
+        
+        Vector2 top = site_data->position;
+        top.y -= site_data->system_radius - 20;
+        
+        top = GetWorldToScreen2D(top, g_camera);
+        if(info_area.mouse_hovering) {
+            info_label.position = top;
+            DrawLabelCenteredWithBG(info_label, g_font, TRANSDARKERGRAY);
         }
-        DrawLabelCenteredWithBG(info_label, g_font, color);
+        if(info_area.selected) {
+            Vector2 center = GetWorldToScreen2D(site_data->position, g_camera);
+            DrawCircleLinesV(center, site_data->system_radius * g_camera.zoom, GREEN);
+        }
     }
-
 }
 
 void SystemSite::DrawUI() {

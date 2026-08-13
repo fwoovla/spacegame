@@ -1,7 +1,7 @@
 #pragma once 
 #include <raylib.h>
 #include "../resources/resources.h"
-#include "../universe/components/components.hpp"
+//#include "../universe/components/components.hpp"
 
 
 enum CHARACTER_ID {

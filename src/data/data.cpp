@@ -1,6 +1,6 @@
 #include "data.hpp"
 #include "../resources/json.hpp"
-#include "../universe/entity.hpp"
+
 
 using json = nlohmann::json;
 
@@ -68,10 +68,25 @@ void LoadShipData(std::string file_path) {
 
 
         new_template.value = e["value"];
-        new_template.movement.max_speed = e["max_speed"];
-        new_template.movement.thrust = e["thrust"];
-        new_template.movement.reverse_thrust = e["reverse_thrust"];
-        new_template.movement.turn_speed = e["turn_speed"];
+
+
+        for(auto &m : e["flight_modes"]) {
+
+            if(m["mode"] == 0) {
+                new_template.system_drive.max_speed = m["max_speed"];
+                new_template.system_drive.thrust = m["thrust"];
+                new_template.system_drive.reverse_thrust = m["reverse_thrust"];
+                new_template.system_drive.turn_speed = m["turn_speed"];
+            }
+            if(m["mode"] == 1) {
+                new_template.planet_drive.max_speed = m["max_speed"];
+                new_template.planet_drive.thrust = m["thrust"];
+                new_template.planet_drive.reverse_thrust = m["reverse_thrust"];
+                new_template.planet_drive.turn_speed = m["turn_speed"];
+            }
+            
+        }
+
 
         g_ship_template_data[new_template.id] = new_template;
         

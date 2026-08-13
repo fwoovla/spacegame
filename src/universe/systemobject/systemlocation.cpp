@@ -4,6 +4,8 @@
 SystemLocation::SystemLocation(SystemLocationData *_data) {
     location_data = _data;
 
+    detect_radius = location_data->system_radius * DETECT_RADIUS_FACTOR;
+
     info_area.shape = MouseTriggerArea::CIRCLE;
     info_area.position = location_data->position;
     info_area.radius = location_data->system_radius;
@@ -24,23 +26,15 @@ void SystemLocation::Update() {
 void SystemLocation::Draw() {
     DrawCircleV(location_data->position, location_data->system_radius, BROWN);
 
-    for(int r = 0; r < 360; r +=10) {
+    Color color = RED;
 
-        Vector2 end_pos;
-        end_pos.x = location_data->position.x + cosf(r * DEG2RAD) * location_data->system_radius;
-        end_pos.y = location_data->position.y + sinf(r * DEG2RAD) * location_data->system_radius;
-
-
-        Color color = RED;
-
-        if(info_area.mouse_hovering) {
-            color =GREEN;
-        }
-
-
-        DrawLineV(location_data->position,  end_pos, color);
-
+    if(info_area.mouse_hovering) {
+        color =GREEN;
     }
+
+    DrawCircleLinesV(location_data->position, location_data->system_radius + 10, color);
+
+
 
 
 }
@@ -48,15 +42,21 @@ void SystemLocation::Draw() {
 void SystemLocation::DrawOverlay() {
 
     if(info_area.mouse_hovering or info_area.selected) {
-        Vector2 screen = GetWorldToScreen2D(location_data->position, g_camera);
-        info_label.position = screen;
-        Color color = DARKGRAY;
-        if(info_area.selected) {
-            color = GRAY;
+        
+        Vector2 top = location_data->position;
+        top.y -= location_data->system_radius - 20;
+        
+        top = GetWorldToScreen2D(top, g_camera);
+        if(info_area.mouse_hovering) {
+            info_label.position = top;
+            DrawLabelCenteredWithBG(info_label, g_font, TRANSDARKERGRAY);
         }
-        DrawLabelCenteredWithBG(info_label, g_font, color);
+        if(info_area.selected) {
+            Vector2 center = GetWorldToScreen2D(location_data->position, g_camera);
+            DrawCircleLinesV(center, location_data->system_radius * g_camera.zoom, GREEN);
+        }
     }
-
+    
 }
 
 void SystemLocation::DrawUI() {

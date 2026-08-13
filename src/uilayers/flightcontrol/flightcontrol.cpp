@@ -52,7 +52,7 @@ FlightControl::FlightControl() {
         .width = 20,
         .height = 20
     };
-    CreateLabel(autopilot_label, {autopiolot_indicator.x, autopiolot_indicator.y + 20}, 30, WHITE, "autopilot (Q)");
+    CreateLabel(autopilot_label, {autopiolot_indicator.x, autopiolot_indicator.y + 20}, 30, WHITE, "autopilot (R)");
 
 
     flight_assist_indicator = {
@@ -66,6 +66,13 @@ FlightControl::FlightControl() {
 
     CreateLabel(throttle_label, Vector2Add(flight_assist_label.position, {0, 60}), 30, RAYWHITE, "throttle");
 
+    flight_mode_indicator = {
+        .x = 20,
+        .y = 200,
+        .width = 20,
+        .height = 20
+    };
+    CreateLabel(flight_mode_label, {flight_mode_indicator.x, flight_mode_indicator.y + 20}, 30, WHITE, "flight mode (X/C)");
 
 
 }
@@ -123,14 +130,40 @@ void FlightControl::Update() {
 
 
     if(g_input.keys_pressed[0] == KEY_R) {
-        entity->ship->ToggleAutoPilot();
+
+        AutopilotTarget new_target;
+
+        if(shared_nav_target_data.site != nullptr) {
+            new_target.set = true;
+            new_target.position = shared_nav_target_data.site->position;
+            new_target.auto_land = true;
+        }
+        else if(shared_nav_target_data.location != nullptr) {
+            new_target.set = true;
+            new_target.position = shared_nav_target_data.location->position;
+            new_target.auto_land = false;
+        }
+        else if(shared_nav_target_data.body != nullptr) {            
+            new_target.set = true;
+            new_target.position = shared_nav_target_data.body->position;
+            new_target.auto_land = false;
+        }
+            
+            entity->ship->ToggleAutoPilot(new_target);
     }
 
     if(g_input.keys_pressed[0] == KEY_E) {
         entity->ship->ToggleFlightAssist();
     }
 
-    std::string  throttle = TextFormat("%0.2f", entity->ship->ship_data.movement.throttle);
+    if(g_input.keys_pressed[0] == KEY_X) {
+        entity->ship->SetFlightMode(SYSTEM_FLIGHT_MODE);
+    }
+    if(g_input.keys_pressed[0] == KEY_C) {
+        entity->ship->SetFlightMode(PLANET_FLIGHT_MODE);
+    }
+
+    std::string  throttle = TextFormat("%0.4f", entity->ship->current_mode->throttle);
     throttle_label.text = throttle;
 
     for(auto &component : components) {
@@ -153,19 +186,52 @@ void FlightControl::Draw() {
     }
 
     Color ap_color = RED;
-    if(entity->ship->ship_data.movement.autopiolot_on) {
+    if(entity->ship->autopilot_on) {
         ap_color = GREEN;
     }
     DrawRectangleRec(autopiolot_indicator, ap_color);
     DrawLabel(autopilot_label, g_font);
 
     Color fa_color = RED;
-    if(entity->ship->ship_data.movement.flight_assist_on) {
+    if(entity->ship->flight_assist_on) {
         fa_color = GREEN;
     }
     DrawRectangleRec(flight_assist_indicator, fa_color);
     DrawLabel(flight_assist_label, g_font);
     DrawLabel(throttle_label, g_font);
+
+    Color fm_color = BLUE;
+    if(entity->ship->ship_data.flight_mode == SYSTEM_FLIGHT_MODE) {
+        fm_color = ORANGE;
+    }
+
+    DrawRectangleRec(flight_mode_indicator, fm_color);
+    DrawLabel(flight_mode_label, g_font);
+
+
+
+    Vector2 p1 = GetWorldToScreen2D(g_current_player->entity_data->position, g_camera);
+    Vector2 p2;
+
+    bool draw_line = false;
+
+    if(shared_nav_target_data.site != nullptr) {
+        p2 = GetWorldToScreen2D(shared_nav_target_data.site->position, g_camera);
+        draw_line = true;
+    }
+    else if(shared_nav_target_data.location != nullptr) {
+        p2 = GetWorldToScreen2D(shared_nav_target_data.location->position, g_camera);
+        draw_line = true;
+    }
+    else if(shared_nav_target_data.body != nullptr) {            
+        p2 = GetWorldToScreen2D(shared_nav_target_data.body->position, g_camera);        
+        draw_line = true;
+    }
+
+    if(draw_line) {
+        DrawLineV(p1, p2, GREEN);
+    }
+
 
 }
 

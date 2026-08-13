@@ -21,7 +21,8 @@ PlayerCharacter::PlayerCharacter(EntityData *_data) {
     ship_data.id = ship_Tdata.id;
     ship_data.name = ship_Tdata.name;
     ship_data.value = ship_Tdata.value;
-    ship_data.movement = ship_Tdata.movement;
+    ship_data.flight_modes[0] = ship_Tdata.system_drive;
+    ship_data.flight_modes[1] = ship_Tdata.planet_drive;
 
     ship = std::make_unique<Ship>(ship_data);
 
@@ -116,7 +117,8 @@ void PlayerCharacter::EnterShip() {
     ShipData ship_data;
     ship_data.id = ship_Tdata.id;
     ship_data.name = ship_Tdata.name;
-    ship_data.movement = ship_Tdata.movement;
+    ship_data.flight_modes[SYSTEM_FLIGHT_MODE] = ship_Tdata.system_drive;
+    ship_data.flight_modes[PLANET_FLIGHT_MODE] = ship_Tdata.planet_drive;
 
     g_current_player->ship = std::make_unique<Ship>(ship_data);
 

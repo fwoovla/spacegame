@@ -1,10 +1,10 @@
 #pragma once 
 #include <raylib.h>
 #include "../resources/resources.h"
+#include "../ships/ships.hpp"
 //#include "components/components.hpp"
 #include "../areas/areas.hpp"
 #include "../sprite/sprite.h"
-#include "../ships/ships.hpp"
 #include "../characters/characters.hpp"
 #include "../input/selectionmanager.hpp"
 

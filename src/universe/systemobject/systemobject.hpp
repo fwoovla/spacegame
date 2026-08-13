@@ -5,6 +5,8 @@
 #include <string>
 
 
+#define DETECT_RADIUS_FACTOR 1.5f
+
 struct SystemSiteLocalData {
     int uid = -1;
     std::string name = "no site name";
@@ -115,6 +117,11 @@ class SystemObject  {
         Label info_label;
 
         SelectionManager *selection_manager = nullptr;
+
+        Signal player_approaching;
+        Signal player_departing;
+
+        float detect_radius = 0.0f;
 };
 
 

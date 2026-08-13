@@ -5,14 +5,27 @@
             "name": "ship 1",
 
             "value":100,
-
-            "thrust": 600.0,
-            "reverse_thrust": 300.0,
-            "max_speed": 3000.0,
-            "turn_speed": 3.14159,
-
             "obstructable": false,
-            "render_mode": 1
+            "render_mode": 1,
+
+            "flight_modes": [
+                {
+                    "mode":0,
+                    "thrust": 600.0,
+                    "reverse_thrust": 300.0,
+                    "max_speed": 3000.0,
+                    "turn_speed": 3.14159
+                },
+                {
+                    "mode":1,
+                    "thrust": 70.0,
+                    "reverse_thrust": 40.0,
+                    "max_speed": 100.0,
+                    "turn_speed": 3.14159
+
+                    
+                }
+            ]
         }
     ]
 }

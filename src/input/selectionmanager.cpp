@@ -39,8 +39,8 @@ void SelectionManager::Update() {
                 deselected.EmitSignal();
                 selection->selected = false;
             }
-            current_hover->selected = true;
             selection = current_hover;
+            current_hover->selected = true;
             printf("hovered area clicked:---- body:%i  location:%i  site:%i\n", current_hover->body_payload, current_hover->location_payload, current_hover->landing_site_payload);
             selected.EmitSignal();
         }
