@@ -6,26 +6,16 @@ void GetInputFromPlayer() {
 
     Vector2 m_pos = GetMousePosition();
 
+    m_pos.x = m_pos.x * g_viewport.inv_scale;
+    m_pos.y = m_pos.y * g_viewport.inv_scale;
+
     
     g_input.screen_mouse_position =  m_pos;
 
 
     g_input.world_mouse_position = GetScreenToWorld2D(m_pos, g_camera);
-    //g_input.world_mouse_position.x = (m_pos.x * g_viewport.screen2world) + (g_camera.target.x);
-    //g_input.world_mouse_position.y = (m_pos.y * g_viewport.screen2world) + (g_camera.target.y);
-    //g_input.world_mouse_position.x = (m_pos.x * g_viewport.screen2world);
-    //g_input.world_mouse_position.y = (m_pos.y * g_viewport.screen2world);
-
-    Vector2 offset = g_camera.offset;
-
-
-
-    //printf("mouse screen pos %0.05f %0.05f    mouse world pos  %0.05f %0.05f\n", g_input.screen_mouse_position.x, g_input.screen_mouse_position.y,
-    //    g_input.world_mouse_position.x, g_input.world_mouse_position.y);
-
 
     g_input.mouse_left = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
-    //printf("mouse left %i\n", g_input.mouse_left);
 
     if(g_input.mouse_left) {
         g_input.mouse_left_clicked_screen_position = g_input.screen_mouse_position;

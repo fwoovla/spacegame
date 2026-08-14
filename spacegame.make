@@ -113,6 +113,7 @@ GENERATED += $(OBJDIR)/splashscene.o
 GENERATED += $(OBJDIR)/sprite.o
 GENERATED += $(OBJDIR)/system.o
 GENERATED += $(OBJDIR)/systembody.o
+GENERATED += $(OBJDIR)/systemlist.o
 GENERATED += $(OBJDIR)/systemlocation.o
 GENERATED += $(OBJDIR)/systemsite.o
 GENERATED += $(OBJDIR)/targetscreen.o
@@ -158,6 +159,7 @@ OBJECTS += $(OBJDIR)/splashscene.o
 OBJECTS += $(OBJDIR)/sprite.o
 OBJECTS += $(OBJDIR)/system.o
 OBJECTS += $(OBJDIR)/systembody.o
+OBJECTS += $(OBJDIR)/systemlist.o
 OBJECTS += $(OBJDIR)/systemlocation.o
 OBJECTS += $(OBJDIR)/systemsite.o
 OBJECTS += $(OBJDIR)/targetscreen.o
@@ -310,6 +312,9 @@ $(OBJDIR)/navigation.o: src/uilayers/flightcontrol/navigation.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/shipinfo.o: src/uilayers/flightcontrol/shipinfo.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/systemlist.o: src/uilayers/flightcontrol/systemlist.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/targetscreen.o: src/uilayers/flightcontrol/targetscreen.cpp

@@ -72,6 +72,16 @@ class Autopilot {
         AUTOPILOT_STATE state;
 
         FlightMode *flight_mode;
+
+        Vector2 to_target;
+        float closing_speed = 0.0f;
+        Vector2 target_velocity;
+        Vector2 lateral_velocity;
+        Vector2 velocity_error;
+        float distance = 0.0f;
+        float deceleration = 0.0f;
+        float stopping_distance = 0.0f;
+        float target_angle = 0.0f;
 };
 
 

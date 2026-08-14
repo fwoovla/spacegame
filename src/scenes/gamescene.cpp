@@ -71,7 +71,7 @@ SCENE_ID GameScene::Update() {
 void GameScene::DrawScene() {
    
     if(g_game_data.show_debug) {
-        //DrawCircleV(g_input.screen_mouse_position, 6, YELLOW);
+        DrawCircleV(g_input.screen_mouse_position, 6, YELLOW);
     }
 
     BeginMode2D(g_camera);

@@ -127,8 +127,6 @@ void FlightControl::Update() {
 
     }
 
-
-
     if(g_input.keys_pressed[0] == KEY_R) {
 
         AutopilotTarget new_target;
@@ -208,8 +206,6 @@ void FlightControl::Draw() {
     DrawRectangleRec(flight_mode_indicator, fm_color);
     DrawLabel(flight_mode_label, g_font);
 
-
-
     Vector2 p1 = GetWorldToScreen2D(g_current_player->entity_data->position, g_camera);
     Vector2 p2;
 
@@ -229,27 +225,22 @@ void FlightControl::Draw() {
     }
 
     if(draw_line) {
-        DrawLineV(p1, p2, GREEN);
+        //DrawLineV(p1, p2, GREEN);
     }
-
-
 }
 
 
 void FlightControl::SetTarget(CreatureEntity *_entity, System *sys, SelectionManager *sm) {
-    entity = _entity;
+    entity = _entity; //only need entity for potition.  maybe just get ship and figure out a better way?
     selection_manager = sm;
     selection_manager->selected.Connect([this]() { OnSystemObjectSelected();});
     selection_manager->deselected.Connect([this]() { OnSystemObjectDeSelected();});
-    system = sys;
+    system = sys;  //get universe to access outside systems
 
     navigation->CreateSystemList(system);
 
     navigation->nav_target_data = &shared_nav_target_data;
     target_screen->nav_target_data = &shared_nav_target_data;
-
-
-    //navigation->system_object_selected.Connect([this]() target_screen-> )
 
 }
 
@@ -262,9 +253,6 @@ void FlightControl::ClearTarget() {
     shared_nav_target_data.location = nullptr;
     shared_nav_target_data.body = nullptr;
 
-/*     body = nullptr;
-    location = nullptr;
-    site = nullptr; */
 }
 
 void FlightControl::OnSystemObjectSelected() {

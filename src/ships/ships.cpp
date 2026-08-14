@@ -17,6 +17,12 @@ void Ship::Update(Vector2 &position) {
     float dt = GetFrameTime();
 
     if(flight_assist_on) {
+        float target_angle = GetAngleFromTo(position, g_input.world_mouse_position);
+        current_mode->rotation = RotateTowardsRad(current_mode->rotation, target_angle, PI, dt );
+
+        current_mode->throttle = Vector2DistanceSqr(position, g_input.world_mouse_position) * 0.00001f * (g_camera.zoom);
+        if(current_mode->throttle > 1.0f) current_mode->throttle = 1.0f;
+        //printf("%0.5f\n", Vector2DistanceSqr(position, g_input.world_mouse_position) * 0.00001f * (g_camera.zoom * 0.5f));
 
     }
     else if(autopilot_on) {
@@ -51,6 +57,17 @@ void Ship::Draw(Vector2 &position, float scale) {
     
     DrawCircleV(screen, 20 * scale, PINK);
     DrawLineV(screen, forward, RED);
+
+    if(autopilot_on) {
+        DrawLineV(screen, Vector2Add(screen, Vector2Scale(autopilot.to_target, 100.0f)), ORANGE);
+        DrawLineV(screen, Vector2Add(screen, Vector2Scale(current_mode->velocity, 0.1f)), GREEN);
+        DrawCircleV(Vector2Add(screen, Vector2Scale(autopilot.target_velocity, 0.1f)), 5, BLUE);
+        //DrawCircleV(Vector2Add(screen, Vector2Scale(autopilot.velocity_error, 0.1f)), 5, PURPLE);
+        //DrawCircleV(Vector2Add(screen, Vector2Scale(autopilot.lateral_velocity, 0.1f)), 5, LIME);
+        DrawCircleV(Vector2Add(screen, Vector2Scale(autopilot.to_target, current_mode->throttle * 100.0f)), 5, MAGENTA);
+
+    }
+
 }
 
 

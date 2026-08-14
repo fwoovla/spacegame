@@ -5,7 +5,7 @@
 
 
 #define MAX_ZOOM 20.0f
-#define MIN_ZOOM 0.0025f
+#define MIN_ZOOM 0.00025f
 #define ZOOM_STEP 0.05f
 
 

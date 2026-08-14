@@ -11,7 +11,38 @@ Autopilot::~Autopilot() {
 
 }
 FlightInput Autopilot::Update(const AutopilotInput &input, const float dt) {
-    if(target_data.set) {
+    if(target_data.set and flight_mode != nullptr) {
+
+        float speed = Vector2Length(flight_mode->velocity);
+
+        to_target = Vector2Normalize(target_data.position - input.position);
+
+        closing_speed = Vector2DotProduct(input.velocity, to_target);
+        float desired_speed = flight_mode->max_speed; //fmaxf(closing_speed, 0.0f);
+
+        target_velocity = Vector2Scale(to_target, desired_speed); 
+        velocity_error = Vector2Subtract(target_velocity, input.velocity);
+
+
+        float forward_speed = Vector2DotProduct(input.velocity, to_target);
+        Vector2 forward_velocity = Vector2Scale(to_target, forward_speed);
+
+        lateral_velocity = Vector2Subtract(input.velocity, forward_velocity);
+        distance = Vector2Distance(input.position, target_data.position);
+        deceleration = flight_mode->reverse_thrust;
+        stopping_distance = closing_speed * closing_speed / (2.0f * deceleration);
+        //target_angle = GetAngleFromTo(input.position, target_data.position);
+
+        printf("autopilot position:  %0.2f %0.2f    rotation:  %0.2f    velocity:  %0.2f  %0.2f  closing speed: %0.2f\n",
+            input.position.x,
+            input.position.y,
+            input.rotation,
+            input.velocity.x,
+            input.velocity.y,
+            closing_speed
+
+        );
+
         switch (state)
         {
         case ALIGN:
@@ -34,7 +65,7 @@ FlightInput Autopilot::Update(const AutopilotInput &input, const float dt) {
             /* what are you doing here? */
             break;
         }
-        //printf("doing autopilot stuff  position:  %0.2f %0.2f    rotation:  %0.2f    velocity:  %0.2f  %0.2f\n", input.position.x, input.position.y, input.rotation, input.velocity.x, input.velocity.y);
+        
     }
 
     
@@ -79,30 +110,52 @@ FlightInput Autopilot::Align(const AutopilotInput &input, const float dt) {
     return new_input;
 }
 
-FlightInput Autopilot::Accelerate(const AutopilotInput &input, const float dt) {
+FlightInput Autopilot::Accelerate(const AutopilotInput &input, const float dt) { //thanks AI
     FlightInput new_input;
-    
-    
-    float distance = Vector2Distance(input.position, target_data.position);
 
-    Vector2 to_target = Vector2Normalize(target_data.position - input.position);
+    float error_length = Vector2Length(velocity_error);
 
-    float closing_speed = Vector2DotProduct(input.velocity, to_target);
-    float deceleration = flight_mode->reverse_thrust;
+    Vector2 thrust_direction = { 0, 0 };
 
-    float stopping_distance = closing_speed * closing_speed / (2.0f * deceleration);
+    if(error_length > 0.01f) {
+        thrust_direction = Vector2Normalize(velocity_error);
+    }
 
-    if (closing_speed > 0.0f && distance <= stopping_distance) {
+
+
+    if(error_length > 0.01f){
+        target_angle =
+            GetAngleFromTo(
+                {0, 0},
+                thrust_direction
+            );
+
+        new_input.turn =
+            RotateTowardsRad(
+                input.rotation,
+                target_angle,
+                flight_mode->turn_speed,
+                dt
+            );
+    }
+    else{
+        new_input.turn = input.rotation;
+    }
+
+
+    float throttle = error_length / 500.0f;
+    new_input.throttle = Clamp(throttle, 0.0f, 1.0f);
+
+
+    if(distance <= stopping_distance){
         state = BRAKE;
     }
 
-    float target_angle = GetAngleFromTo(input.position, target_data.position);
-    new_input.turn =  RotateTowardsRad(input.rotation, target_angle, 1.0f, dt );
 
-    //new_input.turn =  input.rotation;
-    new_input.throttle = 1.0f;
-    printf("Accelerate\n");
     return new_input;
+    
+    //printf("Accelerate   speed: %0.0f,   stopping dist: %0.0f\n", speed, stopping_distance);
+    //return new_input;
 }
 
 FlightInput Autopilot::Cruise(const AutopilotInput &input, const float dt) {
@@ -119,13 +172,13 @@ FlightInput Autopilot::Brake(const AutopilotInput &input, const float dt) {
 
     //float target_angle = GetAngleFromTo(input.position, target_data.position);
     //new_input.turn =  RotateTowardsRad(input.rotation, target_angle, 1.0f, dt );
-    //new_input.turn = input.rotation;
+    new_input.turn = input.rotation;
 
     Vector2 to_target = Vector2Normalize(target_data.position - input.position);
 
     float closing_speed = Vector2DotProduct(input.velocity, to_target);
 
-    if (closing_speed <= 0.0f) {
+    if (closing_speed <= 10.0f) {
     // We've stopped moving toward the target
         state = ARRIVE;
         new_input.throttle = 0.0f;

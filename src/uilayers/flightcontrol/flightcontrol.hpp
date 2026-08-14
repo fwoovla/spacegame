@@ -19,13 +19,6 @@ struct ListBody {
     std::vector<ListLocation> location_list;
 };
 
-struct SystemList {
-
-    std::vector<ListBody> body_list;
-
-};
-
-
 struct NavTargetSharedData {
 
     SystemSiteData *site = nullptr;
@@ -34,7 +27,45 @@ struct NavTargetSharedData {
 
 };
 
+class SystemList {
+
+    enum LIST_TYPE {
+        ALL,
+        BODIES,
+        LOCATIONS,
+        SITES,
+    };
+
+    public:
+    SystemList() = default;
+    SystemList(Vector2 list_positon);
+    NavTargetSharedData Update( );
+    void Draw();
+    void MakeListAll( );
+    void MakeListBodies( );
+    void MakeListLocations( );
+    void MakeListSites( );
+    std::vector<ListBody> body_list;
+    std::vector<Label> label_list;
+
+    Vector2 position;
+
+    bool new_list = false;
+    int index = 0;
+    int list_size = 0;
+    LIST_TYPE list_type = LIST_TYPE::SITES;
+    int scroll_index = 0;
+    int visible_count = 8;
+};
+
+
+
+
 //========================= components =========================
+
+
+
+
 
 enum COMPONENT_STATE {
     HIDDEN,
