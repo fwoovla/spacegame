@@ -81,6 +81,7 @@ OBJECTS :=
 GENERATED += $(OBJDIR)/areas.o
 GENERATED += $(OBJDIR)/autopilot.o
 GENERATED += $(OBJDIR)/button.o
+GENERATED += $(OBJDIR)/buttonpanel.o
 GENERATED += $(OBJDIR)/characters.o
 GENERATED += $(OBJDIR)/characterutils.o
 GENERATED += $(OBJDIR)/components.o
@@ -127,6 +128,7 @@ GENERATED += $(OBJDIR)/viewport.o
 OBJECTS += $(OBJDIR)/areas.o
 OBJECTS += $(OBJDIR)/autopilot.o
 OBJECTS += $(OBJDIR)/button.o
+OBJECTS += $(OBJDIR)/buttonpanel.o
 OBJECTS += $(OBJDIR)/characters.o
 OBJECTS += $(OBJDIR)/characterutils.o
 OBJECTS += $(OBJDIR)/components.o
@@ -303,6 +305,9 @@ $(OBJDIR)/debuguilayer.o: src/uilayers/debuguilayer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/autopilot.o: src/uilayers/flightcontrol/autopilot.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/buttonpanel.o: src/uilayers/flightcontrol/buttonpanel.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/flightcontrol.o: src/uilayers/flightcontrol/flightcontrol.cpp

@@ -28,10 +28,10 @@ void DrawLabelWithBG(const Label &_label, const Font &font, Color color) {
     for (char c : _label.text) {
         if (c == '\n') lines++;
     }
-    DrawRectangle( _label.position.x - 5 - (tw*0.5), _label.position.y - 5 - (_label.text_size *0.5f), tw + 10, ((_label.text_size + 2) * lines), color );
+    DrawRectangle( _label.position.x - 5 , _label.position.y - 5 , tw + 10, ((_label.text_size + 2) * lines), color );
 
     float lineSpacing = _label.text_size * 10.02f;
-    Vector2 pos = { (float)(_label.position.x - (tw*0.5) ), (float)(_label.position.y - (_label.text_size *0.5f) ) };
+    Vector2 pos = { (float)(_label.position.x ), (float)(_label.position.y ) };
     std::stringstream ss(_label.text);
     std::string line;
 

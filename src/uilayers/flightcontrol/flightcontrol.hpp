@@ -27,20 +27,51 @@ struct NavTargetSharedData {
 
 };
 
-class SystemList {
 
+struct SharedButtonPayload {
+    int payload_i;
+    std::string payload_s = "";
+};
+
+struct PanelButton {
+    Button button;
+    int button_index = 0;
+    KeyboardKey key;
+    std::string payload_s = "";
+};
+
+class ButtonPanel : public UILayer {
+    public:
+    ButtonPanel();
+    void Update() override;
+    void Draw() override;
+
+    void AddButton(Button button, KeyboardKey key, std::string payload_s);
+    void ClearButtons();
+
+    std::vector<PanelButton> buttons;
+
+    SharedButtonPayload *button_payload = nullptr;
+    
+
+    Signal button_pressed;
+};
+
+
+class SystemList {
+    
+    public:
     enum LIST_TYPE {
         ALL,
         BODIES,
         LOCATIONS,
         SITES,
     };
-
-    public:
+    
     SystemList() = default;
     SystemList(Vector2 list_positon);
     NavTargetSharedData Update( );
-    void Draw();
+    void Draw(Vector2 list_position);
     void MakeListAll( );
     void MakeListBodies( );
     void MakeListLocations( );
@@ -93,6 +124,8 @@ class Navigation : public FlightComponent{
 
 
     void CreateSystemList(System *system);
+
+    void OnTopPanelButtonPressed();
     //void SelectSystemObject();
 
     NavTargetSharedData *nav_target_data = nullptr;
@@ -100,12 +133,11 @@ class Navigation : public FlightComponent{
     Label nav_target_label;
     Label nav_distance_label;
 
+    ButtonPanel top_panel;
+    SharedButtonPayload top_panel_payload;
     SystemList system_list;
 
     Signal system_object_selected;
-
-    
-    
 };
 
 
@@ -159,7 +191,6 @@ class FlightControl : public UILayer {
         SelectionManager *selection_manager = nullptr; //gets area info and signals out
         System *system = nullptr; // system.map_data has all the data
 
-
         Navigation *navigation;
         TargetScreen *target_screen;
         ShipInfo *ship_info;
@@ -167,8 +198,6 @@ class FlightControl : public UILayer {
         std::vector<std::unique_ptr<FlightComponent>> components;
 
         FlightComponent *focused_component = nullptr;
-
-        
 
         Label throttle_label;
 
@@ -180,5 +209,4 @@ class FlightControl : public UILayer {
 
         Rectangle flight_mode_indicator;
         Label flight_mode_label;
-
 };

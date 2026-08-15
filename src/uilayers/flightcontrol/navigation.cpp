@@ -10,6 +10,38 @@ Navigation::Navigation(Rectangle min, Rectangle max) {
 
     CreateLabel(top_label, {(min_bounds.width/2) + min_bounds.x, min_bounds.y + 20}, 30, RAYWHITE, "navigation");
     CreateLabel(nav_target_label, {(min_bounds.width/2) + min_bounds.x, min_bounds.y + 40}, 30, RAYWHITE, "target");
+    
+    Button all_button;// = CreateButton(position, size, color, text)
+    CreateButton(all_button, {(max_bounds.width/2) + max_bounds.x, max_bounds.y + 80}, {40, 30}, ORANGE,"A");
+    all_button.text_color_focus = DARKERGRAY;
+    all_button.text_color = GRAY;
+    all_button.default_color = DARKRED;
+    top_panel.AddButton(all_button, KEY_HOME, "ALL");
+
+    Button planet_button;// = CreateButton(position, size, color, text)
+    CreateButton(planet_button, {(max_bounds.width/2) + max_bounds.x - 50, max_bounds.y + 115}, {40, 30}, ORANGE,"P");
+    planet_button.text_color_focus = DARKERGRAY;
+    planet_button.text_color = GRAY;
+    planet_button.default_color = DARKRED;
+    top_panel.AddButton(planet_button, KEY_DELETE, "BODIES");
+
+    Button location_button;// = CreateButton(position, size, color, text)
+    CreateButton(location_button, {(max_bounds.width/2) + max_bounds.x, max_bounds.y + 115}, {40, 30}, ORANGE,"L");
+    location_button.text_color_focus = DARKERGRAY;
+    location_button.text_color = GRAY;
+    location_button.default_color = DARKRED;
+    top_panel.AddButton(location_button, KEY_END, "LOCATIONS");
+
+    Button site_button;// = CreateButton(position, size, color, text)
+    CreateButton(site_button, {(max_bounds.width/2) + max_bounds.x + 50, max_bounds.y + 115}, {40, 30}, ORANGE,"S");
+    site_button.text_color_focus = DARKERGRAY;
+    site_button.text_color = GRAY;
+    site_button.default_color = DARKRED;
+    top_panel.AddButton(site_button, KEY_PAGE_DOWN, "SITES");
+
+    top_panel.button_payload = &top_panel_payload;
+    top_panel.button_pressed.Connect([this]() { OnTopPanelButtonPressed();});
+
 }
 
 Navigation::~Navigation() {
@@ -49,6 +81,7 @@ void Navigation::Update() {
             nav_target_label.text = "N/A";
         }
     }
+    top_panel.Update();
 
 }
 
@@ -70,12 +103,16 @@ void Navigation::Draw() {
     DrawLabelCentered(nav_target_label, g_font);
 
     if(state == FOCUSED) {
-        system_list.Draw();
+        Rectangle sys_rec = {
+            .x = max_bounds.x + 5,
+            .y = max_bounds.y + 140,
+            .width = 300.0f,
+            .height = 240.0f
+        };
+        DrawRectangleRec(sys_rec, DARKBLUE);
+        system_list.Draw({sys_rec.x + 10, sys_rec.y + 10});
+        top_panel.Draw();
     }
-
-
-
-    
 
 }
 
@@ -115,4 +152,23 @@ void Navigation::CreateSystemList(System *system) {
     }
     system_list.new_list = true;
 
+}
+
+
+void Navigation::OnTopPanelButtonPressed() {
+    printf("payload = %i   %s\n", top_panel_payload.payload_i, top_panel_payload.payload_s.c_str());
+
+    if(top_panel_payload.payload_s == "ALL") {
+        system_list.list_type = SystemList::LIST_TYPE::ALL;
+    }
+    else if(top_panel_payload.payload_s == "BODIES") {
+        system_list.list_type = SystemList::LIST_TYPE::BODIES;
+    }
+    else if(top_panel_payload.payload_s == "LOCATIONS") {
+        system_list.list_type = SystemList::LIST_TYPE::LOCATIONS;
+    }
+    else if(top_panel_payload.payload_s == "SITES") {
+        system_list.list_type = SystemList::LIST_TYPE::SITES;
+    }
+    system_list.new_list = true;
 }

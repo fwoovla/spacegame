@@ -50,7 +50,7 @@ NavTargetSharedData SystemList::Update() {
 
     if(index >= scroll_index + visible_count) { scroll_index = index - visible_count + 1; }
 
-    if(g_input.keys_pressed[0] == KEY_HOME) {
+/*     if(g_input.keys_pressed[0] == KEY_HOME) {
         list_type = ALL;
         new_list = true;
     }
@@ -66,11 +66,11 @@ NavTargetSharedData SystemList::Update() {
         list_type = SITES;
         new_list = true;
     }
-
+ */
     return nav_target;
 }
 
-void SystemList::Draw() {
+void SystemList::Draw(Vector2 list_position) {
 
     int pos_index = 0;
     for(int label_index = scroll_index; label_index <= scroll_index + visible_count; label_index++) {
@@ -81,13 +81,11 @@ void SystemList::Draw() {
         if(label_index >= label_list.size()) {
             break;
         }
-        label_list[label_index].position = {position.x, position.y + (pos_index * 25)};
+        label_list[label_index].position = {list_position.x, list_position.y + (pos_index * 25)};
         DrawLabelWithBG(label_list[label_index], g_font, bg_color);
         pos_index++;
        
     }
-
-
 }
 
 

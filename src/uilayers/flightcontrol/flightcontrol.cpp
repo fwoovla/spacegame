@@ -14,9 +14,10 @@ FlightControl::FlightControl() {
         (g_viewport.resolution.x/2) - 200, (g_viewport.resolution.y/2) - 200, 400, 400  
     };
 
-    std::unique_ptr<Navigation> nav = std::make_unique<Navigation>( Navigation(navigation_min_bounds, navigation_max_bounds));
+    std::unique_ptr<Navigation> nav = std::make_unique<Navigation>( navigation_min_bounds, navigation_max_bounds);
     navigation = nav.get();
     components.push_back(std::move(nav));
+    //nav->top_panel.button_payload = &nav->top_panel_payload;
     
 //=====================================================
     
@@ -28,7 +29,7 @@ FlightControl::FlightControl() {
         (g_viewport.resolution.x/2) - 200, (g_viewport.resolution.y/2) - 200, 400, 400  
     };
 
-    std::unique_ptr<TargetScreen> ts = std::make_unique<TargetScreen>( TargetScreen(target_screen_min_bounds, target_screen_max_bounds));
+    std::unique_ptr<TargetScreen> ts = std::make_unique<TargetScreen>( target_screen_min_bounds, target_screen_max_bounds);
     target_screen = ts.get();
     components.push_back(std::move(ts));
 //=====================================================
@@ -40,7 +41,7 @@ FlightControl::FlightControl() {
         (g_viewport.resolution.x/2) - 200, (g_viewport.resolution.y/2) - 200, 400, 400  
     };
 
-    std::unique_ptr<ShipInfo> info = std::make_unique<ShipInfo>( ShipInfo(ship_info_min_bounds, ship_info_max_bounds));
+    std::unique_ptr<ShipInfo> info = std::make_unique<ShipInfo>( ship_info_min_bounds, ship_info_max_bounds);
     ship_info = info.get();
     components.push_back(std::move(info));
 //=====================================================
