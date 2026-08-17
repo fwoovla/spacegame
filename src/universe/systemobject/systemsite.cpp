@@ -1,10 +1,14 @@
 #include "systemobject.hpp"
 #include "../../game.h"
 
+
+#define DETECT_RADIUS_FACTOR 100.5f
+
 SystemSite::SystemSite(SystemSiteData *_data) {
     site_data = _data;
+    site_data->site_instance = this;
 
-    detect_radius = site_data->system_radius * DETECT_RADIUS_FACTOR;
+    site_data->detect_radius = site_data->system_radius * DETECT_RADIUS_FACTOR;
 
     info_area.shape = MouseTriggerArea::CIRCLE;
     info_area.position = site_data->position;
@@ -28,7 +32,7 @@ void SystemSite::Update() {
 }
 
 void SystemSite::Draw() {
-    DrawCircleV(site_data->position, site_data->system_radius, BROWN);
+    DrawCircleV(site_data->position, site_data->system_radius, DARKGRAY);
 
     
 }

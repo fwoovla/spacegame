@@ -8,11 +8,16 @@ SystemList::SystemList(Vector2 list_positon) {
 }
 
 
-NavTargetSharedData SystemList::Update() {
+void SystemList::Update() {
+
+    if(shared_nav_data == nullptr) {
+        printf("no shared data!!\n");
+        return;
+    }
 
     NavTargetSharedData nav_target;
     if(new_list) {
-        label_list.clear();
+        display_nav_list.clear();
         new_list = false;
         list_size = 0;
         index = 0;
@@ -38,6 +43,7 @@ NavTargetSharedData SystemList::Update() {
         if(index >= list_size) {
             index = list_size - 1;
         }
+        
     }
     if(g_input.keys_pressed[0] == KEY_UP) {
         index--;
@@ -50,24 +56,16 @@ NavTargetSharedData SystemList::Update() {
 
     if(index >= scroll_index + visible_count) { scroll_index = index - visible_count + 1; }
 
-/*     if(g_input.keys_pressed[0] == KEY_HOME) {
-        list_type = ALL;
-        new_list = true;
+    if(g_input.keys_pressed[0] == KEY_ENTER) {
+        NavListEntry *entry = &display_nav_list[index];
+
+        printf("!%s selected!\n",entry->label.text.c_str());
+
+        deselect_nav_target.EmitSignal();
+        Select(*entry);
     }
-    if(g_input.keys_pressed[0] == KEY_DELETE) {
-        list_type = BODIES;
-        new_list = true;
-    }
-    if(g_input.keys_pressed[0] == KEY_END) {
-        list_type = LOCATIONS;
-        new_list = true;
-    }
-    if(g_input.keys_pressed[0] == KEY_PAGE_DOWN) {
-        list_type = SITES;
-        new_list = true;
-    }
- */
-    return nav_target;
+
+
 }
 
 void SystemList::Draw(Vector2 list_position) {
@@ -78,72 +76,85 @@ void SystemList::Draw(Vector2 list_position) {
         if(label_index == index) {
             bg_color = DARKGRAY;
         }
-        if(label_index >= label_list.size()) {
+        if(label_index >= display_nav_list.size()) {
             break;
         }
-        label_list[label_index].position = {list_position.x, list_position.y + (pos_index * 25)};
-        DrawLabelWithBG(label_list[label_index], g_font, bg_color);
+        display_nav_list[label_index].label.position  = {list_position.x, list_position.y + (pos_index * 25)};
+        DrawLabelWithBG(display_nav_list[label_index].label, g_font, bg_color);
         pos_index++;
-       
     }
 }
 
 
 
 void SystemList::MakeListAll() {
-    for(auto &body : body_list) {
-        Label new_body_label;
-        CreateLabel(new_body_label, {position.x, position.y + (list_size * 25)}, 24, WHITE, body.body->name);
-        label_list.push_back(new_body_label);
-        list_size++;
-        for(auto &location : body.location_list) {
-            Label new_location_label;
-            CreateLabel(new_location_label, {position.x, position.y + (list_size * 25)}, 24, WHITE, location.location->name);
-            label_list.push_back(new_location_label);
+    for(auto &entry : master_nav_list) {
+        if(entry.body != nullptr) {
+            display_nav_list.push_back(entry);
             list_size++;
-            for(auto &site : location.site_list) {
-                Label new_site_label;
-                CreateLabel(new_site_label, {position.x, position.y + (list_size * 25)}, 24, WHITE, site.site->name);
-                label_list.push_back(new_site_label);
-                list_size++;
-            }
+        }
+        if(entry.location != nullptr) {
+            display_nav_list.push_back(entry);
+            list_size++;
+        }
+        if(entry.site != nullptr) {
+            display_nav_list.push_back(entry);
+            list_size++;
         }
     }
 }
 
 void SystemList::MakeListBodies() {
-    for(auto &body : body_list) {
-        Label new_body_label;
-        CreateLabel(new_body_label, {position.x, position.y + (list_size * 25)}, 24, WHITE, body.body->name);
-        label_list.push_back(new_body_label);
-        list_size++;
+    for(auto &entry : master_nav_list) {
+        if(entry.body != nullptr) {
+            display_nav_list.push_back(entry);
+            list_size++;
+        }
     }
 
 }
 
 void SystemList::MakeListLocations() {
-for(auto &body : body_list) {
-        for(auto &location : body.location_list) {
-            Label new_location_label;
-            CreateLabel(new_location_label, {position.x, position.y + (list_size * 25)}, 24, WHITE, location.location->name);
-            label_list.push_back(new_location_label);
+    for(auto &entry : master_nav_list) {
+        if(entry.location != nullptr) {
+            display_nav_list.push_back(entry);
             list_size++;
-            
         }
     }
 
 }
 
 void SystemList::MakeListSites() {
-
-    for(auto &body : body_list) {
-        for(auto &location : body.location_list) {
-            for(auto &site : location.site_list) {
-                Label new_site_label;
-                CreateLabel(new_site_label, {position.x, position.y + (list_size * 25)}, 24, WHITE, site.site->name);
-                label_list.push_back(new_site_label);
-                list_size++;
-            }
+    for(auto &entry : master_nav_list) {
+        if(entry.site != nullptr) {
+            display_nav_list.push_back(entry);
+            list_size++;
         }
     }
 }
+
+
+void SystemList::Select(NavListEntry &entry) {
+
+    if(entry.body != nullptr) {
+        shared_nav_data->body = entry.body;
+        shared_nav_data->body->body_instance->info_area.selected = true;
+        shared_nav_data->location = nullptr;
+        shared_nav_data->site = nullptr;
+    }
+    else if(entry.location != nullptr) {
+        shared_nav_data->body = nullptr;
+        shared_nav_data->location = entry.location;
+        shared_nav_data->location->location_instance->info_area.selected = true;
+        shared_nav_data->site = nullptr;
+    }
+    else if(entry.site != nullptr) {
+        shared_nav_data->body = nullptr;
+        shared_nav_data->location = nullptr;
+        shared_nav_data->site = entry.site;
+        shared_nav_data->site->site_instance->info_area.selected = true;
+    }
+    
+
+}
+

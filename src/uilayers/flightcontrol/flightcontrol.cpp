@@ -66,6 +66,7 @@ FlightControl::FlightControl() {
 
 
     CreateLabel(throttle_label, Vector2Add(flight_assist_label.position, {0, 60}), 30, RAYWHITE, "throttle");
+    CreateLabel(speed_label, Vector2Add(flight_assist_label.position, {0, 90}), 30, RAYWHITE, "speed");
 
     flight_mode_indicator = {
         .x = 20,
@@ -132,23 +133,39 @@ void FlightControl::Update() {
 
         AutopilotTarget new_target;
 
-        if(shared_nav_target_data.site != nullptr) {
+        if(shared_nav_data.site != nullptr) {
             new_target.set = true;
-            new_target.position = shared_nav_target_data.site->position;
+            new_target.position = shared_nav_data.site->position;
             new_target.auto_land = true;
+            new_target.proximity_radius = shared_nav_data.site->detect_radius;
         }
-        else if(shared_nav_target_data.location != nullptr) {
+        else if(shared_nav_data.location != nullptr) {
             new_target.set = true;
-            new_target.position = shared_nav_target_data.location->position;
+            new_target.position = shared_nav_data.location->position;
             new_target.auto_land = false;
+            new_target.proximity_radius = shared_nav_data.location->detect_radius;
         }
-        else if(shared_nav_target_data.body != nullptr) {            
+        else if(shared_nav_data.body != nullptr) {            
             new_target.set = true;
-            new_target.position = shared_nav_target_data.body->position;
+            new_target.position = shared_nav_data.body->position;
             new_target.auto_land = false;
+            new_target.proximity_radius = shared_nav_data.body->detect_radius;
         }
-            
-            entity->ship->ToggleAutoPilot(new_target);
+
+        
+        if(Vector2Distance(entity->entity_data->position, new_target.position) > 1000.0f) {
+            entity->ship->SetFlightMode(SYSTEM_FLIGHT_MODE);
+        }
+        else {
+            entity->ship->SetFlightMode(LOCAL_FLIGHT_MODE);
+        }
+
+        entity->ship->ToggleAutoPilot(new_target);
+
+        if(entity->ship->autopilot_on) {
+            OnAutopilotInitiated();
+        }
+        
     }
 
     if(g_input.keys_pressed[0] == KEY_E) {
@@ -159,11 +176,18 @@ void FlightControl::Update() {
         entity->ship->SetFlightMode(SYSTEM_FLIGHT_MODE);
     }
     if(g_input.keys_pressed[0] == KEY_C) {
-        entity->ship->SetFlightMode(PLANET_FLIGHT_MODE);
+        entity->ship->SetFlightMode(LOCAL_FLIGHT_MODE);
     }
 
     std::string  throttle = TextFormat("%0.4f", entity->ship->current_mode->throttle);
     throttle_label.text = throttle;
+
+    std::string  speed = TextFormat("%0.4f", entity->ship->current_mode->speed);
+    speed_label.text = speed;
+
+    float distance_f = Vector2Distance(entity->entity_data->position, shared_nav_data.target_position);
+    std::string  distance = TextFormat("%0.2f", distance_f);
+    navigation->nav_distance_label.text = distance;
 
     for(auto &component : components) {
         component->Update();
@@ -197,7 +221,9 @@ void FlightControl::Draw() {
     }
     DrawRectangleRec(flight_assist_indicator, fa_color);
     DrawLabel(flight_assist_label, g_font);
+
     DrawLabel(throttle_label, g_font);
+    DrawLabel(speed_label, g_font);
 
     Color fm_color = BLUE;
     if(entity->ship->ship_data.flight_mode == SYSTEM_FLIGHT_MODE) {
@@ -207,27 +233,27 @@ void FlightControl::Draw() {
     DrawRectangleRec(flight_mode_indicator, fm_color);
     DrawLabel(flight_mode_label, g_font);
 
-    Vector2 p1 = GetWorldToScreen2D(g_current_player->entity_data->position, g_camera);
-    Vector2 p2;
+//================================
+    if(entity->ship->autopilot_on) {
+        Vector2 position;
+        float radius;
 
-    bool draw_line = false;
+        if(entity->ship->autopilot.target_data.set) {
+            position = entity->ship->autopilot.target_data.position;
+            radius = entity->ship->autopilot.target_data.proximity_radius;
+            position = GetWorldToScreen2D(position, g_camera);
 
-    if(shared_nav_target_data.site != nullptr) {
-        p2 = GetWorldToScreen2D(shared_nav_target_data.site->position, g_camera);
-        draw_line = true;
-    }
-    else if(shared_nav_target_data.location != nullptr) {
-        p2 = GetWorldToScreen2D(shared_nav_target_data.location->position, g_camera);
-        draw_line = true;
-    }
-    else if(shared_nav_target_data.body != nullptr) {            
-        p2 = GetWorldToScreen2D(shared_nav_target_data.body->position, g_camera);        
-        draw_line = true;
+            radius = radius * g_camera.zoom;
+            DrawCircleLinesV(position, radius, WHITE);
+            //printf("%0.4f %0.4f %0.4f\n", position.x, position.y, radius);
+        }
+
+
+        
+      
     }
 
-    if(draw_line) {
-        //DrawLineV(p1, p2, GREEN);
-    }
+
 }
 
 
@@ -240,8 +266,14 @@ void FlightControl::SetTarget(CreatureEntity *_entity, System *sys, SelectionMan
 
     navigation->CreateSystemList(system);
 
-    navigation->nav_target_data = &shared_nav_target_data;
-    target_screen->nav_target_data = &shared_nav_target_data;
+    navigation->shared_nav_data = &shared_nav_data;
+    navigation->system_list.shared_nav_data = &shared_nav_data;
+    navigation->system_list.deselect_nav_target.Connect([this]() { OnNavTargetDeSelected();});
+    target_screen->nav_target_data = &shared_nav_data;
+
+    entity->ship->autopilot.enter_local_space.Connect( [this]() { OnEnterTargetSpace();} );
+    entity->ship->autopilot.landing_at_target.Connect( [this]() { OnLandingAtTarget();} );
+    entity->ship->autopilot.initiate_autopilot.Connect( [this]() { OnAutopilotInitiated();} );
 
 }
 
@@ -250,9 +282,9 @@ void FlightControl::ClearTarget() {
     selection_manager = nullptr;
     system = nullptr;
 
-    shared_nav_target_data.site = nullptr;
-    shared_nav_target_data.location = nullptr;
-    shared_nav_target_data.body = nullptr;
+/*     shared_nav_data.site = nullptr;
+    shared_nav_data.location = nullptr;
+    shared_nav_data.body = nullptr; */
 
 }
 
@@ -262,16 +294,17 @@ void FlightControl::OnSystemObjectSelected() {
          MouseTriggerArea *selected_area = selection_manager->selection;
         
         if(selected_area->landing_site_payload != -1) {
-            shared_nav_target_data.site = &system->map_data.sites[selected_area->landing_site_payload];
-            shared_nav_target_data.location = &system->map_data.locations[selected_area->location_payload];
-            shared_nav_target_data.body = &system->map_data.bodies[selected_area->body_payload];
+
+            shared_nav_data.site = &system->map_data.sites[selected_area->landing_site_payload];
+            shared_nav_data.location = &system->map_data.locations[selected_area->location_payload];
+            shared_nav_data.body = &system->map_data.bodies[selected_area->body_payload];
         }
         else if(selected_area->location_payload != -1) {
-            shared_nav_target_data.location = &system->map_data.locations[selected_area->location_payload];
-            shared_nav_target_data.body = &system->map_data.bodies[selected_area->body_payload];
+            shared_nav_data.location = &system->map_data.locations[selected_area->location_payload];
+            shared_nav_data.body = &system->map_data.bodies[selected_area->body_payload];
         }
         else if(selected_area->body_payload != -1) {
-            shared_nav_target_data.body = &system->map_data.bodies[selected_area->body_payload];
+            shared_nav_data.body = &system->map_data.bodies[selected_area->body_payload];
         }
     }
 }
@@ -279,8 +312,64 @@ void FlightControl::OnSystemObjectSelected() {
 
 void FlightControl::OnSystemObjectDeSelected() {
 
-    shared_nav_target_data.body = nullptr;
-    shared_nav_target_data.location = nullptr;
-    shared_nav_target_data.site = nullptr;
+    shared_nav_data.body = nullptr;
+    shared_nav_data.location = nullptr;
+    shared_nav_data.site = nullptr;
 
+}
+
+void FlightControl::OnNavTargetDeSelected() {
+
+    MouseTriggerArea *area = nullptr;
+
+    if(shared_nav_data.site != nullptr) {
+        area = &shared_nav_data.site->site_instance->info_area;        
+    }
+    else if(shared_nav_data.location != nullptr) {
+        area = &shared_nav_data.location->location_instance->info_area;
+    }
+    else if(shared_nav_data.body != nullptr) {            
+        area = &shared_nav_data.body->body_instance->info_area;
+    }
+
+    if(area) {
+        area->selected = false;
+    }
+
+    shared_nav_data.body = nullptr;
+    shared_nav_data.location = nullptr;
+    shared_nav_data.site = nullptr;
+
+    printf("area deselected\n");
+
+}
+
+
+void FlightControl::OnEnterTargetSpace() {
+    if(shared_nav_data.body) {system->SetCameraState(CAMERA_BODY);}
+    else if(shared_nav_data.location) {system->SetCameraState(CAMERA_LOCATION);}
+    else if(shared_nav_data.site) {system->SetCameraState(CAMERA_LOCATION);}
+    printf("fc: arived\n");
+}
+
+void FlightControl::OnLandingAtTarget() {
+    //if()
+    system->SetCameraState(CAMERA_SITE);
+    printf("fc: landed\n");
+    g_game_data.transition.location_id = shared_nav_data.site->location_uid;
+    system->landing_requested.EmitSignal();
+}
+
+void FlightControl::OnAutopilotInitiated() {
+    printf("fc: autopilot engaged\n");
+/* 
+    if(Vector2Distance(entity->entity_data->position, entity->ship->autopilot.target_data.position) > 5000.0f) {
+        printf("fc: sytem mode\n");
+        system->SetCameraState(CAMERA_SYSTEM);
+    }
+    else {
+        printf("fc: local mode\n");
+        system->SetCameraState(CAMERA_BODY);
+    }
+     */
 }

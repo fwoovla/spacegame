@@ -1,10 +1,13 @@
 #include "systemobject.hpp"
 #include "../../game.h"
 
+#define DETECT_RADIUS_FACTOR 5.5f
+
 SystemLocation::SystemLocation(SystemLocationData *_data) {
     location_data = _data;
+    location_data->location_instance = this;
 
-    detect_radius = location_data->system_radius * DETECT_RADIUS_FACTOR;
+    location_data->detect_radius = location_data->system_radius * DETECT_RADIUS_FACTOR;
 
     info_area.shape = MouseTriggerArea::CIRCLE;
     info_area.position = location_data->position;

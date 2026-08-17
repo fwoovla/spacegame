@@ -1,6 +1,14 @@
 #pragma once 
 #include <raylib.h>
 
+enum CAMERA_STATE {
+    CAMERA_SYSTEM,
+    CAMERA_BODY,
+    CAMERA_LOCATION,
+    CAMERA_SITE,
+    CAMERA_LANDING
+};
+
 extern Camera2D g_camera;
 
 struct Viewport {

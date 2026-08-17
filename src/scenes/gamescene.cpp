@@ -52,11 +52,11 @@ SCENE_ID GameScene::Update() {
 
     HandleCamera();
  
-    if(g_input.keys_pressed[0] == KEY_ENTER) {
+ /*    if(g_input.keys_pressed[0] == KEY_ENTER) {
         g_current_player->entity_data->position.x = (float)GetRandomValue(100, 20000);
         g_current_player->entity_data->position.y = (float)GetRandomValue(100, 20000);
     }
-
+ */
     
     if(g_current_player != nullptr) {
         universe_manager.Update();

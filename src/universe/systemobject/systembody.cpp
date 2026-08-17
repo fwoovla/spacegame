@@ -1,11 +1,13 @@
 #include "systemobject.hpp"
 #include "../../game.h"
 
+#define DETECT_RADIUS_FACTOR 2.5f
+
 SystemBody::SystemBody(SystemBodyData *_data) {
     body_data = _data;
+    body_data->body_instance = this;
 
-    detect_radius = body_data->radius * DETECT_RADIUS_FACTOR;
-
+    body_data->detect_radius = body_data->radius * DETECT_RADIUS_FACTOR;
 
     info_area.shape = MouseTriggerArea::CIRCLE;
     info_area.position = body_data->position;
@@ -25,15 +27,6 @@ void SystemBody::Update() {
 
 void SystemBody::Draw() {
     DrawCircleV(body_data->position, body_data->radius, body_data->modulate);
-
-    /* Color color = RED;
-
-    if(info_area.mouse_hovering) {
-        color =GREEN;
-    }
-
-    DrawCircleLinesV(body_data->position, body_data->radius + 10, color); */
-
 
     if(body_data->parent_uid != body_data->uid and g_game_data.show_debug) {
         DrawLineV(body_data->position,  parent_data->position, RED);

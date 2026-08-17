@@ -22,19 +22,35 @@ void Ship::Update(Vector2 &position) {
 
         current_mode->throttle = Vector2DistanceSqr(position, g_input.world_mouse_position) * 0.00001f * (g_camera.zoom);
         if(current_mode->throttle > 1.0f) current_mode->throttle = 1.0f;
-        //printf("%0.5f\n", Vector2DistanceSqr(position, g_input.world_mouse_position) * 0.00001f * (g_camera.zoom * 0.5f));
 
     }
-    else if(autopilot_on) {
+    else if(autopilot_on and autopilot.target_data.set) {
+        
+        if(Vector2Distance(position, autopilot.target_data.position) < autopilot.target_data.proximity_radius and ship_data.flight_mode != LOCAL_FLIGHT_MODE) {
+            SetFlightMode(LOCAL_FLIGHT_MODE);
+            autopilot.enter_local_space.EmitSignal();
+            //autopilot.state = ACCELERATE;
+        }
+
         AutopilotInput ap_input;
         ap_input.position = position;
         ap_input.rotation = current_mode->rotation;
         ap_input.velocity = current_mode->velocity;
         FlightInput f_input = autopilot.Update(ap_input, dt);
 
+        if(autopilot.state == ARRIVE) {
+            ship_data.flight_mode = LOCAL_FLIGHT_MODE;
+            current_mode =  &ship_data.flight_modes.at(ship_data.flight_mode);
+            current_mode->rotation = f_input.turn;
+            current_mode->velocity = {0,0};
+        }
+
         current_mode->rotation = f_input.turn;
         current_mode->throttle = f_input.throttle;
-        if(autopilot.state == ARRIVE) {
+
+        if(autopilot.state == DONE) {
+            current_mode->velocity = {0,0};
+            current_mode->throttle = 0.0f;
             AutopilotTarget dummy;
             ToggleAutoPilot(dummy);
         }
@@ -73,11 +89,18 @@ void Ship::Draw(Vector2 &position, float scale) {
 
 bool Ship::ToggleAutoPilot(AutopilotTarget &target) {
     autopilot_on = !autopilot_on;
+
     if(!autopilot_on) {
         target = {};
+        return autopilot_on;
     }
-    printf("autopilot %i\n", autopilot_on);
+
     autopilot.SetTarget(target);
+    printf("autopilot %i\n", autopilot_on);
+
+    if(!target.set) {
+        autopilot_on = false;
+    }
 
     return autopilot_on;
 

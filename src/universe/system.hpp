@@ -6,6 +6,7 @@
 #include "systemobject/systemobject.hpp"
 #include"location.hpp"
 #include "../input/selectionmanager.hpp"
+#include "../viewport/viewport.hpp"
 
 
 
@@ -72,6 +73,9 @@ class System {
         SystemSite * SpawnSystemSite(SystemSiteData &data);
 
         void ResolveParents();
+
+        void SetCameraState(CAMERA_STATE new_state);
+
 
         SelectionManager *selection_manager = nullptr;
 

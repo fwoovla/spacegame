@@ -27,7 +27,7 @@ void TransitionArea::Update() {
         //CreateLabel(label, {lx, ly}, 30, WHITE, "open");
 
         if(CheckCollisionCircleRec(g_current_player->entity_data->position, 100, area_rect) ) {
-            if(type == LANDING) {
+            if(type == LANDING_SITE) {
                 g_game_data.transition.return_position = position;
                 g_game_data.transition.location_id = location_uid;
                 g_game_data.transition.body_id = body_id;

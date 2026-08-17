@@ -72,23 +72,7 @@ void System::Update() {
 
 
 void System::Draw() {
-/* 
-    for(auto &site : system_data.site_list) {
-        site->Draw();
-    }
-    
-    for(auto &location : system_data.location_list) {
-        location->Draw();
-    }
 
-    for(auto &body : system_data.body_list) {
-        body->Draw();
-    }
-    
-
-    for(auto &entity : system_data.entity_list) {
-        entity->Draw();
-    } */
 }
 
 
@@ -98,21 +82,22 @@ void System::DrawWorld() {
     
     for(auto &body : system_data.body_list) {
         body->Draw();
-        //DrawCircleLinesV(body->body_data->position, body->detect_radius, WHITE);
+        //DrawCircleLinesV(body->body_data->position, body->body_data->detect_radius, WHITE);
     }
     for(auto &location : system_data.location_list) {
         location->Draw();
-        DrawCircleLinesV(location->location_data->position, location->detect_radius, WHITE);
+        //DrawCircleLinesV(location->location_data->position, location->location_data->detect_radius, WHITE);
     }
 
     for(auto &site : system_data.site_list) {
         site->Draw();
-        DrawCircleLinesV(site->site_data->position, site->detect_radius, WHITE);
+        //DrawCircleLinesV(site->site_data->position, site->site_data->detect_radius, WHITE);
     }
     
     for(auto &entity : system_data.entity_list) {
         if(entity->entity_data->render_mode == RENDER_WORLD)
             entity->Draw();
+            
     }
 }
 
@@ -220,4 +205,13 @@ SystemSite * System::SpawnSystemSite(SystemSiteData &data) {
         if (it != map_data.bodies.end())
             body->parent_data = &it->second;
     }
+}
+
+
+
+void System::SetCameraState(CAMERA_STATE new_state) {
+    printf("system: camera change %i\n", new_state);
+    g_game_data.camera_state = new_state;
+    g_game_data.do_camera_transition = true;
+
 }

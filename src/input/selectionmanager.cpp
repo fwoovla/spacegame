@@ -46,10 +46,10 @@ void SelectionManager::Update() {
         }
     }
     else if(!current_hover and g_input.mouse_left) {
-        deselected.EmitSignal();
         if(selection != nullptr) {
             selection->selected = false;
         }
+        deselected.EmitSignal();
         selection = nullptr;
     }
 }

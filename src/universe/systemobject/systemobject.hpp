@@ -5,8 +5,6 @@
 #include <string>
 
 
-#define DETECT_RADIUS_FACTOR 1.5f
-
 struct SystemSiteLocalData {
     int uid = -1;
     std::string name = "no site name";
@@ -32,7 +30,9 @@ enum BODY_TYPE {
 };
 
 
+class SystemBody;
 struct SystemBodyData {
+    SystemBody *body_instance;
     SystemBodyLocalData local_data;  //economy population etc...
 
     int uid = -1;
@@ -44,6 +44,7 @@ struct SystemBodyData {
     Vector2 position;
 
     float radius = 0.0f;
+    float detect_radius = 0.0f;
     float orbit_radius = 0.0f;
     float orbit_angle = 0.0f;
 
@@ -66,7 +67,9 @@ struct SystemBodyData {
     
 };
 
+class SystemLocation;
 struct SystemLocationData {
+    SystemLocation *location_instance;
     SystemLocationLocalData local_data;  //economy population etc...
 
     int uid = -1;
@@ -77,11 +80,13 @@ struct SystemLocationData {
 
     float system_radius = 0.0f;
     float location_radius = 0.0f;
+    float detect_radius = 0.0f;
 
 };
 
-
+class SystemSite;
 struct SystemSiteData {
+    SystemSite *site_instance;
     SystemSiteLocalData local_data;
     int uid = -1;
     int location_uid = -1;
@@ -92,6 +97,7 @@ struct SystemSiteData {
 
     float system_radius = 0.0f;
     float location_radius = 0.0f;
+    float detect_radius = 0.0f;
 };
 
 
@@ -121,7 +127,7 @@ class SystemObject  {
         Signal player_approaching;
         Signal player_departing;
 
-        float detect_radius = 0.0f;
+        
 };
 
 

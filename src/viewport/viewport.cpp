@@ -8,6 +8,11 @@
 #define MIN_ZOOM 0.00025f
 #define ZOOM_STEP 0.05f
 
+#define SYSTEM_ZOOM 0.005f
+#define BODY_ZOOM 8.0f
+#define LOCATION_ZOOM 10.5f
+#define SITE_ZOOM 18.0f
+
 
 float max_dist_sqr = 150*150;
 float min_dist_sqr = 50*50;
@@ -41,13 +46,46 @@ void CalculateViewport(Vector2 resolution, float scale) {
 }
 
 
-
 void HandleCamera() {
     float zoom_factor = g_camera.zoom/1;
-    g_camera.zoom += g_input.mouse_wheel * (ZOOM_STEP) * zoom_factor;
+
+    float wheel_zoom = g_input.mouse_wheel * (ZOOM_STEP) * zoom_factor;
+    g_camera.zoom += wheel_zoom;
+    if(wheel_zoom != 0.0f) {
+        g_game_data.do_camera_transition = false;
+    }
+
+    if(g_game_data.do_camera_transition) {
+        float target_zoom = SYSTEM_ZOOM;
+        float step = 0.0f;
+
+        if(g_game_data.camera_state == CAMERA_BODY) {
+            target_zoom = BODY_ZOOM;
+            step = 0.005f;
+        }
+        else if(g_game_data.camera_state == CAMERA_SYSTEM) {
+            target_zoom = SYSTEM_ZOOM;
+            step = 0.05f;
+        }
+        if(g_game_data.camera_state == CAMERA_LOCATION) {
+            target_zoom = LOCATION_ZOOM;
+            step = 0.005f;
+        }
+        else if(g_game_data.camera_state == CAMERA_SITE) {
+            target_zoom = SITE_ZOOM;
+            step = 0.05f;
+        }
+        g_camera.zoom = lerp(g_camera.zoom, target_zoom, step);
+        if( abs(g_camera.zoom  - target_zoom) < (target_zoom * 0.01f)) { 
+            g_game_data.do_camera_transition = false;
+        }
+
+    }
 
     if (g_camera.zoom < MIN_ZOOM){g_camera.zoom = MIN_ZOOM;}
     if (g_camera.zoom > MAX_ZOOM){g_camera.zoom = MAX_ZOOM;}
+
+    
 
     CalculateViewport(g_viewport.resolution, g_viewport.scale);
 

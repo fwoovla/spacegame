@@ -3,27 +3,12 @@
 #include "autppilot.hpp"
 
 
-struct ListSite {
-    SystemSiteData *site = nullptr;
-};
-
-
-struct ListLocation {
-    SystemLocationData *location = nullptr;
-    std::vector<ListSite> site_list;
-};
-
-struct ListBody {
-
-    SystemBodyData *body = nullptr;
-    std::vector<ListLocation> location_list;
-};
-
 struct NavTargetSharedData {
 
     SystemSiteData *site = nullptr;
     SystemLocationData *location = nullptr;
     SystemBodyData *body = nullptr;
+    Vector2 target_position;
 
 };
 
@@ -57,6 +42,13 @@ class ButtonPanel : public UILayer {
     Signal button_pressed;
 };
 
+struct NavListEntry {
+    Label label;
+    SystemSiteData *site = nullptr;
+    SystemLocationData *location = nullptr;
+    SystemBodyData *body = nullptr;
+};
+
 
 class SystemList {
     
@@ -70,23 +62,34 @@ class SystemList {
     
     SystemList() = default;
     SystemList(Vector2 list_positon);
-    NavTargetSharedData Update( );
+    void Update( );
     void Draw(Vector2 list_position);
     void MakeListAll( );
     void MakeListBodies( );
     void MakeListLocations( );
     void MakeListSites( );
-    std::vector<ListBody> body_list;
-    std::vector<Label> label_list;
+
+    void Select(NavListEntry &entry);
+
+    NavTargetSharedData *shared_nav_data = nullptr;
+
+    std::vector<NavListEntry> master_nav_list;
+    std::vector<NavListEntry> display_nav_list;
+
+    NavListEntry *highlighted_entry;
+    //std::vector<Label> label_list;
 
     Vector2 position;
 
     bool new_list = false;
     int index = 0;
     int list_size = 0;
-    LIST_TYPE list_type = LIST_TYPE::SITES;
+    LIST_TYPE list_type = LIST_TYPE::ALL;
     int scroll_index = 0;
     int visible_count = 8;
+
+    Signal set_new_target;
+    Signal deselect_nav_target;
 };
 
 
@@ -126,9 +129,10 @@ class Navigation : public FlightComponent{
     void CreateSystemList(System *system);
 
     void OnTopPanelButtonPressed();
+    //void OnNewNavTareget();
     //void SelectSystemObject();
 
-    NavTargetSharedData *nav_target_data = nullptr;
+    NavTargetSharedData *shared_nav_data = nullptr;
 
     Label nav_target_label;
     Label nav_distance_label;
@@ -184,8 +188,14 @@ class FlightControl : public UILayer {
 
         void OnSystemObjectSelected();
         void OnSystemObjectDeSelected();
+        void OnNavTargetDeSelected();
+        void OnEnterTargetSpace();
+        void OnLandingAtTarget();
+        void OnAutopilotInitiated();
 
-        NavTargetSharedData shared_nav_target_data;
+
+
+        NavTargetSharedData shared_nav_data;
 
         CreatureEntity *entity; //this is the entity controlling the ship
         SelectionManager *selection_manager = nullptr; //gets area info and signals out
@@ -200,6 +210,7 @@ class FlightControl : public UILayer {
         FlightComponent *focused_component = nullptr;
 
         Label throttle_label;
+        Label speed_label;
 
         Rectangle autopiolot_indicator;
         Label autopilot_label;

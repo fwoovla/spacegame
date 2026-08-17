@@ -161,6 +161,10 @@ void UniverseManager::Update() {
         location_ready_to_destroy = false;
         return;
     }
+    if(location_ready_to_load) {
+        LandAtLocation();
+        return;
+    }
 
     switch(location_active)
     {
@@ -175,7 +179,9 @@ void UniverseManager::Update() {
     }
 
     selection_manager.Update();
-    hud.Update();
+    if(g_current_player->ship) {
+        hud.Update();
+    }
 }
 
 
@@ -245,7 +251,9 @@ void UniverseManager::DrawUI() {
             break;
     }
     selection_manager.DrawUI();
-    hud.Draw();
+    if(g_current_player->ship) {
+        hud.Draw();
+    }
 }
 
 
@@ -254,7 +262,8 @@ void UniverseManager::OnLandAtLocationRequested() {
     if(location_active) {
         return;
     }
-    LandAtLocation();
+    location_ready_to_load = true;
+    //LandAtLocation();
 }
 
 
@@ -264,6 +273,8 @@ void UniverseManager::LandAtLocation() {
 
     if(!location_active) {
         location_active = true;
+
+        g_game_data.transition.return_position = g_current_player->entity_data->position;
 
         current_location = std::make_unique<Location>();
 
@@ -305,7 +316,7 @@ void UniverseManager::LandAtLocation() {
         g_camera.target = g_current_player->entity_data->position;
         g_camera.zoom = 1.0f;
 
-        current_location->launch_requested.Connect([&]() { LaunchFromLocationRequested();});
+        current_location->launch_requested.Connect([this]() { LaunchFromLocationRequested();});
 
         g_current_player->ExitShip();
 

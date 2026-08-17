@@ -40,6 +40,9 @@ struct GameData {
     bool show_debug;
     DebugData debug_data;
 
+    CAMERA_STATE camera_state = CAMERA_SYSTEM;
+    bool do_camera_transition = false;
+
     SharedTransitionData transition;
     SharedSelectionData selection;
     

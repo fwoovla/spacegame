@@ -66,7 +66,11 @@ class UniverseManager {
     bool save_system = false;
     bool save_location = false;
 
+
+    bool location_ready_to_load = false;
     bool location_ready_to_destroy = false;
+
+    bool system_ready_to_load = false;
     bool system_ready_to_destroy = false;
 
     Signal enter_ship;

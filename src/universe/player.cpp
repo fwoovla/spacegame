@@ -24,7 +24,8 @@ PlayerCharacter::PlayerCharacter(EntityData *_data) {
     ship_data.flight_modes[0] = ship_Tdata.system_drive;
     ship_data.flight_modes[1] = ship_Tdata.planet_drive;
 
-    ship = std::make_unique<Ship>(ship_data);
+    EnterShip();
+    //ship = std::make_unique<Ship>(ship_data);
 
 }
 
@@ -112,15 +113,16 @@ void PlayerCharacter::RegisterWithManagers(SelectionManager *sm) {
 
 void PlayerCharacter::EnterShip() {
     
+    character.reset();
 
     ShipTemplateData ship_Tdata = g_ship_template_data[SHIP_1];
     ShipData ship_data;
     ship_data.id = ship_Tdata.id;
     ship_data.name = ship_Tdata.name;
     ship_data.flight_modes[SYSTEM_FLIGHT_MODE] = ship_Tdata.system_drive;
-    ship_data.flight_modes[PLANET_FLIGHT_MODE] = ship_Tdata.planet_drive;
+    ship_data.flight_modes[LOCAL_FLIGHT_MODE] = ship_Tdata.planet_drive;
 
-    g_current_player->ship = std::make_unique<Ship>(ship_data);
+    ship = std::make_unique<Ship>(ship_data);
 
     movement_type = MOVEMENT_SHIP;
 
@@ -128,13 +130,15 @@ void PlayerCharacter::EnterShip() {
 
 void PlayerCharacter::ExitShip() {
 
+    ship.reset();
+
     CharacterTemplateData char_Tdata = g_character_template_data[CHARACTER_PLAYER];
     CharacterData char_data;
     char_data.id = char_Tdata.id;
     char_data.name = char_Tdata.name;
     char_data.movement = char_Tdata.movement;
 
-    g_current_player->character = std::make_unique<Character>(char_data);
+    character = std::make_unique<Character>(char_data);
     movement_type = MOVEMENT_CHARACTER;
 }
 
