@@ -24,11 +24,22 @@ LocationShip::LocationShip(ShipData *_data, Vector2 position) {
 
 
 void LocationShip::Update() {
+    float detect_radius = ship_data->radius;
+    if(CheckCollisionPointCircle(g_current_player->entity_data->position, position, ship_data->radius) and info_area.selected) {
+        can_board_ship = true;
+    }
+    else {
+        can_board_ship = false;
+    }
 
 }
 
 void LocationShip::Draw() {
-    DrawCircleV(position, ship_data->radius, PINK);
+    Color color = PURPLE;
+    if(can_board_ship) {
+        color = PINK;
+    }
+    DrawCircleV(position, ship_data->radius, color);
     //printf("draw ship radius: %0.5f\n", ship_data->radius);
 
     
@@ -48,9 +59,11 @@ void LocationShip::DrawOverlay() {
             DrawLabelCenteredWithBG(info_label, g_font, TRANSDARKERGRAY);
         }
         if(info_area.selected) {
+            
             Vector2 center = GetWorldToScreen2D(position, g_camera);
-            DrawCircleLinesV(center, ship_data->radius * g_camera.zoom, GREEN);
+            DrawCircleLinesV(center, (ship_data->radius * 1.3) * g_camera.zoom, GREEN);
         }
+        
     }
 }
 

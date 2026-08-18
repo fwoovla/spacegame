@@ -132,7 +132,7 @@ void UniverseManager::GenerateSites(SystemMapData &map_data) {
         //printf("locations added name: %s\n", body.name.c_str());
     }
     for (SystemLocationData *location : locations) {
-        for(int s = 0; s <= location->local_data.site_amount; s++) {
+        for(int s = 0; s < location->local_data.site_amount; s++) {
             SystemSiteData new_site = GenerateSystemSiteData(location);
             map_data.sites[new_site.uid] = new_site;
             location->site_uids.push_back(new_site.uid);
@@ -350,7 +350,7 @@ void UniverseManager::LaunchFromLocation() {
 
     //Vector2 return_position = g_game_data.transition.return_position;
 
-
+    selection_manager.UnregisterAll();
     // Move entity data back to the system
     current_system->system_data.entity_data[uid] = std::move(current_location->location_data.entity_data[uid]);
 
@@ -545,7 +545,8 @@ SystemLocationData GenerateSystemLocationData(SystemBodyData *body) {
 
     data.local_data.uid = data.uid;
     data.local_data.name = data.name;
-    data.local_data.site_amount = GetRandomValue(0,1);
+    data.local_data.site_amount = 2;//GetRandomValue(0,2);
+    data.local_data.location_plan = GenerateNewPlan();
 
     printf("location data created   name: %s\n", data.name.c_str());
     return data;

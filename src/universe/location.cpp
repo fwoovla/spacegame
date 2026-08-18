@@ -35,8 +35,9 @@ void Location::Update() {
     std::erase_if(vec, [](const std::unique_ptr<CreatureEntity> &entity){return entity->should_delete;});
 
 
+    location_data.ship->Update();
 
-    if(g_input.keys_pressed[0] == KEY_SPACE) {
+    if(g_input.keys_pressed[0] == KEY_SPACE and location_data.ship->can_board_ship) {
         launch_requested.EmitSignal();
     } 
 

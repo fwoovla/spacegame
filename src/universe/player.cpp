@@ -118,17 +118,15 @@ void PlayerCharacter::RegisterWithManagers(SelectionManager *sm) {
 void PlayerCharacter::EnterShip() {
     
     character.reset();
-
     ship = std::make_unique<Ship>(&ship_data);
-
     movement_type = MOVEMENT_SHIP;
+    printf("enter ship\n");
 
 }
 
 void PlayerCharacter::ExitShip() {
 
     ship.reset();
-
     character = std::make_unique<Character>(&character_data);
     movement_type = MOVEMENT_CHARACTER;
     printf("exit ship\n");

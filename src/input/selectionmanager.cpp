@@ -20,7 +20,6 @@ void SelectionManager::Update() {
         if(current_hover)
         {
             current_hover->mouse_hovering = false;
-            //current_hover->selected = false;
             current_hover->mouse_exited.EmitSignal();
         }
 
@@ -94,11 +93,15 @@ void SelectionManager::Register(MouseTriggerArea *area) {
 }
 
 void SelectionManager::Unregister(MouseTriggerArea *area) {
+    if(area == current_hover) {
+        current_hover = nullptr;
+    }
     std::erase(areas, area);
 }
 
 
 void SelectionManager::UnregisterAll() {
+    current_hover = nullptr;
     areas.clear();
     selected.DisconnectAll();
     deselected.DisconnectAll();

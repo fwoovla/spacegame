@@ -3,6 +3,7 @@
 #include "../../input/selectionmanager.hpp"
 #include <vector>
 #include <string>
+#include "../locationplan.hpp"
 
 
 struct SiteLocalData {
@@ -15,6 +16,8 @@ struct LocationLocalData {
     int uid = -1;
     std::string name = "no location name";
     int site_amount = 0;
+    LocationPlan location_plan;
+
 
     //std::vector<> sites;
 };

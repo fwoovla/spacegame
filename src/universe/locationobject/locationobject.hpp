@@ -93,5 +93,6 @@ class LocationShip : public LocationObject {
         SelectionManager *selection_manager = nullptr;
 
         Vector2 position;
+        bool can_board_ship = false;
         
 }; 

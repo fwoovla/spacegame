@@ -51,7 +51,7 @@ void LocationSite::DrawOverlay() {
         }
         if(info_area.selected) {
             Vector2 center = GetWorldToScreen2D(site_data->position, g_camera);
-            DrawCircleLinesV(center, site_data->radius * g_camera.zoom, GREEN);
+            DrawCircleLinesV(center, (site_data->radius * 1.25f) * g_camera.zoom, GREEN);
         }
     }
 }
