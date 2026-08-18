@@ -96,6 +96,8 @@ GENERATED += $(OBJDIR)/input.o
 GENERATED += $(OBJDIR)/label.o
 GENERATED += $(OBJDIR)/location.o
 GENERATED += $(OBJDIR)/locationmanager.o
+GENERATED += $(OBJDIR)/locationship.o
+GENERATED += $(OBJDIR)/locationsite.o
 GENERATED += $(OBJDIR)/main.o
 GENERATED += $(OBJDIR)/navigation.o
 GENERATED += $(OBJDIR)/player.o
@@ -142,6 +144,8 @@ OBJECTS += $(OBJDIR)/input.o
 OBJECTS += $(OBJDIR)/label.o
 OBJECTS += $(OBJDIR)/location.o
 OBJECTS += $(OBJDIR)/locationmanager.o
+OBJECTS += $(OBJDIR)/locationship.o
+OBJECTS += $(OBJDIR)/locationsite.o
 OBJECTS += $(OBJDIR)/main.o
 OBJECTS += $(OBJDIR)/navigation.o
 OBJECTS += $(OBJDIR)/player.o
@@ -339,6 +343,12 @@ $(OBJDIR)/location.o: src/universe/location.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/locationmanager.o: src/universe/locationmanager.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/locationship.o: src/universe/locationobject/locationship.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/locationsite.o: src/universe/locationobject/locationsite.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/player.o: src/universe/player.cpp

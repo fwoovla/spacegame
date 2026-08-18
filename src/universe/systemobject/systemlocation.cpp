@@ -7,11 +7,11 @@ SystemLocation::SystemLocation(SystemLocationData *_data) {
     location_data = _data;
     location_data->location_instance = this;
 
-    location_data->detect_radius = location_data->system_radius * DETECT_RADIUS_FACTOR;
+    location_data->detect_radius = location_data->radius * DETECT_RADIUS_FACTOR;
 
     info_area.shape = MouseTriggerArea::CIRCLE;
     info_area.position = location_data->position;
-    info_area.radius = location_data->system_radius;
+    info_area.radius = location_data->radius;
     info_area.priority = PRIORITY_LOCATION;
 
     info_area.body_payload = location_data->body_uid;
@@ -27,7 +27,7 @@ void SystemLocation::Update() {
 }
 
 void SystemLocation::Draw() {
-    DrawCircleV(location_data->position, location_data->system_radius, BROWN);
+    DrawCircleV(location_data->position, location_data->radius, BROWN);
 
     Color color = RED;
 
@@ -35,7 +35,7 @@ void SystemLocation::Draw() {
         color =GREEN;
     }
 
-    DrawCircleLinesV(location_data->position, location_data->system_radius + 10, color);
+    DrawCircleLinesV(location_data->position, location_data->radius + 10, color);
 
 
 
@@ -47,7 +47,7 @@ void SystemLocation::DrawOverlay() {
     if(info_area.mouse_hovering or info_area.selected) {
         
         Vector2 top = location_data->position;
-        top.y -= location_data->system_radius - 20;
+        top.y -= location_data->radius - 20;
         
         top = GetWorldToScreen2D(top, g_camera);
         if(info_area.mouse_hovering) {
@@ -56,7 +56,7 @@ void SystemLocation::DrawOverlay() {
         }
         if(info_area.selected) {
             Vector2 center = GetWorldToScreen2D(location_data->position, g_camera);
-            DrawCircleLinesV(center, location_data->system_radius * g_camera.zoom, GREEN);
+            DrawCircleLinesV(center, location_data->radius * g_camera.zoom, GREEN);
         }
     }
     

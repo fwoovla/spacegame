@@ -226,7 +226,7 @@ void FlightControl::Draw() {
     DrawLabel(speed_label, g_font);
 
     Color fm_color = BLUE;
-    if(entity->ship->ship_data.flight_mode == SYSTEM_FLIGHT_MODE) {
+    if(entity->ship_data.flight_mode == SYSTEM_FLIGHT_MODE) {
         fm_color = ORANGE;
     }
 

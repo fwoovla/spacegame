@@ -17,6 +17,7 @@ struct ShipTemplateData {
     std::string name = "no name";
 
     int value = 0;
+    float radius = 0.0f;
 
     FlightMode system_drive;
     FlightMode planet_drive;
@@ -44,13 +45,15 @@ struct ShipData {
     TargetData target_data;
 
     std::array<FlightMode, 2> flight_modes; 
-    
+
+    float radius = 0.0f;
+  
 };
 
 class Ship {
     
     public:
-        Ship(ShipData _data);
+        Ship(ShipData *_data);
         ~Ship();
         void Update(Vector2 &position);
         void Draw(Vector2 &position, float scale);
@@ -65,7 +68,7 @@ class Ship {
         void AutopilotUpdate(Vector2 position);
         void FlightAssistUpdateUpdate(Vector2 &position);
 
-        ShipData ship_data;
+        ShipData *ship_data;
         FlightMode *current_mode = nullptr;
         
         Autopilot autopilot;

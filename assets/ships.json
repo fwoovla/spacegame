@@ -7,6 +7,7 @@
             "value":100,
             "obstructable": false,
             "render_mode": 1,
+            "radius":20.0,
 
             "flight_modes": [
                 {

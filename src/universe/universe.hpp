@@ -93,3 +93,7 @@ SystemLocationData GenerateSystemLocationData(SystemBodyData *parent);
 
 SystemSiteData GenerateSystemSiteData(SystemLocationData *parent);
 
+LocationMapData GenerateLocationMapData(System *system, int location_uid);
+
+LocationSiteData GenerateLocationSiteData(SystemSiteData *site);
+

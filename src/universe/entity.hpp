@@ -80,7 +80,10 @@ class CreatureEntity : public BaseEntity {
 
         MOVEMENT_TYPE movement_type = MOVEMENT_SHIP;
 
+        ShipData ship_data;
         std::unique_ptr<Ship> ship;
+
+        CharacterData character_data;
         std::unique_ptr<Character> character;
 
         Vector2 velocity = {0,0};

@@ -1,7 +1,7 @@
 #include "characters.hpp"
 #include "../game.h"
 
-Character::Character(CharacterData _data) {
+Character::Character(CharacterData *_data) {
 
     character_data = _data;
 }
@@ -21,27 +21,37 @@ void Character::Update(Vector2 &position) {
 
     Vector2 next_position = position;
 
-    if(character_data.movement.velocity.x != 0 or character_data.movement.velocity.y != 0 ) {
-        next_position = Vector2Add(next_position, character_data.movement.velocity * GetFrameTime());
+    if(character_data->movement.velocity.x != 0 or character_data->movement.velocity.y != 0 ) {
+        next_position = Vector2Add(next_position, character_data->movement.velocity * GetFrameTime());
     }
 
     position = next_position;
 
-    float speed =  character_data.movement.speed;
+    float speed =  character_data->movement.speed;
 
-    if( isnan(character_data.movement.velocity.x) || isnan(character_data.movement.velocity.y)) {character_data.movement.velocity = {0,0};}
+    if( isnan(character_data->movement.velocity.x) || isnan(character_data->movement.velocity.y)) {character_data->movement.velocity = {0,0};}
         
-    character_data.movement.velocity = Vector2Lerp(character_data.movement.velocity, input_dir * speed, .15);
+    character_data->movement.velocity = Vector2Lerp(character_data->movement.velocity, input_dir * speed, .15);
 
-    if(abs(character_data.movement.velocity.x) < 4.0f) {
-        character_data.movement.velocity.x = {0.0};
+    if(abs(character_data->movement.velocity.x) < 4.0f) {
+        character_data->movement.velocity.x = {0.0};
     }
-    if (abs(character_data.movement.velocity.y) < 4.0f) {
-        character_data.movement.velocity.y = {0.0};
+    if (abs(character_data->movement.velocity.y) < 4.0f) {
+        character_data->movement.velocity.y = {0.0};
     }
+/*     printf("character movement\n");
+    printf("input %.1f %.1f  velocity %.1f %.1f  position %.1f %.1f speed %0.4f\n",
+    input_dir.x,
+    input_dir.y,
+    character_data->movement.velocity.x,
+    character_data->movement.velocity.y,
+    position.x,
+    position.y,
+    speed); */
 }
 
 void Character::Draw(Vector2 &position, float scale) {
+
     Vector2 screen = GetWorldToScreen2D(position, g_camera);    
     DrawCircleV(screen, 20 * scale, RAYWHITE);
 

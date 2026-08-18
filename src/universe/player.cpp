@@ -13,14 +13,17 @@ PlayerCharacter::PlayerCharacter(EntityData *_data) {
     y_sort = true;
     is_on_screen = true;
     is_stunned = false;
-    
-    velocity = {0,0};
+
+    CharacterTemplateData char_Tdata = g_character_template_data[CHARACTER_PLAYER];
+    character_data.id = char_Tdata.id;
+    character_data.name = char_Tdata.name;
+    character_data.movement = char_Tdata.movement;
 
     ShipTemplateData ship_Tdata = g_ship_template_data[SHIP_1];
-    ShipData ship_data;
-    ship_data.id = ship_Tdata.id;
+
     ship_data.name = ship_Tdata.name;
     ship_data.value = ship_Tdata.value;
+    ship_data.radius = ship_Tdata.radius;
     ship_data.flight_modes[0] = ship_Tdata.system_drive;
     ship_data.flight_modes[1] = ship_Tdata.planet_drive;
 
@@ -40,7 +43,7 @@ void PlayerCharacter::Update() {
 
 void PlayerCharacter::Draw() {
 
-    DrawCircleV({entity_data->position.x, entity_data->position.y}, 20, PINK);
+    //DrawCircleV({entity_data->position.x, entity_data->position.y}, 20, PINK);
 }
 
 
@@ -76,6 +79,7 @@ void PlayerCharacter::UpdateMovement() {
         ship->Update(entity_data->position);
     } else if (movement_type == MOVEMENT_CHARACTER and character != nullptr) {
         character->Update(entity_data->position);
+        
     }
     else {
         TraceLog(LOG_INFO, "PlayerCharacter::UpdateMovement() movement_type is invalid or ship/character is null");
@@ -115,14 +119,7 @@ void PlayerCharacter::EnterShip() {
     
     character.reset();
 
-    ShipTemplateData ship_Tdata = g_ship_template_data[SHIP_1];
-    ShipData ship_data;
-    ship_data.id = ship_Tdata.id;
-    ship_data.name = ship_Tdata.name;
-    ship_data.flight_modes[SYSTEM_FLIGHT_MODE] = ship_Tdata.system_drive;
-    ship_data.flight_modes[LOCAL_FLIGHT_MODE] = ship_Tdata.planet_drive;
-
-    ship = std::make_unique<Ship>(ship_data);
+    ship = std::make_unique<Ship>(&ship_data);
 
     movement_type = MOVEMENT_SHIP;
 
@@ -132,14 +129,9 @@ void PlayerCharacter::ExitShip() {
 
     ship.reset();
 
-    CharacterTemplateData char_Tdata = g_character_template_data[CHARACTER_PLAYER];
-    CharacterData char_data;
-    char_data.id = char_Tdata.id;
-    char_data.name = char_Tdata.name;
-    char_data.movement = char_Tdata.movement;
-
-    character = std::make_unique<Character>(char_data);
+    character = std::make_unique<Character>(&character_data);
     movement_type = MOVEMENT_CHARACTER;
+    printf("exit ship\n");
 }
 
 

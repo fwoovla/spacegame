@@ -69,6 +69,8 @@ void LoadShipData(std::string file_path) {
 
         new_template.value = e["value"];
 
+        new_template.radius = e["radius"];
+
 
         for(auto &m : e["flight_modes"]) {
 
@@ -94,8 +96,6 @@ void LoadShipData(std::string file_path) {
     }
 
     printf("LOADED: %i SHIPS\n\n", g_ship_template_data.size());
-
-
 
 }
 

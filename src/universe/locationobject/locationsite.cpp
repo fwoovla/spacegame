@@ -1,10 +1,10 @@
-#include "systemobject.hpp"
+#include "locationobject.hpp"
 #include "../../game.h"
 
 
 #define DETECT_RADIUS_FACTOR 5.5f
 
-SystemSite::SystemSite(SystemSiteData *_data) {
+LocationSite::LocationSite(LocationSiteData *_data) {
     site_data = _data;
     site_data->site_instance = this;
 
@@ -27,17 +27,17 @@ SystemSite::SystemSite(SystemSiteData *_data) {
 
 
 
-void SystemSite::Update() {
+void LocationSite::Update() {
 
 }
 
-void SystemSite::Draw() {
-    DrawCircleV(site_data->position, site_data->radius, DARKGRAY);
+void LocationSite::Draw() {
+    DrawCircleV(site_data->position, site_data->radius, BLUE);
 
     
 }
 
-void SystemSite::DrawOverlay() {
+void LocationSite::DrawOverlay() {
 
     if(info_area.mouse_hovering or info_area.selected) {
         
@@ -56,16 +56,18 @@ void SystemSite::DrawOverlay() {
     }
 }
 
-void SystemSite::DrawUI() {
+void LocationSite::DrawUI() {
 
 }
 
-float SystemSite::GetRenderScale() {
+float LocationSite::GetRenderScale() {
     return 1.0f;
 }
 
-void SystemSite::RegisterWithManagers(SelectionManager *sm) {
+void LocationSite::RegisterWithManagers(SelectionManager *sm) {
     selection_manager = sm;
+    printf("LocationSite selection_manager: %p\n",
+       (void*)sm);
     selection_manager->Register(&info_area);
 
 }

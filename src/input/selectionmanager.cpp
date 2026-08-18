@@ -87,16 +87,6 @@ AreaResult SelectionManager::GetSelection(Vector2 mouse_pos) {
 
 
 
-void SelectionManager::DrawUI() {
-    if(selection == nullptr) {
-        return;
-    }
-
-    //printf("selection: %i  %i  %i\n", selection->body_payload, selection->location_payload, selection->landing_site_payload);
-
-}
-
-
 
 void SelectionManager::Register(MouseTriggerArea *area) {
     areas.push_back(area);
@@ -107,3 +97,10 @@ void SelectionManager::Unregister(MouseTriggerArea *area) {
     std::erase(areas, area);
 }
 
+
+void SelectionManager::UnregisterAll() {
+    areas.clear();
+    selected.DisconnectAll();
+    deselected.DisconnectAll();
+
+}

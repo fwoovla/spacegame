@@ -5,19 +5,22 @@
 #include <string>
 
 
-struct SystemSiteLocalData {
+struct SiteLocalData {
     int uid = -1;
     std::string name = "no site name";
 };
 
 
-struct SystemLocationLocalData {
+struct LocationLocalData {
     int uid = -1;
     std::string name = "no location name";
+    int site_amount = 0;
+
+    //std::vector<> sites;
 };
 
 
-struct SystemBodyLocalData {
+struct BodyLocalData {
     int uid = -1;
     std::string name = "no body name";
 };
@@ -33,7 +36,7 @@ enum BODY_TYPE {
 class SystemBody;
 struct SystemBodyData {
     SystemBody *body_instance;
-    SystemBodyLocalData local_data;  //economy population etc...
+    BodyLocalData local_data;  //economy population etc...
 
     int uid = -1;
     int system_uid;
@@ -70,7 +73,7 @@ struct SystemBodyData {
 class SystemLocation;
 struct SystemLocationData {
     SystemLocation *location_instance;
-    SystemLocationLocalData local_data;  //economy population etc...
+    LocationLocalData local_data;  //economy population etc...
 
     int uid = -1;
     int body_uid = -1;
@@ -78,16 +81,18 @@ struct SystemLocationData {
     std::string name = "no location name";
     Vector2 position;
 
-    float system_radius = 0.0f;
-    float location_radius = 0.0f;
+    float radius = 0.0f;
+    //float location_radius = 0.0f;
     float detect_radius = 0.0f;
+
+    std::vector<int> site_uids;
 
 };
 
 class SystemSite;
 struct SystemSiteData {
     SystemSite *site_instance;
-    SystemSiteLocalData local_data;
+    SiteLocalData local_data;
     int uid = -1;
     int location_uid = -1;
     int body_uid = -1;
@@ -95,8 +100,8 @@ struct SystemSiteData {
     std::string name = "no site name";
     Vector2 position;
 
-    float system_radius = 0.0f;
-    float location_radius = 0.0f;
+    float radius = 0.0f;
+    //float location_radius = 0.0f;
     float detect_radius = 0.0f;
 };
 
@@ -122,7 +127,7 @@ class SystemObject  {
         MouseTriggerArea info_area;
         Label info_label;
 
-        SelectionManager *selection_manager = nullptr;
+        SelectionManager *selection_manager;
 
         Signal player_approaching;
         Signal player_departing;

@@ -2,10 +2,10 @@
 #include "ships.hpp"
 
 
-Ship::Ship(ShipData _data) {
+Ship::Ship(ShipData *_data) {
     ship_data = _data;
-    ship_data.flight_mode = SYSTEM_FLIGHT_MODE;
-    current_mode = &ship_data.flight_modes.at(ship_data.flight_mode);
+    ship_data->flight_mode = SYSTEM_FLIGHT_MODE;
+    current_mode = &ship_data->flight_modes.at(ship_data->flight_mode);
     autopilot.flight_mode = current_mode;
 }
 
@@ -26,9 +26,9 @@ void Ship::Update(Vector2 &position) {
     }
     else if(autopilot_on and autopilot.target_data.set) {
         
-        if(Vector2Distance(position, autopilot.target_data.position) < autopilot.target_data.proximity_radius and ship_data.flight_mode != LOCAL_FLIGHT_MODE) {
+        if(Vector2Distance(position, autopilot.target_data.position) < autopilot.target_data.proximity_radius and ship_data->flight_mode != LOCAL_FLIGHT_MODE) {
             SetFlightMode(LOCAL_FLIGHT_MODE);
-            autopilot.enter_local_space.EmitSignal();
+            //autopilot.enter_local_space.EmitSignal();
             //autopilot.state = ACCELERATE;
         }
 
@@ -39,8 +39,8 @@ void Ship::Update(Vector2 &position) {
         FlightInput f_input = autopilot.Update(ap_input, dt);
 
         if(autopilot.state == ARRIVE) {
-            ship_data.flight_mode = LOCAL_FLIGHT_MODE;
-            current_mode =  &ship_data.flight_modes.at(ship_data.flight_mode);
+            ship_data->flight_mode = LOCAL_FLIGHT_MODE;
+            current_mode =  &ship_data->flight_modes.at(ship_data->flight_mode);
             current_mode->rotation = f_input.turn;
             current_mode->velocity = {0,0};
         }
@@ -49,6 +49,7 @@ void Ship::Update(Vector2 &position) {
         current_mode->throttle = f_input.throttle;
 
         if(autopilot.state == DONE) {
+            autopilot.enter_local_space.EmitSignal();
             current_mode->velocity = {0,0};
             current_mode->throttle = 0.0f;
             AutopilotTarget dummy;
@@ -71,7 +72,7 @@ void Ship::Draw(Vector2 &position, float scale) {
 
     forward = Vector2Add(screen, forward);
     
-    DrawCircleV(screen, 20 * scale, PINK);
+    DrawCircleV(screen, ship_data->radius * scale, PINK);
     DrawLineV(screen, forward, RED);
 
     if(autopilot_on) {
@@ -112,13 +113,13 @@ bool Ship::ToggleFlightAssist() {
 }
 
 void Ship::SetFlightMode(FLIGHT_MODE mode) {
-    ship_data.flight_mode = mode;
+    ship_data->flight_mode = mode;
     
-    ship_data.flight_modes[ship_data.flight_mode].velocity = current_mode->velocity;
-    ship_data.flight_modes[ship_data.flight_mode].rotation = current_mode->rotation;
-    ship_data.flight_modes[ship_data.flight_mode].throttle = current_mode->throttle;
+    ship_data->flight_modes[ship_data->flight_mode].velocity = current_mode->velocity;
+    ship_data->flight_modes[ship_data->flight_mode].rotation = current_mode->rotation;
+    ship_data->flight_modes[ship_data->flight_mode].throttle = current_mode->throttle;
 
-    current_mode = &ship_data.flight_modes.at(ship_data.flight_mode);
+    current_mode = &ship_data->flight_modes.at(ship_data->flight_mode);
     autopilot.flight_mode = current_mode;
 }
 

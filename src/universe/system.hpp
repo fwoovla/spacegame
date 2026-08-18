@@ -4,7 +4,7 @@
 #include <vector>
 #include "../FastNoisLite.h"
 #include "systemobject/systemobject.hpp"
-#include"location.hpp"
+//#include "location.hpp"
 #include "../input/selectionmanager.hpp"
 #include "../viewport/viewport.hpp"
 

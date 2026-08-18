@@ -1,28 +1,47 @@
 #pragma once
 
 #include "entity.hpp"
-#include "system.hpp"
 #include <vector>
 #include "../FastNoisLite.h"
+#include "locationobject/locationobject.hpp"
+#include "../input/selectionmanager.hpp"
+#include "../viewport/viewport.hpp"
+//#include "../system.hpp"
 
 
 
+
+
+struct LocationMapData { //this is generated from SystemLocationMapData at runtime
+
+    LocationLocalData *local_data;
+    std::string name = "location name";
+    int uid = -1;
+    int body_uid = -1;
+    int system_uid = -1;
+    float radius = 0.0f;
+
+    std::unordered_map<int, LocationSiteData> sites;
+
+};
 
 
 struct LocationInstanceData {
     std::string name = "location";
     uint64_t seed;
     int uid;
-    float radius = 0.0f;
     std::unordered_map<int, EntityData> entity_data;
     std::vector<std::unique_ptr<CreatureEntity>> entity_list;
 
-    //std::vector<LandingSiteData> landing_sites;
+    std::vector<std::unique_ptr<LocationSite>> site_list;
+    std::unique_ptr<LocationShip> ship;
 };
+
 
 class Location {
     public:
-        void GenerateLocation(SystemLocationData &map_data);
+        Location(LocationMapData &_map_data);
+        void GenerateLocation(SelectionManager *sm);
 
         void Update();
         void Draw();
@@ -31,16 +50,18 @@ class Location {
         void DrawDebug();
         void DrawUI();
 
+        void AddPlayer();
+
         void OnLaunchRequested();
 
         PlayerCharacter * SpawnPlayer(EntityTemplateData &tmpl, int uid, Vector2 position);
-        void Spawnentity(EntityTemplateData &tmpl, int uid, Vector2 position);
-        EntityData GenerateEntityInstance(EntityTemplateData &tmpl, int uid, Vector2 position);
+        LocationSite * SpawnLocationSite(LocationSiteData &data);
 
-        LocationInstanceData location_data;
+        LocationInstanceData location_data; 
+        LocationMapData map_data; 
+        SelectionManager *selection_manager = nullptr;
 
-        //std::vector<LandingSite> landing_sites;
-
+        //Signal landing_requested;
         Signal launch_requested;
 };
 
