@@ -50,10 +50,16 @@ void Ship::Update(Vector2 &position) {
 
         if(autopilot.state == DONE) {
             autopilot.enter_local_space.EmitSignal();
-            current_mode->velocity = {0,0};
-            current_mode->throttle = 0.0f;
-            AutopilotTarget dummy;
-            ToggleAutoPilot(dummy);
+            if(autopilot.landed) {
+                autopilot.landing_at_target.EmitSignal();
+            }
+            else {
+                current_mode->velocity = {0,0};
+                current_mode->throttle = 0.0f;
+                AutopilotTarget dummy;
+                ToggleAutoPilot(dummy);
+            }
+
         }
         
         //printf("ap update?\n");
@@ -92,7 +98,7 @@ bool Ship::ToggleAutoPilot(AutopilotTarget &target) {
     autopilot_on = !autopilot_on;
 
     if(!autopilot_on) {
-        target = {};
+        autopilot.target_data = {};
         return autopilot_on;
     }
 
@@ -100,6 +106,7 @@ bool Ship::ToggleAutoPilot(AutopilotTarget &target) {
     printf("autopilot %i\n", autopilot_on);
 
     if(!target.set) {
+        autopilot.target_data = {};
         autopilot_on = false;
     }
 

@@ -185,9 +185,14 @@ void FlightControl::Update() {
     std::string  speed = TextFormat("%0.4f", entity->ship->current_mode->speed);
     speed_label.text = speed;
 
-    float distance_f = Vector2Distance(entity->entity_data->position, shared_nav_data.target_position);
-    std::string  distance = TextFormat("%0.2f", distance_f);
-    navigation->nav_distance_label.text = distance;
+    if(shared_nav_data.set) {
+        float distance_f = Vector2Distance(entity->entity_data->position, shared_nav_data.target_position);
+        std::string  distance = TextFormat("%0.2f", distance_f);
+        navigation->nav_distance_label.text = distance;
+    }
+    else {
+        navigation->nav_distance_label.text = "N/A";
+    }
 
     for(auto &component : components) {
         component->Update();
@@ -269,6 +274,7 @@ void FlightControl::SetTarget(CreatureEntity *_entity, System *sys, SelectionMan
     navigation->shared_nav_data = &shared_nav_data;
     navigation->system_list.shared_nav_data = &shared_nav_data;
     navigation->system_list.deselect_nav_target.Connect([this]() { OnNavTargetDeSelected();});
+    //navigation->system_list.deselect_nav_target.Connect([this]() { OnNavTargetSelected();});
     target_screen->nav_target_data = &shared_nav_data;
 
     entity->ship->autopilot.enter_local_space.Connect( [this]() { OnEnterTargetSpace();} );
@@ -298,13 +304,16 @@ void FlightControl::OnSystemObjectSelected() {
             shared_nav_data.site = &system->map_data.sites[selected_area->landing_site_payload];
             shared_nav_data.location = &system->map_data.locations[selected_area->location_payload];
             shared_nav_data.body = &system->map_data.bodies[selected_area->body_payload];
+            shared_nav_data.set = true;
         }
         else if(selected_area->location_payload != -1) {
             shared_nav_data.location = &system->map_data.locations[selected_area->location_payload];
             shared_nav_data.body = &system->map_data.bodies[selected_area->body_payload];
+            shared_nav_data.set = true;
         }
         else if(selected_area->body_payload != -1) {
             shared_nav_data.body = &system->map_data.bodies[selected_area->body_payload];
+            shared_nav_data.set = true;
         }
     }
 }
@@ -315,6 +324,7 @@ void FlightControl::OnSystemObjectDeSelected() {
     shared_nav_data.body = nullptr;
     shared_nav_data.location = nullptr;
     shared_nav_data.site = nullptr;
+    shared_nav_data.set = false;
 
 }
 
@@ -339,6 +349,7 @@ void FlightControl::OnNavTargetDeSelected() {
     shared_nav_data.body = nullptr;
     shared_nav_data.location = nullptr;
     shared_nav_data.site = nullptr;
+    shared_nav_data.set = false;
 
     printf("area deselected\n");
 

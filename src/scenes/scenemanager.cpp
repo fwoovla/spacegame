@@ -8,7 +8,12 @@
 std::unique_ptr<BaseScene> g_current_scene;
 
 void SceneManager::Init() {
-    g_current_scene = std::make_unique<TitleScene>();
+    if(g_game_settings.mode == GameSettings::MODE::TEST) {
+        g_current_scene = std::make_unique<LocationTestScene>();
+    }
+    else {
+        g_current_scene = std::make_unique<TitleScene>();
+    }
 
 
 

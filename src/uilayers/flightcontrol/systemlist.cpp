@@ -138,6 +138,7 @@ void SystemList::Select(NavListEntry &entry) {
 
     if(entry.body != nullptr) {
         shared_nav_data->body = entry.body;
+        shared_nav_data->set = true;
         shared_nav_data->body->body_instance->info_area.selected = true;
         shared_nav_data->location = nullptr;
         shared_nav_data->site = nullptr;
@@ -145,6 +146,7 @@ void SystemList::Select(NavListEntry &entry) {
     else if(entry.location != nullptr) {
         shared_nav_data->body = nullptr;
         shared_nav_data->location = entry.location;
+        shared_nav_data->set = true;
         shared_nav_data->location->location_instance->info_area.selected = true;
         shared_nav_data->site = nullptr;
     }
@@ -152,6 +154,7 @@ void SystemList::Select(NavListEntry &entry) {
         shared_nav_data->body = nullptr;
         shared_nav_data->location = nullptr;
         shared_nav_data->site = entry.site;
+        shared_nav_data->set = true;
         shared_nav_data->site->site_instance->info_area.selected = true;
     }
     

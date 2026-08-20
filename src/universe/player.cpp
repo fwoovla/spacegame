@@ -119,6 +119,9 @@ void PlayerCharacter::EnterShip() {
     
     character.reset();
     ship = std::make_unique<Ship>(&ship_data);
+    ship->SetFlightMode(LOCAL_FLIGHT_MODE);
+    ship->ship_data->flight_modes[LOCAL_FLIGHT_MODE].velocity = {0,0};
+    ship->ship_data->flight_modes[LOCAL_FLIGHT_MODE].throttle = 0.0f;
     movement_type = MOVEMENT_SHIP;
     printf("enter ship\n");
 
@@ -128,6 +131,8 @@ void PlayerCharacter::ExitShip() {
 
     ship.reset();
     character = std::make_unique<Character>(&character_data);
+    character->character_data->movement.velocity = {0,0};
+    
     movement_type = MOVEMENT_CHARACTER;
     printf("exit ship\n");
 }

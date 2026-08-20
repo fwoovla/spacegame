@@ -259,8 +259,8 @@ FlightInput Autopilot::Land(const AutopilotInput &input, const float dt) {
     
 
     if( (input.position.x - target_data.position.x) < 10 and (input.position.y - target_data.position.y) < 10) {
-        landing_at_target.EmitSignal();
         state = DONE;
+        landed = true;
     }
     else {
         state = ALIGN;

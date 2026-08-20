@@ -11,6 +11,7 @@ enum SCENE_ID {
     SCENE_SPLASH,
     SCENE_TITLE,
     SCENE_GAME,
+    SCENE_TEST,
 };
 
 class BaseScene {
@@ -84,3 +85,17 @@ class GameScene : public  BaseScene{
 
 };
 
+
+
+class LocationTestScene : public  BaseScene{
+    public:
+        LocationTestScene();
+        ~LocationTestScene() override;
+        SCENE_ID Update() override;
+        void DrawScene() override;
+        void DrawUI() override;
+
+        LocationTestSceneUiLayer ui;
+
+        //Timer timer;
+    };

@@ -9,6 +9,7 @@ struct NavTargetSharedData {
     SystemLocationData *location = nullptr;
     SystemBodyData *body = nullptr;
     Vector2 target_position;
+    bool set = false;
 
 };
 

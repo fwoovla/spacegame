@@ -96,8 +96,11 @@ GENERATED += $(OBJDIR)/input.o
 GENERATED += $(OBJDIR)/label.o
 GENERATED += $(OBJDIR)/location.o
 GENERATED += $(OBJDIR)/locationmanager.o
+GENERATED += $(OBJDIR)/locationplan.o
 GENERATED += $(OBJDIR)/locationship.o
 GENERATED += $(OBJDIR)/locationsite.o
+GENERATED += $(OBJDIR)/locationtestceneuilayer.o
+GENERATED += $(OBJDIR)/locationtestscene.o
 GENERATED += $(OBJDIR)/main.o
 GENERATED += $(OBJDIR)/navigation.o
 GENERATED += $(OBJDIR)/player.o
@@ -144,8 +147,11 @@ OBJECTS += $(OBJDIR)/input.o
 OBJECTS += $(OBJDIR)/label.o
 OBJECTS += $(OBJDIR)/location.o
 OBJECTS += $(OBJDIR)/locationmanager.o
+OBJECTS += $(OBJDIR)/locationplan.o
 OBJECTS += $(OBJDIR)/locationship.o
 OBJECTS += $(OBJDIR)/locationsite.o
+OBJECTS += $(OBJDIR)/locationtestceneuilayer.o
+OBJECTS += $(OBJDIR)/locationtestscene.o
 OBJECTS += $(OBJDIR)/main.o
 OBJECTS += $(OBJDIR)/navigation.o
 OBJECTS += $(OBJDIR)/player.o
@@ -270,6 +276,9 @@ $(OBJDIR)/resource_loader.o: src/resources/resource_loader.cpp
 $(OBJDIR)/gamescene.o: src/scenes/gamescene.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/locationtestscene.o: src/scenes/locationtestscene.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/scenemanager.o: src/scenes/scenemanager.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -327,6 +336,9 @@ $(OBJDIR)/targetscreen.o: src/uilayers/flightcontrol/targetscreen.cpp
 $(OBJDIR)/gameuilayer.o: src/uilayers/gameuilayer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/locationtestceneuilayer.o: src/uilayers/locationtestceneuilayer.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/playerhudlayer.o: src/uilayers/playerhudlayer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -349,6 +361,9 @@ $(OBJDIR)/locationship.o: src/universe/locationobject/locationship.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/locationsite.o: src/universe/locationobject/locationsite.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/locationplan.o: src/universe/locationplan.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/player.o: src/universe/player.cpp

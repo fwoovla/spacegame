@@ -76,6 +76,8 @@ class System {
 
         void SetCameraState(CAMERA_STATE new_state);
 
+        void RegisterWithManagers();
+
 
         SelectionManager *selection_manager = nullptr;
 

@@ -346,15 +346,16 @@ void UniverseManager::LaunchFromLocation() {
     if(!location_active)
         return;
 
-    int uid = g_current_player->entity_data->uid;
+    int player_uid = g_current_player->entity_data->uid;
 
     //Vector2 return_position = g_game_data.transition.return_position;
 
     selection_manager.UnregisterAll();
     // Move entity data back to the system
-    current_system->system_data.entity_data[uid] = std::move(current_location->location_data.entity_data[uid]);
+    current_system->RegisterWithManagers();
+    current_system->system_data.entity_data[player_uid] = std::move(current_location->location_data.entity_data[player_uid]);
 
-    current_location->location_data.entity_data.erase(uid);
+    current_location->location_data.entity_data.erase(player_uid);
 
 
     // Move player entity ownership back
@@ -376,7 +377,7 @@ void UniverseManager::LaunchFromLocation() {
 
     g_current_player = dynamic_cast<PlayerCharacter*>(system_entities.back().get());
 
-    g_current_player->entity_data = &current_system->system_data.entity_data[uid];
+    g_current_player->entity_data = &current_system->system_data.entity_data[player_uid];
 
     g_current_player->entity_data->position = g_game_data.transition.return_position;
 

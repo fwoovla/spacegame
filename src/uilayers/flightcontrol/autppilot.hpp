@@ -92,6 +92,8 @@ class Autopilot {
         float stopping_distance = 0.0f;
         float target_angle = 0.0f;
 
+        bool landed = false;
+
         Signal enter_local_space;
         Signal landing_at_target;
         Signal initiate_autopilot;;

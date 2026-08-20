@@ -33,16 +33,8 @@ void System::GenerateSystem(SelectionManager *sm) {
 
     ResolveParents();
 
+    RegisterWithManagers();
 
-    for(auto &site : system_data.site_list) {
-        site->RegisterWithManagers(selection_manager);
-    }
-    for(auto &location : system_data.location_list) {
-        location->RegisterWithManagers(selection_manager);
-    }
-    for(auto &body : system_data.body_list) {
-        body->RegisterWithManagers(selection_manager);
-    }
 }
 
 
@@ -213,5 +205,18 @@ void System::SetCameraState(CAMERA_STATE new_state) {
     printf("system: camera change %i\n", new_state);
     g_game_data.camera_state = new_state;
     g_game_data.do_camera_transition = true;
+
+}
+
+void System::RegisterWithManagers(){
+    for(auto &site : system_data.site_list) {
+        site->RegisterWithManagers(selection_manager);
+    }
+    for(auto &location : system_data.location_list) {
+        location->RegisterWithManagers(selection_manager);
+    }
+    for(auto &body : system_data.body_list) {
+        body->RegisterWithManagers(selection_manager);
+    }
 
 }

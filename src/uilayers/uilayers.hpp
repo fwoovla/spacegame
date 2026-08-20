@@ -83,3 +83,20 @@ class GameUiLayer : public UILayer {
 
 
 
+class LocationTestSceneUiLayer : public UILayer {
+    public:
+
+    LocationTestSceneUiLayer();
+    ~LocationTestSceneUiLayer() override;
+    void Update() override;
+    void Draw() override;
+
+    Label size_x_label;
+    TextInput size_x_input;
+
+    Label size_y_label;
+    TextInput size_y_input;
+
+    Label grid_size_label;
+    TextInput grid_size_input;
+};

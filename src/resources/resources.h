@@ -61,7 +61,14 @@ struct Line {
 
 
 struct GameSettings {
+    enum MODE {
+        TEST,
+        GAME
+    };
+
     std::string title = "no title";
+    MODE mode = MODE::GAME;
+
 };
 
 extern GameSettings g_game_settings;

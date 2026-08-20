@@ -102,6 +102,11 @@ void SelectionManager::Unregister(MouseTriggerArea *area) {
 
 void SelectionManager::UnregisterAll() {
     current_hover = nullptr;
+    selection = nullptr;
+    for(auto & area : areas) {
+        area->selected = false;
+        area->mouse_hovering = false;
+    }
     areas.clear();
     selected.DisconnectAll();
     deselected.DisconnectAll();

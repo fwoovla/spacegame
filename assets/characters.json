@@ -3,7 +3,7 @@
         {
             "id": "CHARACTER_PLAYER",
             "name": "Player character",
-            "speed":300,
+            "speed":80,
 
             "obstructable": false,
             "render_mode": 1

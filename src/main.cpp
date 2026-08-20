@@ -3,15 +3,21 @@
 
 GameSettings g_game_settings;
 
+
 int main(int argc, char *argv[]){
 
     bool fullscreen = false;
+
     for (int i = 1; i < argc; ++i) {
         std::string param = argv[i];
         printf("arg = %s\n", param.c_str());
         if(param == "-F") {
             fullscreen = true;
         }
+        if(param == "-T") {
+            g_game_settings.mode = GameSettings::MODE::TEST;
+        }
+        printf("mode set to %i", g_game_settings.mode);
     }
 
     if(fullscreen) {SetConfigFlags(FLAG_FULLSCREEN_MODE);}
@@ -24,12 +30,11 @@ int main(int argc, char *argv[]){
 
     SetTargetFPS(60);
 
-    Game game;
+        Game game;
+        game.StartGame();   
+        game.CleanUpGame();
 
-    game.StartGame();
-
-    game.CleanUpGame();
-
+        
     CloseWindow();
 
     return 0;
