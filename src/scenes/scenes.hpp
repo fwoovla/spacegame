@@ -95,7 +95,14 @@ class LocationTestScene : public  BaseScene{
         void DrawScene() override;
         void DrawUI() override;
 
+        void OnSizeXChanged();
+        void OnSizeYChanged();
+        void OnGridSizeChanged();
+
         LocationTestSceneUiLayer ui;
+
+
+        LocationPlan plan;
 
         //Timer timer;
     };

@@ -65,8 +65,30 @@ void DrawTextInput(const TextInput &_TI, const Font &font) {
 
 void UpdateTextInput(TextInput &_TI, char new_input) {
 
+
+
+
+
     if(_TI.text.size() < _TI.max_chars) {
         _TI.text += new_input ;
     }
+
+}
+
+void UpdateTextInput(TextInput &_TI, int new_input) {
+
+
+    if(new_input != 0 and new_input != KEY_BACKSPACE and new_input != KEY_ENTER) {
+            char input_char = static_cast<char>(new_input);
+            printf("input char = %c\n\n", input_char);
+            if(_TI.text.size() < _TI.max_chars) {
+                _TI.text += input_char ;
+            }
+        }
+        if (IsKeyPressed(KEY_BACKSPACE)) {
+            if(_TI.text.size() > 0) {
+                _TI.text.pop_back();
+            }
+        }
 
 }

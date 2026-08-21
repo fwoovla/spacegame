@@ -99,4 +99,10 @@ class LocationTestSceneUiLayer : public UILayer {
 
     Label grid_size_label;
     TextInput grid_size_input;
+
+    Signal size_x_changed;
+    Signal size_y_changed;
+    Signal grid_size_changed;
+
+    LocationPlan *plan;
 };

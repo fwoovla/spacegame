@@ -1,14 +1,40 @@
 #include "scenes.hpp"
 //#include "../app.hpp"
 
+#define ZOOM_STEP 0.05f
+
 
 LocationTestScene::LocationTestScene() {
 
     scene_id = SCENE_TEST;
+
+
+
+    g_viewport.map_width =  10000;
+    g_viewport.map_height =  10000;
+
+    g_camera = {0};
+    //g_camera.target = {-100,-100};
+    g_camera.offset = {g_viewport.resolution.x * 0.5f, g_viewport.resolution.y * 0.5f};
+    g_camera.rotation = 0.0f;
+    g_camera.zoom = 0.5f;
+
+
+    ui.plan = &plan;
+
+    ui.size_x_changed.Connect([this](){OnSizeXChanged();});
+    ui.size_y_changed.Connect([this](){OnSizeYChanged();});
+    ui.grid_size_changed.Connect([this](){OnGridSizeChanged();});
+
 }
 
 
 SCENE_ID LocationTestScene::Update() {
+    float zoom_factor = g_camera.zoom/1;
+
+    float wheel_zoom = GetMouseWheelMove() * (ZOOM_STEP) * zoom_factor;
+    g_camera.zoom += wheel_zoom;
+    g_camera.target = GetMousePosition();
 
     return_scene = SCENE_NONE;
 
@@ -24,6 +50,15 @@ SCENE_ID LocationTestScene::Update() {
 
 void LocationTestScene::DrawScene() {
 
+    BeginMode2D(g_camera);
+
+    for(int y = 0; y <= plan.size_y; y++) {
+        DrawLine(0, y * plan.grid_size, plan.size_x * plan.grid_size, y * plan.grid_size, WHITE);
+        for(int x = 0; x <= plan.size_x; x++) {
+            DrawLine( x * plan.grid_size, 0, x * plan.grid_size, plan.size_y * plan.grid_size, WHITE);
+        }
+    }
+    EndMode2D();
     //printf("drawing test scene!!\n");
 
 }
@@ -40,5 +75,16 @@ LocationTestScene::~LocationTestScene() {
 }
 
 
+void LocationTestScene::OnSizeXChanged() {
+
+}
+
+void LocationTestScene::OnSizeYChanged() {
+
+}
+
+void LocationTestScene::OnGridSizeChanged() {
+
+}
 
 

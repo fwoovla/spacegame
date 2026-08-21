@@ -6,7 +6,7 @@
 #include "locationobject/locationobject.hpp"
 #include "../input/selectionmanager.hpp"
 #include "../viewport/viewport.hpp"
-//#include "../system.hpp"
+#include "locationplan.hpp"
 
 
 

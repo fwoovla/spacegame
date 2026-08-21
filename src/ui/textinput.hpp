@@ -27,3 +27,4 @@ void DrawTextInput(const TextInput &_TI, const Font &font);
 
 void UpdateTextInput(TextInput &_TI, char new_input);
 
+void UpdateTextInput(TextInput &_TI, int new_input);
