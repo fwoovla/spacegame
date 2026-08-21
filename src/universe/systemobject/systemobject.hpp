@@ -3,7 +3,7 @@
 #include "../../input/selectionmanager.hpp"
 #include <vector>
 #include <string>
-#include "../locationplan.hpp"
+//#include "../locationplan.hpp"
 
 
 struct SiteLocalData {
@@ -16,10 +16,9 @@ struct LocationLocalData {
     int uid = -1;
     std::string name = "no location name";
     int site_amount = 0;
-    LocationPlan location_plan;
+    int size = 0;
 
-
-    //std::vector<> sites;
+    std::vector<int> site_uids;
 };
 
 
@@ -74,8 +73,27 @@ struct SystemBodyData {
 };
 
 class SystemLocation;
+
+
+struct LocationPlan {
+    int size_x = 10;
+    int size_y = 10;
+    int grid_size = 20;
+
+    std::unordered_map<int, Vector2> site_locations;
+
+};
+
+
+
+
+
+
+
+
 struct SystemLocationData {
     SystemLocation *location_instance;
+    LocationPlan location_plan;
     LocationLocalData local_data;  //economy population etc...
 
     int uid = -1;
@@ -194,3 +212,9 @@ class SystemSite : public SystemObject {
 
         SystemBody *parent;
 }; 
+
+
+
+
+LocationLocalData GenerateLocationLocalData(int size);
+LocationPlan GenerateNewPlan(LocationLocalData local_data);

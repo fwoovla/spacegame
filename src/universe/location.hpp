@@ -6,7 +6,6 @@
 #include "locationobject/locationobject.hpp"
 #include "../input/selectionmanager.hpp"
 #include "../viewport/viewport.hpp"
-#include "locationplan.hpp"
 
 
 
@@ -15,6 +14,7 @@
 struct LocationMapData { //this is generated from SystemLocationMapData at runtime
 
     LocationLocalData *local_data;
+    LocationPlan *location_plan;
     std::string name = "location name";
     int uid = -1;
     int body_uid = -1;

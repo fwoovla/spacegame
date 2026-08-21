@@ -16,14 +16,16 @@ LocationTestSceneUiLayer::LocationTestSceneUiLayer() {
 
 
 
-    CreateTextInput(size_x_input, start, input_size);
-    CreateLabel(size_x_label, Vector2Add(size_x_input.position, h_spacing), 30, RAYWHITE, "size X");
+    CreateTextInput(size_input, start, input_size);
+    //size_x_input.text = "0";
+    CreateLabel(size_label, Vector2Add(size_input.position, h_spacing), 30, RAYWHITE, "size X");
 
-    CreateTextInput(size_y_input,  Vector2Add(size_x_input.position, v_spacing), input_size);
-    CreateLabel(size_y_label, Vector2Add(size_y_input.position, h_spacing), 30, RAYWHITE, "size Y");
 
-    CreateTextInput(grid_size_input, Vector2Add(size_y_input.position, v_spacing), input_size);
+    CreateTextInput(grid_size_input, Vector2Add(size_input.position, v_spacing), input_size);
+    //grid_size_input.text = "0";
     CreateLabel(grid_size_label, Vector2Add(grid_size_input.position, h_spacing), 30, RAYWHITE, "grid size");
+
+    CreateButton(regenerate_button, top_center, {200, 50}, RED, "regenerate location");
     
 
 
@@ -36,36 +38,34 @@ LocationTestSceneUiLayer::~LocationTestSceneUiLayer() {
 
 void LocationTestSceneUiLayer::Draw() {
 
-    DrawLabelCentered(size_x_label, g_font);
-    DrawTextInput(size_x_input, g_font);
-
-    DrawLabelCentered(size_y_label, g_font);
-    DrawTextInput(size_y_input, g_font);
+    DrawLabelCentered(size_label, g_font);
+    DrawTextInput(size_input, g_font);
 
     DrawLabelCentered(grid_size_label, g_font);
     DrawTextInput(grid_size_input, g_font);
+
+    DrawButton(regenerate_button);
 }
 
 
 void LocationTestSceneUiLayer::Update() {
 
-    if(IsTextInputHovered(size_x_input, g_viewport.scale) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        size_x_input.focussed = true;
+
+    if(IsButtonHovered(regenerate_button, g_viewport.scale) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        regenerate_button.clicked = true;
+        regenerate_button.button_pressed.EmitSignal();
+
+    }
+
+    if(IsTextInputHovered(size_input, g_viewport.scale) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        size_input.focussed = true;
     }
     else {
         if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            size_x_input.focussed = false;
+            size_input.focussed = false;
         }
     }
 
-    if(IsTextInputHovered(size_y_input, g_viewport.scale) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        size_y_input.focussed = true;
-    }
-    else {
-        if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            size_y_input.focussed = false;
-        }
-    }
 
     if(IsTextInputHovered(grid_size_input, g_viewport.scale) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         grid_size_input.focussed = true;
@@ -76,41 +76,23 @@ void LocationTestSceneUiLayer::Update() {
         }
     }
 
-    if(size_x_input.focussed) {
+    if(size_input.focussed) {
         int input_key = g_input.keys_pressed[0];
         int number = input_key - 48;
         if(number < 10 and number >= 0) {
-            UpdateTextInput(size_x_input, input_key);
+            UpdateTextInput(size_input, input_key);
         }
         if(input_key == KEY_BACKSPACE) {
-            UpdateTextInput(size_x_input, input_key);
+            UpdateTextInput(size_input, input_key);
         }
-
-        if(input_key == KEY_ENTER and size_x_input.text != "") {
-            int value = std::stoi(size_x_input.text);
+        if(input_key == KEY_ENTER and size_input.text != "") {
+            int value = std::stoi(size_input.text);
             printf("%i\n", value);
-            size_x_changed.EmitSignal();
-            plan->size_x = value;
+            //plan->size_x = value;
         }
     }
 
-    if(size_y_input.focussed) {
-        int input_key = g_input.keys_pressed[0];
-        int number = input_key - 48;
-        if(number < 10 and number >= 0) {
-            UpdateTextInput(size_y_input, input_key);
-        }
-        if(input_key == KEY_BACKSPACE) {
-            UpdateTextInput(size_y_input, input_key);
-        }
 
-        if(input_key == KEY_ENTER and size_y_input.text != "") {
-            int value = std::stoi(size_y_input.text);
-            printf("%i\n", value);
-            size_y_changed.EmitSignal();
-            plan->size_y = value;
-        }
-    }
 
     if(grid_size_input.focussed) {
         int input_key = g_input.keys_pressed[0];
@@ -120,13 +102,10 @@ void LocationTestSceneUiLayer::Update() {
         }
         if(input_key == KEY_BACKSPACE) {
             UpdateTextInput(grid_size_input, input_key);
-
         }
-
         if(input_key == KEY_ENTER and grid_size_input.text != "") {
             int value = std::stoi(grid_size_input.text);
             printf("%i\n", value);
-            grid_size_changed.EmitSignal();
             plan->grid_size = value;
         }
     }

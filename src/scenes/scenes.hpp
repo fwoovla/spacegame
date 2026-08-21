@@ -89,6 +89,7 @@ class GameScene : public  BaseScene{
 
 class LocationTestScene : public  BaseScene{
     public:
+
         LocationTestScene();
         ~LocationTestScene() override;
         SCENE_ID Update() override;
@@ -99,9 +100,12 @@ class LocationTestScene : public  BaseScene{
         void OnSizeYChanged();
         void OnGridSizeChanged();
 
+        void OnRegenerateLocation();
+
         LocationTestSceneUiLayer ui;
 
 
+        LocationLocalData local_data;
         LocationPlan plan;
 
         //Timer timer;

@@ -91,18 +91,14 @@ class LocationTestSceneUiLayer : public UILayer {
     void Update() override;
     void Draw() override;
 
-    Label size_x_label;
-    TextInput size_x_input;
-
-    Label size_y_label;
-    TextInput size_y_input;
+    Label size_label;
+    TextInput size_input;
 
     Label grid_size_label;
     TextInput grid_size_input;
 
-    Signal size_x_changed;
-    Signal size_y_changed;
-    Signal grid_size_changed;
+    Button regenerate_button;
+
 
     LocationPlan *plan;
 };

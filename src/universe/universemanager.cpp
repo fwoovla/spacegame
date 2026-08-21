@@ -544,10 +544,15 @@ SystemLocationData GenerateSystemLocationData(SystemBodyData *body) {
     data.position = location_pos;
 
 
+    
+
+    int size = GetRandomValue(5, 1000);
+    data.local_data = GenerateLocationLocalData(size);
+
     data.local_data.uid = data.uid;
     data.local_data.name = data.name;
-    data.local_data.site_amount = 2;//GetRandomValue(0,2);
-    data.local_data.location_plan = GenerateNewPlan();
+
+    data.location_plan = GenerateNewPlan(data.local_data);
 
     printf("location data created   name: %s\n", data.name.c_str());
     return data;

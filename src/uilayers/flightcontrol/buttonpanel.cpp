@@ -1,5 +1,5 @@
 #include "flightcontrol.hpp"
-#include "../../game.h"
+#include "../../input/input.hpp"
 
 ButtonPanel::ButtonPanel() {
 
