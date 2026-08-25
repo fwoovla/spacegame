@@ -16,7 +16,9 @@ Ship::~Ship() {
 void Ship::Update(Vector2 &position) {
     float dt = GetFrameTime();
 
-    if(flight_assist_on) {
+    current_mode->speed = Vector2Length(current_mode->velocity);
+
+    if(flight_assist_on and !g_input.in_use) {
         float target_angle = GetAngleFromTo(position, g_input.world_mouse_position);
         current_mode->rotation = RotateTowardsRad(current_mode->rotation, target_angle, PI, dt );
 
@@ -59,11 +61,7 @@ void Ship::Update(Vector2 &position) {
                 AutopilotTarget dummy;
                 ToggleAutoPilot(dummy);
             }
-
         }
-        
-        //printf("ap update?\n");
-
     }
     else {
         ManualFlightInput(dt);
@@ -85,8 +83,6 @@ void Ship::Draw(Vector2 &position, float scale) {
         DrawLineV(screen, Vector2Add(screen, Vector2Scale(autopilot.to_target, 100.0f)), ORANGE);
         DrawLineV(screen, Vector2Add(screen, Vector2Scale(current_mode->velocity, 0.1f)), GREEN);
         DrawCircleV(Vector2Add(screen, Vector2Scale(autopilot.target_velocity, 0.1f)), 5, BLUE);
-        //DrawCircleV(Vector2Add(screen, Vector2Scale(autopilot.velocity_error, 0.1f)), 5, PURPLE);
-        //DrawCircleV(Vector2Add(screen, Vector2Scale(autopilot.lateral_velocity, 0.1f)), 5, LIME);
         DrawCircleV(Vector2Add(screen, Vector2Scale(autopilot.to_target, current_mode->throttle * 100.0f)), 5, MAGENTA);
 
     }
@@ -95,19 +91,22 @@ void Ship::Draw(Vector2 &position, float scale) {
 
 
 bool Ship::ToggleAutoPilot(AutopilotTarget &target) {
-    autopilot_on = !autopilot_on;
+    
+    
+    autopilot.SetTarget(target);
 
-    if(!autopilot_on) {
-        autopilot.target_data = {};
+    if(autopilot_on){
+        autopilot_on = false;
         return autopilot_on;
     }
-
-    autopilot.SetTarget(target);
-    printf("autopilot %i\n", autopilot_on);
+    //printf("autopilot %i\n", autopilot_on);
 
     if(!target.set) {
         autopilot.target_data = {};
         autopilot_on = false;
+    }
+    else {
+        autopilot_on = true;
     }
 
     return autopilot_on;
@@ -139,6 +138,9 @@ void Ship::FlightAssistUpdateUpdate(Vector2 &position) {
 }
 
 void Ship::ManualFlightInput(float dt) {
+/*     if(g_input.in_use) {
+        return;
+    } */
     
 
     if(g_input.key_left) current_mode->rotation -= current_mode->turn_speed * dt;

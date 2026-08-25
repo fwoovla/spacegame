@@ -136,12 +136,24 @@ void System::DrawUI() {
 }
 
 
-PlayerCharacter * System::SpawnPlayer(EntityTemplateData &tmpl, int uid, Vector2 position) {
+PlayerCharacter * System::SpawnNewPlayer(EntityTemplateData &tmpl, int uid, Vector2 position) {
 
     EntityData entity_data = GenerateEntityInstance(tmpl, uid, position);
     system_data.entity_data[entity_data.uid] = entity_data;
 
     std::unique_ptr<PlayerCharacter> player = std::make_unique<PlayerCharacter>(&system_data.entity_data[entity_data.uid]);
+    PlayerCharacter * ptr = player.get();
+    system_data.entity_list.push_back(std::move(player));
+
+    return ptr;
+}
+
+
+PlayerCharacter * System::SpawnPlayer(EntityData data, Vector2 position) {
+
+    system_data.entity_data[data.uid] = data;
+
+    std::unique_ptr<PlayerCharacter> player = std::make_unique<PlayerCharacter>(&system_data.entity_data[data.uid]);
     PlayerCharacter * ptr = player.get();
     system_data.entity_list.push_back(std::move(player));
 

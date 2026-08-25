@@ -31,11 +31,13 @@ void SystemSite::Update() {
 
 }
 
+
+
 void SystemSite::Draw() {
     DrawCircleV(site_data->position, site_data->radius, DARKGRAY);
 
-    
 }
+
 
 void SystemSite::DrawOverlay() {
 
@@ -51,7 +53,7 @@ void SystemSite::DrawOverlay() {
         }
         if(info_area.selected) {
             Vector2 center = GetWorldToScreen2D(site_data->position, g_camera);
-            DrawCircleLinesV(center, site_data->radius * g_camera.zoom, GREEN);
+            DrawCircleLinesV(center, site_data->radius + 20 * g_camera.zoom, GREEN);
         }
     }
 }
@@ -60,12 +62,13 @@ void SystemSite::DrawUI() {
 
 }
 
+
 float SystemSite::GetRenderScale() {
     return 1.0f;
 }
 
+
 void SystemSite::RegisterWithManagers(SelectionManager *sm) {
     selection_manager = sm;
     selection_manager->Register(&info_area);
-
 }

@@ -12,7 +12,7 @@ void Location::GenerateLocation(SelectionManager *sm) {
 
     selection_manager = sm;
 
-    printf("generating system %i with  %i sites\n", map_data.uid, map_data.sites.size());
+    printf("generating location %i with  %i sites\n", map_data.uid, map_data.sites.size());
 
     for(auto &site : map_data.sites) {
         SpawnLocationSite(site.second);
@@ -49,8 +49,29 @@ void Location::Draw() {
 
 void Location::DrawWorld() {
 
-    DrawCircleV({0,0}, map_data.radius, DARKGRAY);
 
+    int grid_size = map_data.location_plan->grid_size * 10; 
+    DrawRectangle(0, 0, map_data.location_plan->size_x * grid_size, map_data.location_plan->size_y * grid_size, DARKGRAY);
+
+    if(g_game_data.show_debug) {
+
+        
+        float size_x = map_data.location_plan->size_x;
+        float size_y = map_data.location_plan->size_y;
+
+        for(int y = 0; y <= size_y; y++) {
+            DrawLine(0, (y * grid_size), (size_x * grid_size ), (y * grid_size), WHITE);
+            for(int x = 0; x <= size_x; x++) {
+                DrawLine( (x * grid_size), 0, (x * grid_size), (size_y * grid_size), WHITE);
+            }
+        }
+        
+        for(auto &[uid, pos] : map_data.location_plan->site_locations) {
+            DrawRectangle(pos.x * 10, pos.y * 10, grid_size, grid_size, DARKBLUE);
+        }
+    }
+
+    
     for(auto &site : location_data.site_list) {
         site->Draw();
     }
@@ -65,7 +86,6 @@ void Location::DrawWorld() {
 
 void Location::DrawOverlay() {
 
-    
     for(auto &site : location_data.site_list) {
         site->DrawOverlay();
     }
@@ -87,6 +107,7 @@ void Location::DrawUI() {
         entity->DrawUI();
     }
 }
+
 
 
 void Location::OnLaunchRequested() {

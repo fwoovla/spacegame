@@ -100,7 +100,7 @@ void LocationTestScene::OnRegenerateLocation() {
     printf("regenerate location\n");
 
     //int size = std::stoi(ui.size_input.text);
-    int size = GetRandomValue(5, 1000);
+    int size = GetRandomValue(1, 10) * 10;
     local_data = GenerateLocationLocalData(size);
     
     plan = GenerateNewPlan(local_data);

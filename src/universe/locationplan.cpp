@@ -29,19 +29,21 @@ LocationPlan GenerateNewPlan(LocationLocalData local_data) {
 
     new_plan.size_x = x;
     new_plan.size_y = y;
-    new_plan.grid_size = 50;
+    new_plan.grid_size = 32;
+    new_plan.px_offset.x = new_plan.size_x * new_plan.grid_size * 0.5f; 
+    new_plan.px_offset.y = new_plan.size_y * new_plan.grid_size * 0.5f;
+
+    std::vector<int> temp_grid;
+    temp_grid.resize(new_plan.size_x * new_plan.size_y, 0);
 
     for(int uid : local_data.site_uids) {
-        int _size = new_plan.size_y * new_plan.size_x;
-        int index = GetRandomValue(0, _size - 1);
         Vector2 pos;
-        pos.x = index % new_plan.size_y;
-        pos.y = index / new_plan.size_y;
+        pos.x = GetRandomValue(0, (new_plan.size_x - 2) - 1) + 1;
+        pos.y = GetRandomValue(0, (new_plan.size_y - 2) - 1) + 1;
 
-        new_plan.site_locations[uid] = pos;
-        printf("new site %i  at grid %0.1f  %0.1f\n", uid, pos.x, pos.y);
+        new_plan.site_locations[uid] = pos *  new_plan.grid_size;
+        printf("new site %i  at grid %0.1f  %0.1f\n", uid, pos.x, pos.y); 
     }
-
 
     return new_plan;
 }

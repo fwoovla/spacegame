@@ -67,7 +67,8 @@ class System {
         void DrawDebug();
         void DrawUI();
 
-        PlayerCharacter * SpawnPlayer(EntityTemplateData &tmpl, int uid, Vector2 position);
+        PlayerCharacter * SpawnNewPlayer(EntityTemplateData &tmpl, int uid, Vector2 position);
+        PlayerCharacter * SpawnPlayer(EntityData data, Vector2 position);
         SystemBody * SpawnSystemBody(SystemBodyData &data);
         SystemLocation * SpawnSystemLocation(SystemLocationData &data);
         SystemSite * SpawnSystemSite(SystemSiteData &data);
@@ -86,6 +87,8 @@ class System {
         SystemMapData &map_data;
 
         Signal landing_requested;
+        Signal system_travel_requested;
+
 };
 
 

@@ -34,6 +34,8 @@ struct PlayerInput {
     bool key_switch_weapon;
     bool key_reload;
 
+    bool in_use = false;
+
     KeyboardKey keys_pressed[10];
 };
 

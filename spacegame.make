@@ -103,6 +103,7 @@ GENERATED += $(OBJDIR)/locationtestceneuilayer.o
 GENERATED += $(OBJDIR)/locationtestscene.o
 GENERATED += $(OBJDIR)/main.o
 GENERATED += $(OBJDIR)/navigation.o
+GENERATED += $(OBJDIR)/navinfopanel.o
 GENERATED += $(OBJDIR)/player.o
 GENERATED += $(OBJDIR)/playerhudlayer.o
 GENERATED += $(OBJDIR)/render.o
@@ -127,6 +128,7 @@ GENERATED += $(OBJDIR)/timer.o
 GENERATED += $(OBJDIR)/titlescene.o
 GENERATED += $(OBJDIR)/titleuilayer.o
 GENERATED += $(OBJDIR)/universemanager.o
+GENERATED += $(OBJDIR)/universemap.o
 GENERATED += $(OBJDIR)/utils.o
 GENERATED += $(OBJDIR)/viewport.o
 OBJECTS += $(OBJDIR)/areas.o
@@ -154,6 +156,7 @@ OBJECTS += $(OBJDIR)/locationtestceneuilayer.o
 OBJECTS += $(OBJDIR)/locationtestscene.o
 OBJECTS += $(OBJDIR)/main.o
 OBJECTS += $(OBJDIR)/navigation.o
+OBJECTS += $(OBJDIR)/navinfopanel.o
 OBJECTS += $(OBJDIR)/player.o
 OBJECTS += $(OBJDIR)/playerhudlayer.o
 OBJECTS += $(OBJDIR)/render.o
@@ -178,6 +181,7 @@ OBJECTS += $(OBJDIR)/timer.o
 OBJECTS += $(OBJDIR)/titlescene.o
 OBJECTS += $(OBJDIR)/titleuilayer.o
 OBJECTS += $(OBJDIR)/universemanager.o
+OBJECTS += $(OBJDIR)/universemap.o
 OBJECTS += $(OBJDIR)/utils.o
 OBJECTS += $(OBJDIR)/viewport.o
 
@@ -324,6 +328,9 @@ $(OBJDIR)/flightcontrol.o: src/uilayers/flightcontrol/flightcontrol.cpp
 $(OBJDIR)/navigation.o: src/uilayers/flightcontrol/navigation.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/navinfopanel.o: src/uilayers/flightcontrol/navinfopanel.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/shipinfo.o: src/uilayers/flightcontrol/shipinfo.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -331,6 +338,9 @@ $(OBJDIR)/systemlist.o: src/uilayers/flightcontrol/systemlist.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/targetscreen.o: src/uilayers/flightcontrol/targetscreen.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/universemap.o: src/uilayers/flightcontrol/universemap.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/gameuilayer.o: src/uilayers/gameuilayer.cpp

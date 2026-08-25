@@ -9,6 +9,7 @@ struct NavTargetSharedData {
     SystemLocationData *location = nullptr;
     SystemBodyData *body = nullptr;
     Vector2 target_position;
+    Vector2 this_position;
     bool set = false;
 
 };
@@ -24,6 +25,7 @@ struct PanelButton {
     int button_index = 0;
     KeyboardKey key;
     std::string payload_s = "";
+    bool toggled = false;
 };
 
 class ButtonPanel : public UILayer {
@@ -63,8 +65,8 @@ class SystemList {
     
     SystemList() = default;
     SystemList(Vector2 list_positon);
-    void Update( );
-    void Draw(Vector2 list_position);
+    void Update(bool focussed);
+    void Draw(Vector2 list_position, bool focussed);
     void MakeListAll( );
     void MakeListBodies( );
     void MakeListLocations( );
@@ -72,7 +74,7 @@ class SystemList {
 
     void Select(NavListEntry &entry);
 
-    NavTargetSharedData *shared_nav_data = nullptr;
+    NavTargetSharedData *shared_list_data = nullptr;
 
     std::vector<NavListEntry> master_nav_list;
     std::vector<NavListEntry> display_nav_list;
@@ -89,12 +91,57 @@ class SystemList {
     int scroll_index = 0;
     int visible_count = 8;
 
-    Signal set_new_target;
-    Signal deselect_nav_target;
+    Signal select_item;
+    //Signal ;
+};
+
+class NavInfoPanel {
+    public:
+    NavInfoPanel() = default;
+    NavInfoPanel(Vector2 position);
+    void Draw();
+    void UpdateInfo(); 
+
+    //NavTargetSharedData *shared_nav_data;
+    NavTargetSharedData *shared_list_data = nullptr;
+
+    Label info_label;
+    Label distance_label;
+    
 };
 
 
+struct UniverseMapEntry {
+    Label label;
+    SystemMapData *system = nullptr;
+    Vector2 position = {0, 0};
+};
 
+class UniverseMap {
+    public:
+    UniverseMap() = default;
+    UniverseMap(Rectangle _bounds);
+    void Draw();
+    void Update(); 
+
+    Rectangle bounds;
+    Vector2 center;
+    Rectangle universe_frame;
+    Rectangle list_frame;
+
+    std::vector<Vector2> stars;
+
+    std::vector<UniverseMap> system_entries;
+
+    std::unordered_map<int, SystemMapData> *map_data;
+
+    Button close_button;
+    Signal close_universe_map;
+
+    //Label info_label;
+    //Label distance_label;
+    
+};
 
 //========================= components =========================
 
@@ -120,6 +167,18 @@ class FlightComponent : public UILayer {
 
 
 class Navigation : public FlightComponent{
+    
+    enum NAV_COLUMN{
+        STATE,
+        LIST,
+        INFO,
+    };
+
+    enum NAV_STATE {
+        SYSTEM,
+        UNIVERSE
+    };
+    
     public:
     Navigation(Rectangle min, Rectangle max);
     ~Navigation() override;
@@ -130,10 +189,13 @@ class Navigation : public FlightComponent{
     void CreateSystemList(System *system);
 
     void OnTopPanelButtonPressed();
+
     //void OnNewNavTareget();
-    //void SelectSystemObject();
+    void OnCloseUniverseMap();
+    void OnSelectItem();
 
     NavTargetSharedData *shared_nav_data = nullptr;
+    NavTargetSharedData list_data;
 
     Label nav_target_label;
     Label nav_distance_label;
@@ -141,8 +203,22 @@ class Navigation : public FlightComponent{
     ButtonPanel top_panel;
     SharedButtonPayload top_panel_payload;
     SystemList system_list;
+    NavInfoPanel info_panel;
+    Button nav_button;
+    UniverseMap universe_map;
 
-    Signal system_object_selected;
+    std::array <Button, 2> state_buttons;
+    int state_button_index = 0;
+    //Button system_button;
+    //Button universe_button;
+
+    Signal set_nav_target;
+    Signal deselect_nav_target;
+
+    Navigation::NAV_COLUMN column = LIST;
+    Navigation::NAV_STATE nav_state = SYSTEM;
+
+    //Signal system_object_selected;
 };
 
 
@@ -167,7 +243,7 @@ class TargetScreen : public FlightComponent {
     void Update() override;
     void Draw() override;
 
-    NavTargetSharedData *nav_target_data = nullptr;
+    NavTargetSharedData *target_data = nullptr;
 
     Label target_label;
     Label distance_label;
@@ -184,23 +260,27 @@ class FlightControl : public UILayer {
         void Update() override;
         void Draw() override;
 
-        void SetTarget(CreatureEntity *_entity, System *sys, SelectionManager *sm);
+        void SetTarget(CreatureEntity *_entity, System *sys, SelectionManager *sm, std::unordered_map<int, SystemMapData> *_map_data);
         void ClearTarget();
 
-        void OnSystemObjectSelected();
-        void OnSystemObjectDeSelected();
+        void OnTargetSelected();
+        void OnTargetDeSelected();
         void OnNavTargetDeSelected();
+        void OnNavTargetSelected();
         void OnEnterTargetSpace();
         void OnLandingAtTarget();
         void OnAutopilotInitiated();
+        void SetAutopilotTarget();
 
 
 
         NavTargetSharedData shared_nav_data;
+        NavTargetSharedData shared_target_data;
 
         CreatureEntity *entity; //this is the entity controlling the ship
         SelectionManager *selection_manager = nullptr; //gets area info and signals out
         System *system = nullptr; // system.map_data has all the data
+        std::unordered_map<int, SystemMapData> *map_data; 
 
         Navigation *navigation;
         TargetScreen *target_screen;

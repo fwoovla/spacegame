@@ -54,9 +54,10 @@ void LocationTestSceneUiLayer::Update() {
     if(IsButtonHovered(regenerate_button, g_viewport.scale) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         regenerate_button.clicked = true;
         regenerate_button.button_pressed.EmitSignal();
-
+        
     }
 
+/*
     if(IsTextInputHovered(size_input, g_viewport.scale) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         size_input.focussed = true;
     }
@@ -108,5 +109,5 @@ void LocationTestSceneUiLayer::Update() {
             printf("%i\n", value);
             plan->grid_size = value;
         }
-    }
+    } */
 }

@@ -9,6 +9,11 @@ SelectionManager::SelectionManager() {
 }
 
 void SelectionManager::Update() {
+
+    if(g_input.in_use) {
+        return;
+    }
+
     Vector2 mouse_pos = g_input.world_mouse_position;
 
     AreaResult result = GetSelection(mouse_pos);

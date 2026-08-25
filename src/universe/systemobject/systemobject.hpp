@@ -72,24 +72,21 @@ struct SystemBodyData {
     
 };
 
-class SystemLocation;
 
 
 struct LocationPlan {
     int size_x = 10;
     int size_y = 10;
-    int grid_size = 20;
+    int grid_size = 32;
 
+    Vector2 px_offset;
+    
     std::unordered_map<int, Vector2> site_locations;
-
+    
 };
 
 
-
-
-
-
-
+class SystemLocation;
 
 struct SystemLocationData {
     SystemLocation *location_instance;

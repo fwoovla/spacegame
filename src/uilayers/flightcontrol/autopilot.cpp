@@ -16,8 +16,6 @@ FlightInput Autopilot::Update(const AutopilotInput &input, const float dt) {
         distance = Vector2Distance(input.position, target_data.position);
         deceleration = flight_mode->reverse_thrust;
 
-        flight_mode->speed = Vector2Length(flight_mode->velocity);
-
         to_target = Vector2Normalize(target_data.position - input.position);
 
         closing_speed = Vector2DotProduct(input.velocity, to_target);

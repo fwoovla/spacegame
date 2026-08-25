@@ -50,7 +50,11 @@ void HandleCamera() {
     float zoom_factor = g_camera.zoom/1;
 
     float wheel_zoom = g_input.mouse_wheel * (ZOOM_STEP) * zoom_factor;
-    g_camera.zoom += wheel_zoom;
+
+    if(!g_input.in_use) {
+        g_camera.zoom += wheel_zoom;
+    }
+    
     if(wheel_zoom != 0.0f) {
         g_game_data.do_camera_transition = false;
     }
@@ -115,8 +119,8 @@ void HandleCamera() {
     
     new_camera_target = Vector2Add(new_camera_target, mouse_offset);
 
-    new_camera_target.x = std::clamp(new_camera_target.x, 0.0f, (float)g_viewport.map_width);
-    new_camera_target.y = std::clamp(new_camera_target.y, 0.0f, (float)g_viewport.map_height);
+    //new_camera_target.x = std::clamp(new_camera_target.x, 0.0f, (float)g_viewport.map_width);
+    //new_camera_target.y = std::clamp(new_camera_target.y, 0.0f, (float)g_viewport.map_height);
 
     float lerp_factor = 0.1f;
     

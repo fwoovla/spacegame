@@ -19,6 +19,12 @@ void ButtonPanel::Update() {
 
 void ButtonPanel::Draw() {
     for(PanelButton &p_button : buttons) {
+        if(p_button.toggled) {
+            p_button.button.hovered = true;
+        }
+        else {
+            p_button.button.hovered = false;
+        }
         DrawButton(p_button.button);  //the easiest button to button?
     }
 }

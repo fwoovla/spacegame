@@ -53,7 +53,7 @@ void Character::Update(Vector2 &position) {
 void Character::Draw(Vector2 &position, float scale) {
 
     Vector2 screen = GetWorldToScreen2D(position, g_camera);    
-    DrawCircleV(screen, 20 * scale, RAYWHITE);
+    DrawCircleV(screen, 16 * scale, RAYWHITE);
 
 }
 

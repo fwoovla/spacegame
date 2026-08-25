@@ -44,14 +44,15 @@ class UniverseManager {
         void DrawDebug();
         void DrawUI();
 
+
+        void OnTravelToSystemRequested();
+        void TravelToSystem();
+
         void OnLandAtLocationRequested();
         void LandAtLocation();
 
         void LaunchFromLocationRequested();
         void LaunchFromLocation();
-
-        void TravelToSystemRequested();
-        void TravelToSystem();
 
         int SelectRandomSystem();
         
@@ -91,9 +92,9 @@ SystemBodyData GenerateSystemBodyData(BODY_TYPE type, int layer, float layer_del
 
 SystemLocationData GenerateSystemLocationData(SystemBodyData *parent);
 
-SystemSiteData GenerateSystemSiteData(SystemLocationData *parent);
+SystemSiteData GenerateSystemSiteData(SystemLocationData *parent, int uid);
 
 LocationMapData GenerateLocationMapData(System *system, int location_uid);
 
-LocationSiteData GenerateLocationSiteData(SystemSiteData *site);
+LocationSiteData GenerateLocationSiteData(SystemSiteData *site, Vector2 position);
 

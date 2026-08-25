@@ -114,7 +114,7 @@ void GameScene::OnWorldTick() {
 
 
 void GameScene::OnEnterShip() {
-    universe_manager.hud.SetTarget(g_current_player, universe_manager.current_system.get(), &universe_manager.selection_manager);
+    universe_manager.hud.SetTarget(g_current_player, universe_manager.current_system.get(), &universe_manager.selection_manager, &universe_manager.universe_data.map_data);
 }
 
 void GameScene::OnExitShip() {

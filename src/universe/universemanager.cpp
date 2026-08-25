@@ -5,7 +5,7 @@
 void UniverseManager::CreateUniverse(std::string player_name) {
     printf("creating a  new universe for player:   %s\n", player_name.c_str());
 
-    universe_data.max_systems = 1;
+    universe_data.max_systems = 100;
 
     OutlineUniverse();
 
@@ -13,15 +13,15 @@ void UniverseManager::CreateUniverse(std::string player_name) {
 
     GenerateNewSystem(selected_system);
 
-    g_current_player = current_system->SpawnPlayer(g_entity_template_data[ENTITY_PLAYER], 0, current_system->system_data.star_position); 
+    g_current_player = current_system->SpawnNewPlayer(g_entity_template_data[ENTITY_PLAYER], 0, current_system->system_data.star_position); 
 
     if(g_current_player != nullptr) {
     }
     else {
-        printf("could not find system\n");
+        printf("could not find player\n");
     }
 
-    hud.SetTarget(g_current_player, current_system.get(), &selection_manager);
+    hud.SetTarget(g_current_player, current_system.get(), &selection_manager, &universe_data.map_data);
     //hud.selection_manager = &selection_manager;
 }
 
@@ -39,13 +39,14 @@ void UniverseManager::OutlineUniverse() {
         
         new_map_data.star_position = {new_map_data.radius, new_map_data.radius};
 
-        new_map_data.map_position = {0,0};
+        new_map_data.map_position = { (float)GetRandomValue(-100000, 100000), (float)GetRandomValue(-100000, 100000) };
+
 
         SystemBodyData star_body_data = GenerateSystemStarData(new_map_data);
         new_map_data.bodies[star_body_data.uid] = star_body_data;
 
         int p_tally = 0;
-        for(int o_layer = 5; o_layer < star_body_data.orbital_layer_count; o_layer++) {
+        for(int o_layer = 6; o_layer < star_body_data.orbital_layer_count; o_layer++) {
 
             if(GetRandomValue(0,100) > 75 and p_tally < star_body_data.orbital_body_count) {
                                 
@@ -98,7 +99,7 @@ void UniverseManager::OutlineUniverse() {
             star_body_data.orbital_layer_delta 
         );
     }
-    printf("\n\nEND OUTLINING UNIVERSE\n\n");
+    printf("\n\nEND OUTLINING UNIVERSE\n-- %i systems --\n\n\n", universe_data.map_data.size());
 }
 
 
@@ -132,8 +133,8 @@ void UniverseManager::GenerateSites(SystemMapData &map_data) {
         //printf("locations added name: %s\n", body.name.c_str());
     }
     for (SystemLocationData *location : locations) {
-        for(int s = 0; s < location->local_data.site_amount; s++) {
-            SystemSiteData new_site = GenerateSystemSiteData(location);
+        for(int uid : location->local_data.site_uids) {
+            SystemSiteData new_site = GenerateSystemSiteData(location, uid);
             map_data.sites[new_site.uid] = new_site;
             location->site_uids.push_back(new_site.uid);
         }
@@ -143,19 +144,20 @@ void UniverseManager::GenerateSites(SystemMapData &map_data) {
 
 
 void UniverseManager::GenerateNewSystem(int system_uid) {
+    current_system.reset();
     printf("generating  system     %i\n", system_uid);
 
     current_system = std::make_unique<System>(universe_data.map_data[system_uid]);
 
     current_system->GenerateSystem(&selection_manager);
     current_system->landing_requested.Connect( [&]() { OnLandAtLocationRequested();});
+    current_system->system_travel_requested.Connect( [&]() { OnTravelToSystemRequested();});
 }
 
 
 
-
-
 void UniverseManager::Update() {
+    if(current_system == nullptr) { return;}
 
     if(location_ready_to_destroy) {
         location_ready_to_destroy = false;
@@ -168,6 +170,18 @@ void UniverseManager::Update() {
         LandAtLocation();
         return;
     }
+
+
+    if(system_ready_to_load) {
+        system_ready_to_load = false;
+        TravelToSystem();
+        return;
+    }
+
+
+
+
+
 
     switch(location_active)
     {
@@ -262,12 +276,46 @@ void UniverseManager::DrawUI() {
 
 
 
+void UniverseManager::OnTravelToSystemRequested() {
+    system_ready_to_load = true;
+    printf("going to new system???\n");
+}
+
+void UniverseManager::TravelToSystem() {
+
+    selection_manager.UnregisterAll();
+
+    int player_uid = g_current_player->entity_data->uid; 
+    //get data
+    EntityData data_to_move = current_system->system_data.entity_data[player_uid];
+
+    current_system->system_data.entity_data.clear();
+
+    int selected_system = SelectRandomSystem();
+    GenerateNewSystem(selected_system);
+
+
+    g_current_player = current_system->SpawnPlayer(data_to_move, current_system->system_data.star_position); 
+
+    if(g_current_player != nullptr) {
+    }
+    else {
+        printf("could not find player\n");
+    }
+
+    hud.SetTarget(g_current_player, current_system.get(), &selection_manager, &universe_data.map_data);
+
+
+
+    printf("going to new system!!!!\n");
+}
+
+
 void UniverseManager::OnLandAtLocationRequested() {
     if(location_active) {
         return;
     }
     location_ready_to_load = true;
-    //LandAtLocation();
 }
 
 
@@ -403,15 +451,6 @@ void UniverseManager::LaunchFromLocation() {
 
 
 
-void UniverseManager::TravelToSystemRequested() {
-
-}
-
-void UniverseManager::TravelToSystem() {
-
-}
-
-
 
 int UniverseManager::SelectRandomSystem() {
 
@@ -465,11 +504,11 @@ SystemBodyData GenerateSystemStarData(SystemMapData &map_data) {
 
     instance_data.name = "star " + std::to_string(uid);
     instance_data.modulate = ORANGE;
-    instance_data.radius = 6000.0f;
+    instance_data.radius = 8000.0f;
 
     instance_data.orbital_body_count = GetRandomValue(1,10);
-    instance_data.orbital_layer_count = 20; //GetRandomValue(5, 20);
-    instance_data.orbital_layer_delta = map_data.radius/instance_data.orbital_layer_count;
+    instance_data.orbital_layer_count = GetRandomValue(10, 20);
+    instance_data.orbital_layer_delta = map_data.radius / instance_data.orbital_layer_count;
 
     
     printf("star  %0.5f %0.5f  delta %0.5f\n", instance_data.position.x, instance_data.position.y, instance_data.orbital_layer_delta);
@@ -492,16 +531,16 @@ SystemBodyData GenerateSystemBodyData( BODY_TYPE type, int layer, float layer_de
     if(type == BODY_PLANET) {
         instance_data.name = "planet " + std::to_string(uid);
         instance_data.modulate = BLUE;
-        instance_data.radius = 2000.0f;
+        instance_data.radius = 4000.0f;
         instance_data.orbital_body_count = GetRandomValue(0,5);
-        instance_data.orbital_layer_count = 20; //GetRandomValue(5, 20);
-        instance_data.orbital_layer_delta = (instance_data.radius * 10) /instance_data.orbital_layer_count;
+        instance_data.orbital_layer_count = 10; //GetRandomValue(5, 20);
+        instance_data.orbital_layer_delta = (instance_data.radius * 8) /instance_data.orbital_layer_count;
         
     }
     else if(type == BODY_MOON) {
         instance_data.name = "moon " + std::to_string(uid);
-        instance_data.modulate = YELLOW;
-        instance_data.radius = 800.0f;
+        instance_data.modulate = GOLD;
+        instance_data.radius = 1800.0f;
         instance_data.orbital_body_count = 0;
     }
 
@@ -534,7 +573,7 @@ SystemLocationData GenerateSystemLocationData(SystemBodyData *body) {
 
     data.name = "location " + std::to_string(data.uid) + " on body " + std::to_string(data.body_uid);
 
-    data.radius = 50;
+    
     data.position = body->position;
 
     Vector2 location_pos = {0,0};
@@ -546,37 +585,35 @@ SystemLocationData GenerateSystemLocationData(SystemBodyData *body) {
 
     
 
-    int size = GetRandomValue(5, 1000);
+    int size = GetRandomValue(1, 10) * 10;
     data.local_data = GenerateLocationLocalData(size);
 
+    
     data.local_data.uid = data.uid;
     data.local_data.name = data.name;
-
+    
     data.location_plan = GenerateNewPlan(data.local_data);
+    data.radius = (data.location_plan.size_x * data.location_plan.grid_size) / 2;
 
     printf("location data created   name: %s\n", data.name.c_str());
     return data;
 }
 
-SystemSiteData GenerateSystemSiteData(SystemLocationData *location) {
+SystemSiteData GenerateSystemSiteData(SystemLocationData *location, int uid) {
 
     SystemSiteData new_site;
 
-    new_site.uid = GetUID();
+    new_site.uid = uid;
     new_site.location_uid = location->uid;
     new_site.body_uid = location->body_uid;
     new_site.system_uid = location->system_uid;
-    new_site.name = "site" +   std::to_string(new_site.uid) +  " @ location " + std::to_string(location->uid);
+    new_site.name = "site " +   std::to_string(new_site.uid) +  " @ location " + std::to_string(location->uid);
 
 
-    new_site.radius = 10;
-    new_site.position = location->position;
-
-    Vector2 site_pos = {0,0};
-    float s_angle = GetRandomValue(0, 360) * DEG2RAD;
-    site_pos.x = new_site.position.x + cosf(s_angle) * (location->radius - GetRandomValue(0, (int)location->radius));
-    site_pos.y = new_site.position.y + sinf(s_angle) * (location->radius - GetRandomValue(0, (int)location->radius));
-    new_site.position = site_pos;
+    new_site.radius = 16;
+    
+    new_site.position.x = location->position.x + location->location_plan.site_locations[uid].x - location->location_plan.px_offset.x + (location->location_plan.grid_size/2);
+    new_site.position.y = location->position.y + (location->location_plan.site_locations[uid].y) - location->location_plan.px_offset.y + (location->location_plan.grid_size/2);
 
     new_site.local_data.uid = new_site.uid;
     new_site.local_data.name = new_site.name;
@@ -600,13 +637,15 @@ LocationMapData GenerateLocationMapData(System *system, int location_uid) {
     new_location.radius = sys_map_data.radius * 10;
     new_location.local_data = &sys_map_data.local_data;
     new_location.name = sys_map_data.name;
+    new_location.location_plan = &sys_map_data.location_plan;
     
 
-    for(int &site_uid : sys_map_data.site_uids) {
+    for(auto &[site_uid, pos] : sys_map_data.location_plan.site_locations) {
 
         SystemSiteData &s_site_data = system->map_data.sites[site_uid];
 
-        LocationSiteData new_site = GenerateLocationSiteData(&s_site_data);
+        LocationSiteData new_site = GenerateLocationSiteData(&s_site_data,  {(pos.x + new_location.location_plan->grid_size/2) * 10, (pos.y + new_location.location_plan->grid_size/2) * 10});
+        printf("site location  name: %s  uid: %i     %0.4f %0.4f  gs: %i\n", new_site.name.c_str(), new_site.uid, pos.x, pos.y, new_location.location_plan->grid_size);
 
         new_location.sites[new_site.uid] = new_site;
     }
@@ -616,7 +655,7 @@ LocationMapData GenerateLocationMapData(System *system, int location_uid) {
     
 }
 
-LocationSiteData GenerateLocationSiteData(SystemSiteData *s_site) {
+LocationSiteData GenerateLocationSiteData(SystemSiteData *s_site, Vector2 position) {
     LocationSiteData new_site;
     
     new_site.uid = s_site->uid;
@@ -627,11 +666,11 @@ LocationSiteData GenerateLocationSiteData(SystemSiteData *s_site) {
 
 
     new_site.radius = s_site->radius * 10;
-    new_site.position = {0,0};
+    new_site.position = position;
 
     new_site.local_data = &s_site->local_data;
 
-    printf("site data created    name: %s  uid: %i \n", new_site.name.c_str(), new_site.uid);
+    printf("location site data created    name: %s  uid: %i     %0.4f %0.4f\n", new_site.name.c_str(), new_site.uid, new_site.position.x, new_site.position.y);
 
     return new_site;
     

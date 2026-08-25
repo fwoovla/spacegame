@@ -27,20 +27,37 @@ void SystemLocation::Update() {
 }
 
 void SystemLocation::Draw() {
-    DrawCircleV(location_data->position, location_data->radius, BROWN);
 
+    int grid_size = location_data->location_plan.grid_size;
+    float size_x = location_data->location_plan.size_x;
+    float size_y = location_data->location_plan.size_y;
+        
+    float lpx = location_data->position.x - ((size_x * 0.5f) * grid_size);
+    float lpy = location_data->position.y - ((size_y * 0.5f) * grid_size);
+    
     Color color = RED;
 
     if(info_area.mouse_hovering) {
         color =GREEN;
     }
 
-    DrawCircleLinesV(location_data->position, location_data->radius + 10, color);
+    DrawRectangle(lpx, lpy, size_x * grid_size, size_y * grid_size, DARKBROWN);
 
-
-
+    if(g_game_data.show_debug) {
+        for(int y = 0; y <= size_y; y++) {
+            DrawLine(lpx + 0, (y * grid_size) + lpy, (size_x * grid_size ) + lpx, (y * grid_size) + lpy, WHITE);
+            for(int x = 0; x <= size_x; x++) {
+                DrawLine( (x * grid_size) + lpx, 0 + lpy, (x * grid_size) + lpx, (size_y * grid_size) + lpy, WHITE);
+            }
+        }
+        
+        for(auto &[uid, pos] : location_data->location_plan.site_locations) {
+            DrawRectangle(pos.x + lpx, pos.y + lpy, grid_size, grid_size, DARKBLUE);
+        }
+    }
 
 }
+
 
 void SystemLocation::DrawOverlay() {
 

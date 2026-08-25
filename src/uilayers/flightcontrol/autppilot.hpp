@@ -48,6 +48,9 @@ struct AutopilotTarget {
     Vector2 position;
     bool auto_land = false;
     float proximity_radius;
+    int site_uid;
+    int location_uid;
+    int body_uid;
     //float distance;
 };
 
