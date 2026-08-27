@@ -79,7 +79,7 @@ class SystemList {
     std::vector<NavListEntry> master_nav_list;
     std::vector<NavListEntry> display_nav_list;
 
-    NavListEntry *highlighted_entry;
+    //NavListEntry *highlighted_entry;
     //std::vector<Label> label_list;
 
     Vector2 position;
@@ -92,7 +92,6 @@ class SystemList {
     int visible_count = 8;
 
     Signal select_item;
-    //Signal ;
 };
 
 class NavInfoPanel {
@@ -111,35 +110,44 @@ class NavInfoPanel {
 };
 
 
-struct UniverseMapEntry {
-    Label label;
+struct UniverseListEntry {
+    Label list_label;
+    Label map_label;
     SystemMapData *system = nullptr;
     Vector2 position = {0, 0};
 };
 
-class UniverseMap {
+class UniverseList {
+    
     public:
-    UniverseMap() = default;
-    UniverseMap(Rectangle _bounds);
-    void Draw();
-    void Update(); 
+    enum LIST_TYPE {
+        ALL,
+        BODIES,
+        LOCATIONS,
+        SITES,
+    };
+    
+    UniverseList() = default;
+    UniverseList(Vector2 list_positon);
+    void Update(bool focussed);
+    void Draw(Vector2 list_position, bool focussed);
+    void MakeListAll( );
 
-    Rectangle bounds;
-    Vector2 center;
-    Rectangle universe_frame;
-    Rectangle list_frame;
+    void Select(UniverseListEntry &entry);
 
-    std::vector<Vector2> stars;
+    std::vector<UniverseListEntry> master_system_list;
+    std::vector<UniverseListEntry> display_system_list;
 
-    std::vector<UniverseMap> system_entries;
+    Vector2 position;
 
-    std::unordered_map<int, SystemMapData> *map_data;
+    bool new_list = false;
+    int index = 0;
+    int list_size = 0;
+    LIST_TYPE list_type = LIST_TYPE::ALL;
+    int scroll_index = 0;
+    int visible_count = 8;
 
-    Button close_button;
-    Signal close_universe_map;
-
-    //Label info_label;
-    //Label distance_label;
+    Signal select_item;
     
 };
 
