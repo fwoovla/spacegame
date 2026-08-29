@@ -76,8 +76,15 @@ Navigation::Navigation(Rectangle min, Rectangle max) {
     state_buttons[SYSTEM] = sys;
     state_buttons[UNIVERSE] = uni;
 
-    universe_map = UniverseMap( {75, 25, g_viewport.resolution.x - 100, g_viewport.resolution.y - 175} );
-    universe_map.close_universe_map.Connect([this]() {OnCloseUniverseMap();});
+    universe_panel = UniversePanel( {75, 25, g_viewport.resolution.x - 100, g_viewport.resolution.y - 175} );
+    universe_panel.close_universe_panel.Connect([this]() {OnCloseUniversePanel();});
+    universe_panel.set_system_target.Connect([this]() {OnSetSystemTarget();});
+
+    /* universe_panel.universe_list.selected_system_data = &universe_panel.selected_system_data;
+    universe_panel.universe_map.selected_system_data = &universe_panel.selected_system_data; */
+
+    
+
 
 }
 
@@ -96,7 +103,7 @@ void Navigation::Update() {
     
     if(state == FOCUSED) {
 
-        if(column == STATE) {
+        if(column == STATE and nav_state == SYSTEM) {
             nav_button.hovered = false;
 
             if(g_input.keys_pressed[0] == KEY_UP) {
@@ -122,6 +129,7 @@ void Navigation::Update() {
 
             if(g_input.keys_pressed[0] == KEY_ENTER) {
                 nav_state = (NAV_STATE)state_button_index;
+                g_input.keys_pressed[0] = KEY_NULL;
 
             }
         }
@@ -155,7 +163,7 @@ void Navigation::Update() {
             }
         }
         else if(nav_state == UNIVERSE) {
-            universe_map.Update();
+            universe_panel.Update();
         }
     }
 
@@ -253,7 +261,7 @@ void Navigation::Draw() {
             }
         }
         else if(nav_state == UNIVERSE) {
-            universe_map.Draw();
+            universe_panel.Draw();
         }      
     }
 }
@@ -288,6 +296,7 @@ void Navigation::CreateSystemList(System *system) {
     }
 
     system_list.new_list = true;
+
 }
 
 
@@ -324,7 +333,7 @@ void Navigation::OnSelectItem() {
     printf("update info!!\n");
 }
 
-void Navigation::OnCloseUniverseMap() {
+void Navigation::OnCloseUniversePanel() {
     nav_state = SYSTEM;
     column = LIST;
     state_button_index = SYSTEM;
@@ -337,4 +346,25 @@ void Navigation::OnCloseUniverseMap() {
             state_buttons[b].hovered = false;
         }
     }
+}
+
+void Navigation::SetSharedData(NavTargetSharedData *_shared_nav_data, int system_uid) {
+
+/*     universe_panel.current_system_uid = system_uid;
+    universe_panel.universe_list.current_system_uid = system_uid;
+    universe_panel.universe_map.current_system_uid = system_uid;
+ */
+    universe_panel.universe_map.display_system_list = &universe_panel.universe_list.display_system_list;
+
+    universe_panel.universe_list.selected_system_data = &universe_panel.selected_system_data;
+    universe_panel.universe_map.selected_system_data = &universe_panel.selected_system_data;
+
+    shared_nav_data = _shared_nav_data;
+
+}
+
+void Navigation::OnSetSystemTarget() {
+
+    g_game_data.transition.system_id = universe_panel.selected_system_data.system->uid;
+
 }

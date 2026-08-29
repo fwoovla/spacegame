@@ -5,7 +5,7 @@
 void UniverseManager::CreateUniverse(std::string player_name) {
     printf("creating a  new universe for player:   %s\n", player_name.c_str());
 
-    universe_data.max_systems = 100;
+    universe_data.max_systems = 10;
 
     OutlineUniverse();
 
@@ -277,8 +277,11 @@ void UniverseManager::DrawUI() {
 
 
 void UniverseManager::OnTravelToSystemRequested() {
+    if(!universe_data.map_data.contains(g_game_data.transition.system_id) or g_game_data.transition.system_id == current_system->system_data.uid) {
+        return;
+    }
     system_ready_to_load = true;
-    printf("going to new system???\n");
+    //printf("going to new system???\n");
 }
 
 void UniverseManager::TravelToSystem() {
@@ -291,8 +294,9 @@ void UniverseManager::TravelToSystem() {
 
     current_system->system_data.entity_data.clear();
 
-    int selected_system = SelectRandomSystem();
-    GenerateNewSystem(selected_system);
+    //int selected_system = SelectRandomSystem();
+    int destination_system = g_game_data.transition.system_id;
+    GenerateNewSystem(destination_system);
 
 
     g_current_player = current_system->SpawnPlayer(data_to_move, current_system->system_data.star_position); 
@@ -300,14 +304,14 @@ void UniverseManager::TravelToSystem() {
     if(g_current_player != nullptr) {
     }
     else {
-        printf("could not find player\n");
+        printf("could not spawn player\n");
     }
 
     hud.SetTarget(g_current_player, current_system.get(), &selection_manager, &universe_data.map_data);
 
 
 
-    printf("going to new system!!!!\n");
+    printf("arived at new system!!!!\n--\n%s\n", current_system->system_data.name.c_str());
 }
 
 

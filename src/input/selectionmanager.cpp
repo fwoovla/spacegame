@@ -94,7 +94,7 @@ AreaResult SelectionManager::GetSelection(Vector2 mouse_pos) {
 
 void SelectionManager::Register(MouseTriggerArea *area) {
     areas.push_back(area);
-    printf("registering area:---- body:%i  location:%i  site:%i\n", area->body_payload, area->location_payload, area->landing_site_payload);
+    //printf("registering area:---- body:%i  location:%i  site:%i\n", area->body_payload, area->location_payload, area->landing_site_payload);
 }
 
 void SelectionManager::Unregister(MouseTriggerArea *area) {
@@ -115,5 +115,6 @@ void SelectionManager::UnregisterAll() {
     areas.clear();
     selected.DisconnectAll();
     deselected.DisconnectAll();
+    
 
 }

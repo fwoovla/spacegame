@@ -228,20 +228,24 @@ void FlightControl::Draw() {
 }
 
 
-void FlightControl::SetTarget(CreatureEntity *_entity, System *sys, SelectionManager *sm, std::unordered_map<int, SystemMapData> *_map_data) {
+void FlightControl::SetTarget(CreatureEntity *_entity, System *sys, SelectionManager *sm, std::unordered_map<int, SystemMapData> *_universe_map) {
+
+    shared_nav_data = {};
+    shared_target_data = {};
+
     entity = _entity; //only need entity for potition.  maybe just get ship and figure out a better way?
     selection_manager = sm;
     selection_manager->selected.Connect([this]() { OnTargetSelected();});
     selection_manager->deselected.Connect([this]() { OnTargetDeSelected();});
-    system = sys;  //get universe to access outside systems
-    map_data = _map_data;
+    system = sys;
+    universe_map = _universe_map;
 
     navigation->CreateSystemList(system);
+    navigation->universe_panel.CreateUniverseList(universe_map, system->system_data.uid);
 
-    navigation->shared_nav_data = &shared_nav_data;
-    navigation->universe_map.map_data = map_data;
-    //navigation->system_list.shared_nav_data = &shared_nav_data;
-    //navigation->info_panel.shared_nav_data = &shared_nav_data;
+    navigation->SetSharedData(&shared_nav_data, system->system_data.uid);
+
+
     navigation->deselect_nav_target.Connect([this]() { OnNavTargetDeSelected();});
     navigation->set_nav_target.Connect([this]() { OnNavTargetSelected();});
     target_screen->target_data = &shared_target_data;
@@ -251,6 +255,8 @@ void FlightControl::SetTarget(CreatureEntity *_entity, System *sys, SelectionMan
     entity->ship->autopilot.initiate_autopilot.Connect( [this]() { OnAutopilotInitiated();} );
 
 }
+
+
 
 void FlightControl::ClearTarget() {
     entity = nullptr;

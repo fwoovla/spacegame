@@ -115,6 +115,7 @@ struct UniverseListEntry {
     Label map_label;
     SystemMapData *system = nullptr;
     Vector2 position = {0, 0};
+    bool selected = false;
 };
 
 class UniverseList {
@@ -128,9 +129,9 @@ class UniverseList {
     };
     
     UniverseList() = default;
-    UniverseList(Vector2 list_positon);
+    UniverseList(Rectangle _bounds);
     void Update(bool focussed);
-    void Draw(Vector2 list_position, bool focussed);
+    void Draw(bool focussed);
     void MakeListAll( );
 
     void Select(UniverseListEntry &entry);
@@ -138,7 +139,9 @@ class UniverseList {
     std::vector<UniverseListEntry> master_system_list;
     std::vector<UniverseListEntry> display_system_list;
 
-    Vector2 position;
+    UniverseListEntry *selected_system_data;
+
+    Rectangle bounds;
 
     bool new_list = false;
     int index = 0;
@@ -147,8 +150,63 @@ class UniverseList {
     int scroll_index = 0;
     int visible_count = 8;
 
+    int current_system_uid = -1;
+
     Signal select_item;
     
+};
+
+class UniverseMap {
+    public:
+    UniverseMap() = default;
+    UniverseMap(Rectangle _bounds);
+    void Update();
+    void Draw();
+    void HandleMapMovement();
+
+    std::vector<UniverseListEntry> *display_system_list;
+    UniverseListEntry *selected_system_data;
+
+    Rectangle bounds;
+    Vector2 center;
+    float map_scale = 500.0;
+
+    int current_system_uid = -1;
+
+    float animation_factor = 0.0f;
+
+};
+
+class UniversePanel {
+    public:
+    UniversePanel() = default;
+    UniversePanel(Rectangle _bounds);
+    void Draw();
+    void Update();
+    void CreateUniverseList(std::unordered_map<int, SystemMapData> *universe_map, int system_uid);
+
+    std::unordered_map<int, SystemMapData> *map_data;
+
+    UniverseListEntry selected_system_data;
+
+    UniverseList universe_list;
+    UniverseMap universe_map;
+
+    Vector2 position;
+
+    Rectangle bounds;
+    Vector2 center;
+    Rectangle map_frame;
+    Rectangle list_frame;
+
+    Button close_button;
+    Button set_target_button;
+
+    Signal close_universe_panel;
+    Signal set_system_target;
+
+    int current_system_uid;
+
 };
 
 //========================= components =========================
@@ -199,8 +257,12 @@ class Navigation : public FlightComponent{
     void OnTopPanelButtonPressed();
 
     //void OnNewNavTareget();
-    void OnCloseUniverseMap();
+    void OnCloseUniversePanel();
+    void OnSetSystemTarget();
+
     void OnSelectItem();
+
+    void SetSharedData(NavTargetSharedData *_shared_nav_data, int sytem_uid);
 
     NavTargetSharedData *shared_nav_data = nullptr;
     NavTargetSharedData list_data;
@@ -213,7 +275,7 @@ class Navigation : public FlightComponent{
     SystemList system_list;
     NavInfoPanel info_panel;
     Button nav_button;
-    UniverseMap universe_map;
+    UniversePanel universe_panel;
 
     std::array <Button, 2> state_buttons;
     int state_button_index = 0;
@@ -268,7 +330,7 @@ class FlightControl : public UILayer {
         void Update() override;
         void Draw() override;
 
-        void SetTarget(CreatureEntity *_entity, System *sys, SelectionManager *sm, std::unordered_map<int, SystemMapData> *_map_data);
+        void SetTarget(CreatureEntity *_entity, System *sys, SelectionManager *sm, std::unordered_map<int, SystemMapData> *_universe_map);
         void ClearTarget();
 
         void OnTargetSelected();
@@ -288,7 +350,7 @@ class FlightControl : public UILayer {
         CreatureEntity *entity; //this is the entity controlling the ship
         SelectionManager *selection_manager = nullptr; //gets area info and signals out
         System *system = nullptr; // system.map_data has all the data
-        std::unordered_map<int, SystemMapData> *map_data; 
+        std::unordered_map<int, SystemMapData> *universe_map; 
 
         Navigation *navigation;
         TargetScreen *target_screen;

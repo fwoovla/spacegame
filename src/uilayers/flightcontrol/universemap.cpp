@@ -1,6 +1,7 @@
 #include "flightcontrol.hpp"
 #include "../../game.h"
 
+
 UniverseMap::UniverseMap(Rectangle _bounds) {
     bounds = _bounds;
     center = {
@@ -8,67 +9,95 @@ UniverseMap::UniverseMap(Rectangle _bounds) {
         .y = bounds.y + (bounds.height/2)
     };
 
-    universe_frame = {
-        .x = center.x - (bounds.y + bounds.height - 110)/2,
-        .y = center.y - (bounds.y + bounds.height - 110)/2,
-        .width = bounds.y + bounds.height - 110,
-        .height = bounds.y + bounds.height - 110
-    };
-
-    list_frame = {
-        .x = bounds.x + 20,
-        .y = universe_frame.y,
-        .width = 150,
-        .height = bounds.y + bounds.height - 110
-    };
-
-    CreateButton(close_button, {bounds.x + (bounds.width/2), bounds.y + bounds.height - 40}, {100, 30}, GREEN, "CLOSE");
 }
 
 void UniverseMap::Draw() {
-    DrawRectangleRounded(bounds, 0.2f, 10, BLACK);
 
-    DrawRectangleRoundedLines(universe_frame, 0.02f, 10, WHITE);
-    DrawRectangleRoundedLines(list_frame, 0.02f, 10, WHITE);
+    //DrawRectangleRounded(bounds, 0.2f, 10, BLACK);
+    //DrawRectangleRoundedLines(bounds, 0.02f, 10, WHITE);
+
+    for(UniverseListEntry &entry : *display_system_list) {
+        Vector2 map_pos = Vector2Add(entry.position, center);
+
+        if(!CheckCollisionPointRec(map_pos, bounds)) {
+            continue;
+        }
 
 
-    for(auto &entry : system_entries) {
-        DrawCircleV(entry.position, 1, WHITE);
-        DrawLabel(entry.list_label, g_font);
-        DrawLabel(entry.map_label, g_font);
+        entry.map_label.position = Vector2Add(map_pos, (Vector2{0, -10}));
+        
+        Color color = WHITE;
+
+        if(entry.selected) {
+            //color = GREEN;
+            DrawCircleLinesV(map_pos, 12, GREEN);
+        }
+
+        //entry.map_label.default_color = color;
+        DrawLabelCentered(entry.map_label, g_font);
+        DrawCircleV(map_pos, 3, WHITE);
+
+        if(entry.system->uid == current_system_uid) {
+            DrawCircleLinesV(map_pos, 10, BLUE);
+        }
+
+        if(selected_system_data->system != nullptr) {
+            if(entry.system->uid == g_game_data.transition.system_id) {
+                DrawCircleLinesV(map_pos, 14 + (5 * animation_factor), YELLOW);
+            }
+        }
+
+        if(CheckCollisionPointCircle(g_input.screen_mouse_position, map_pos, 10)) {
+            DrawCircleV(map_pos, 10, WHITE);
+            if(g_input.mouse_left) {
+                selected_system_data->selected = false;
+
+                for(auto &e : *display_system_list) {
+                    e.selected = false;
+                }
+
+                entry.selected = true;
+                *selected_system_data = entry;
+            }
+
+        }
     }
-
-    DrawButton(close_button);
-    
 }
 
 void UniverseMap::Update() {
+    animation_factor = sin( GetTime() * 3 );
+    //printf("animation : %0.5f\n", animation_factor);
 
-    system_entries.clear();
+    if(selected_system_data == nullptr) {
+        return;
+    }
+    
+    HandleMapMovement();
 
-    int list_index = 0;
-    for(auto &[uid, system] : *map_data) {
-        UniverseMapEntry new_entry;
-
-        Vector2 pos = system.map_position / 1000;
-        pos = Vector2Add( {center.x, center.y}, pos);
-        new_entry.position = pos;
-
-        new_entry.system = &system;
+}
 
 
-        CreateLabel(new_entry.list_label, {list_frame.x, list_frame.y + (30 * list_index)}, 20, RAYWHITE, system.name);
-        CreateLabel(new_entry.map_label, pos, 20, RAYWHITE, system.name);
+void UniverseMap::HandleMapMovement() {
 
-
-        system_entries.push_back(new_entry);
-        list_index++;
+    float wheel_zoom = g_input.mouse_wheel * 20.0f;
+    
+    map_scale -= wheel_zoom;
+    if(map_scale < 50.0f) {
+        map_scale = 50.0f;
+    }
+    if(map_scale > 2000.0f) {
+        map_scale = 2000.0f;
     }
 
-    if(IsButtonHovered(close_button, g_viewport.scale)) {
-        if(g_input.mouse_left_down) {
-            close_universe_map.EmitSignal();
-        }
-        
+    if(selected_system_data->system == nullptr) {
+        return;
+    }
+
+    Vector2 offset = selected_system_data->system->map_position / map_scale;
+
+    for(auto &entry : *display_system_list) {
+        Vector2 map_pos = entry.system->map_position / map_scale;
+        Vector2 target_pos = Vector2Subtract(map_pos, offset);
+        entry.position = Vector2Lerp(entry.position, target_pos, 0.1f);
     }
 }

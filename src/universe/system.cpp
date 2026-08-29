@@ -166,7 +166,7 @@ PlayerCharacter * System::SpawnPlayer(EntityData data, Vector2 position) {
     SystemBody * ptr = body.get();
 
     system_data.body_list.push_back(std::move(body));
-    printf("spawning body  type: %i  |uid: %i   |parent uid: %i\n",ptr->body_data->body_type , ptr->body_data->uid, ptr->body_data->parent_uid);
+    //printf("spawning body  type: %i  |uid: %i   |parent uid: %i\n",ptr->body_data->body_type , ptr->body_data->uid, ptr->body_data->parent_uid);
     return ptr;
 
  }
@@ -178,7 +178,7 @@ SystemLocation * System::SpawnSystemLocation(SystemLocationData &data) {
     SystemLocation * ptr = location.get();
 
     system_data.location_list.push_back(std::move(location));
-    printf("spawning location   |uid: %i   |body uid: %i\n", ptr->location_data->uid, ptr->location_data->body_uid);
+    //printf("spawning location   |uid: %i   |body uid: %i\n", ptr->location_data->uid, ptr->location_data->body_uid);
     return ptr;
 }
 
@@ -188,7 +188,7 @@ SystemSite * System::SpawnSystemSite(SystemSiteData &data) {
     SystemSite * ptr = site.get();
 
     system_data.site_list.push_back(std::move(site));
-    printf("spawning site   |uid: %i   |body uid: %i\n", ptr->site_data->uid, ptr->site_data->body_uid);
+    //printf("spawning site   |uid: %i   |body uid: %i\n", ptr->site_data->uid, ptr->site_data->body_uid);
     return ptr;
 }
 

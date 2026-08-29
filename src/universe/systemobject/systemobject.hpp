@@ -3,7 +3,6 @@
 #include "../../input/selectionmanager.hpp"
 #include <vector>
 #include <string>
-//#include "../locationplan.hpp"
 
 
 struct SiteLocalData {
@@ -43,8 +42,6 @@ struct SystemBodyData {
     int uid = -1;
     int system_uid;
     std::string name = "no body name";
-
-    //SystemBodyMapData map_data;
 
     Vector2 position;
 
@@ -100,7 +97,6 @@ struct SystemLocationData {
     Vector2 position;
 
     float radius = 0.0f;
-    //float location_radius = 0.0f;
     float detect_radius = 0.0f;
 
     std::vector<int> site_uids;
@@ -119,7 +115,6 @@ struct SystemSiteData {
     Vector2 position;
 
     float radius = 0.0f;
-    //float location_radius = 0.0f;
     float detect_radius = 0.0f;
 };
 
@@ -158,7 +153,6 @@ class SystemObject  {
 class SystemBody : public SystemObject {
     public:
         SystemBody(SystemBodyData *_data);
-        //void GenerateLocation(LocationMapData &location);
         ~SystemBody() = default;
         void Update() override;
         void Draw() override;        
@@ -177,7 +171,6 @@ class SystemBody : public SystemObject {
 class SystemLocation : public SystemObject {
     public:
         SystemLocation(SystemLocationData *_data);
-        //void GenerateLocation(LocationMapData &location);
         ~SystemLocation() = default;
         void Update() override;
         void Draw() override;        
@@ -195,7 +188,6 @@ class SystemLocation : public SystemObject {
 class SystemSite : public SystemObject {
     public:
         SystemSite(SystemSiteData *_data);
-        //void GenerateLocation(LocationMapData &location);
         ~SystemSite() = default;
         void Update() override;
         void Draw() override;        
