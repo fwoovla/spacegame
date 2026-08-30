@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include "../systemobject/systemobject.hpp"
-#include "../../ships/ships.hpp"
+#include "../../controllers/controllers.hpp"
 
 
 
@@ -79,7 +79,7 @@ class LocationSite : public LocationObject {
 
 class LocationShip : public LocationObject {
     public:
-        LocationShip(ShipData *_data, Vector2 position);
+        LocationShip(ShipControllerData *_data, Vector2 position);
         ~LocationShip() = default;
         void Update() override;
         void Draw() override;        
@@ -89,7 +89,7 @@ class LocationShip : public LocationObject {
         float GetRenderScale() override;
         void RegisterWithManagers(SelectionManager *sm) override;
 
-        ShipData *ship_data = nullptr;
+        ShipControllerData *ship_data = nullptr;
         SelectionManager *selection_manager = nullptr;
 
         Vector2 position;

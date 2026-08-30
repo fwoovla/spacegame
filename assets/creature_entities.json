@@ -1,12 +1,18 @@
 {
     "data":[
+        
         {
             "id": "ENTITY_PLAYER",
             "name": "Player",
             "credits":0,
 
             "obstructable": false,
-            "render_mode": 1
+            "render_mode": 1,
+
+            "controllers": {
+                "ship": "SHIP_1",
+                "character": "CHARACTER_PLAYER"
+            }
         }
     ]
 }

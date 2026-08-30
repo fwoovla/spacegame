@@ -1,0 +1,14 @@
+{
+    "data":[
+        {
+            "id": "ENTITY_ASTEROID",
+            "name": "asteroid",
+
+            "obstructable": false,
+            "render_mode": 1,
+            "controllers": {
+                "object": "OBJECTENTITY_1"
+            }
+        }
+    ]
+}

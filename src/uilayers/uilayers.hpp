@@ -7,7 +7,7 @@
 #include "../ui/button.hpp"
 #include "../ui/textinput.hpp"
 #include "../universe/entity.hpp"
-#include "../ships/ships.hpp"
+#include "../controllers/controllers.hpp"
 //#include "../universe/components/components.hpp"
 #include "../colordefs.hpp"
 

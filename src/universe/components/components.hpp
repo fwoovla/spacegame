@@ -10,22 +10,21 @@ using json = nlohmann::json;
 
 enum ComponentFlags
 {
-    HAS_HEALTH    = 1 << 0,
-    HAS_MOVEMENT  = 1 << 1,
-    HAS_INVENTORY = 1 << 2,
-    HAS_INTERACTION = 1 << 3
+    COMPONENT_NONE      = 0,
+    COMPONENT_HEALTH    = 1 << 0,
+    COMPONENT_INVENTORY = 1 << 1,
+    COMPONENT_INTERACT = 1 << 2
 };
 
 
-struct MovementComponent
-{
-    float speed;
-};
+/* struct MovementComponent {
+    float speed = 0.0f;
+}; */
 
 struct HealthComponent
 {
-    int health;
-    int max_health;
+    float health = 0.0f;
+    float max_health = 0.0f;
 };
 
 
@@ -58,9 +57,11 @@ struct InteractComponent
 
 
 void to_json(json& j, const HealthComponent& h);
-
-void to_json(json& j, const MovementComponent& m);
-
+//void to_json(json& j, const MovementComponent& m);
 void to_json(json& j, const InventoryComponent& i);
-
 void to_json(json& j, const InteractComponent& i);
+
+void from_json(const json& j, HealthComponent& h);
+//void from_json(const json& j, MovementComponent& m);
+void from_json(const json& j, InventoryComponent& i);
+void from_json(const json& j, InteractComponent& i);

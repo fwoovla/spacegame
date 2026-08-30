@@ -1,13 +1,18 @@
 #pragma once
 #include "../resources/resources.h"
 #include "../universe/entity.hpp"
-#include "../ships/ships.hpp"
-#include "../characters/characters.hpp"
+#include "../controllers/controllers.hpp"
+#include "../controllers/controllers.hpp"
 
 void LoadData();
 
-void LoadEntityData(std::string file_path);
+void LoadCreatureEntityData(std::string file_path);
 
-void LoadShipData(std::string file_path);
+void LoadObjectEntityData(std::string file_path);
 
-void LoadCharacterData(std::string file_path);
+
+void LoadShipControllerData(std::string file_path);
+
+void LoadCharacterControllerData(std::string file_path);
+
+void LoadObjectControllerData(std::string file_path);

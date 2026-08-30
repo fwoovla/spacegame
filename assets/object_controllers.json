@@ -1,0 +1,12 @@
+{
+    "data":[
+        {
+            "id": "OBJECTENTITY_1",
+            "name": "asteroid",
+            "speed":80,
+
+            "radius":200.0
+
+        }
+    ]
+}

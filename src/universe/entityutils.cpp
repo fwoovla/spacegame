@@ -11,7 +11,8 @@
 ENTITY_ID StrToEntityId(const std::string& s) {
 
     static const std::unordered_map<std::string, ENTITY_ID> lookup_table = {
-        {"ENTITY_PLAYER",                       ENTITY_ID::ENTITY_PLAYER},   
+        {"ENTITY_PLAYER",                       ENTITY_ID::ENTITY_PLAYER},
+        {"ENTITY_ASTEROID",                       ENTITY_ID::ENTITY_ASTEROID},   
     };
 
     if (auto it = lookup_table.find(s); it != lookup_table.end()) {
@@ -20,4 +21,19 @@ ENTITY_ID StrToEntityId(const std::string& s) {
     }
     TraceLog(LOG_INFO, "Entity ID not found ");
     return ENTITY_ID::ENTITY_NONE;
+}
+
+
+OBJECTENTITY_ID StrToObjectEntityId(const std::string& s) {
+
+    static const std::unordered_map<std::string, OBJECTENTITY_ID> lookup_table = {
+        {"OBJECTENTITY_1",                       OBJECTENTITY_ID::OBJECTENTITY_1},   
+    };
+
+    if (auto it = lookup_table.find(s); it != lookup_table.end()) {
+        TraceLog(LOG_INFO, "object entity ID found %i", it->second);
+        return it->second;
+    }
+    TraceLog(LOG_INFO, "Object Entity ID not found ");
+    return OBJECTENTITY_ID::OBJECTENTITY_NONE;
 }

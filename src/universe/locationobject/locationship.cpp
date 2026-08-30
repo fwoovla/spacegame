@@ -4,7 +4,7 @@
 
 #define DETECT_RADIUS_FACTOR 1.5f
 
-LocationShip::LocationShip(ShipData *_data, Vector2 position) {
+LocationShip::LocationShip(ShipControllerData *_data, Vector2 position) {
     ship_data = _data;
     this->position = position;
     //site_data->site_instance = this;

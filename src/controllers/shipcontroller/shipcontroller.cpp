@@ -1,19 +1,18 @@
-#include "../game.h"
-#include "ships.hpp"
+#include "../controllers.hpp"
+#include "../../game.h"
 
-
-Ship::Ship(ShipData *_data) {
+ShipController::ShipController(ShipControllerData *_data) {
     ship_data = _data;
     ship_data->flight_mode = SYSTEM_FLIGHT_MODE;
     current_mode = &ship_data->flight_modes.at(ship_data->flight_mode);
     autopilot.flight_mode = current_mode;
 }
 
-Ship::~Ship() {
+ShipController::~ShipController() {
 
 }
 
-void Ship::Update(Vector2 &position) {
+void ShipController::Update(Vector2 &position) {
     float dt = GetFrameTime();
 
     current_mode->speed = Vector2Length(current_mode->velocity);
@@ -69,7 +68,7 @@ void Ship::Update(Vector2 &position) {
     FlightUpdate(position, dt);
 }
 
-void Ship::Draw(Vector2 &position, float scale) {
+void ShipController::Draw(Vector2 &position, float scale) {
 
     Vector2 screen = GetWorldToScreen2D(position, g_camera);
     Vector2 forward = {cosf(current_mode->rotation) * 100.0f, sinf(current_mode->rotation) * 100.0f};
@@ -87,10 +86,12 @@ void Ship::Draw(Vector2 &position, float scale) {
 
     }
 
+    //printf("SHIP DRAW  %0.3f  %0.3f  %0.3f\n", screen.x, screen.y, ship_data->radius);
+
 }
 
 
-bool Ship::ToggleAutoPilot(AutopilotTarget &target) {
+bool ShipController::ToggleAutoPilot(AutopilotTarget &target) {
     
     
     autopilot.SetTarget(target);
@@ -113,12 +114,12 @@ bool Ship::ToggleAutoPilot(AutopilotTarget &target) {
 
 }
 
-bool Ship::ToggleFlightAssist() {
+bool ShipController::ToggleFlightAssist() {
     flight_assist_on = !flight_assist_on;
     return flight_assist_on;
 }
 
-void Ship::SetFlightMode(FLIGHT_MODE mode) {
+void ShipController::SetFlightMode(FLIGHT_MODE mode) {
     ship_data->flight_mode = mode;
     
     ship_data->flight_modes[ship_data->flight_mode].velocity = current_mode->velocity;
@@ -129,15 +130,15 @@ void Ship::SetFlightMode(FLIGHT_MODE mode) {
     autopilot.flight_mode = current_mode;
 }
 
-void Ship::AutopilotUpdate(Vector2 position) {
+void ShipController::AutopilotUpdate(Vector2 position) {
     //autopilot.Update();
 }
 
-void Ship::FlightAssistUpdateUpdate(Vector2 &position) {
+void ShipController::FlightAssistUpdateUpdate(Vector2 &position) {
 
 }
 
-void Ship::ManualFlightInput(float dt) {
+void ShipController::ManualFlightInput(float dt) {
 /*     if(g_input.in_use) {
         return;
     } */
@@ -174,7 +175,7 @@ void Ship::ManualFlightInput(float dt) {
 }
 
 
-void Ship::FlightUpdate(Vector2 &position, float dt) {
+void ShipController::FlightUpdate(Vector2 &position, float dt) {
 
 
     float thrust = current_mode->thrust;

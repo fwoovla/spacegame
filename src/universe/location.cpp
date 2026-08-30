@@ -117,7 +117,8 @@ void Location::OnLaunchRequested() {
 
 PlayerCharacter * Location::SpawnPlayer(EntityTemplateData &tmpl, int uid, Vector2 position) {
 
-    EntityData entity_data = GenerateEntityInstance(tmpl, uid, position);
+    EntityData entity_data = GenerateEntityInstance(tmpl, position);
+    entity_data.uid = uid;
     location_data.entity_data[entity_data.uid] = entity_data;
 
     std::unique_ptr<PlayerCharacter> player = std::make_unique<PlayerCharacter>(&location_data.entity_data[entity_data.uid]);
@@ -149,7 +150,7 @@ void Location::AddPlayer() {
     }
     g_current_player->entity_data->position = player_pos;
 
-    location_data.ship = std::make_unique<LocationShip>(&g_current_player->ship_data, player_pos);
+    location_data.ship = std::make_unique<LocationShip>(&g_current_player->ship_controller_data, player_pos);
 
     location_data.ship->RegisterWithManagers(selection_manager);
 }

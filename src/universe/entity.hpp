@@ -1,16 +1,17 @@
 #pragma once 
 #include <raylib.h>
 #include "../resources/resources.h"
-#include "../ships/ships.hpp"
-//#include "components/components.hpp"
+#include "../controllers/controllers.hpp"
+#include "components/components.hpp"
 #include "../areas/areas.hpp"
 #include "../sprite/sprite.h"
-#include "../characters/characters.hpp"
+//#include "../controllers/controllers.hpp"
 #include "../input/selectionmanager.hpp"
 
 enum ENTITY_ID {
     ENTITY_NONE = -1,
     ENTITY_PLAYER,
+    ENTITY_ASTEROID,
 };
 
 
@@ -21,9 +22,15 @@ struct EntityTemplateData {
 
     bool obstructable;
     RenderMode render_mode;
+
+    SHIP_ID ship_controller_id = SHIP_NONE;
+    CHARACTER_ID character_controller_id = CHARACTER_NONE;
+    OBJECTENTITY_ID object_entity_controller_id = OBJECTENTITY_NONE;
 };
 
 extern std::unordered_map<int, EntityTemplateData> g_entity_template_data;
+
+
 
 struct EntityData {
     int uid;
@@ -36,6 +43,10 @@ struct EntityData {
     bool obstructed = false;
 
     RenderMode render_mode;
+
+    SHIP_ID ship_controller_id = SHIP_NONE;
+    CHARACTER_ID character_controller_id = CHARACTER_NONE;
+    OBJECTENTITY_ID object_entity_controller_id = OBJECTENTITY_NONE;
 };
 
 
@@ -43,6 +54,13 @@ struct EntityData {
 
 class BaseEntity  {
     public:
+
+        enum MOVEMENT_TYPE {
+            MOVEMENT_CHARACTER,
+            MOVEMENT_SHIP,
+            MOVEMENT_OBJECTENTITY
+        };
+
         virtual ~BaseEntity() = default;
         virtual void Update() = 0;   
         virtual void Draw() = 0; 
@@ -59,16 +77,41 @@ class BaseEntity  {
         Label info_label;
 
         SelectionManager *selection_manager = nullptr;
+
+        EntityData *entity_data = nullptr;
+
+        
 };
+
+
+
+
+
+class ObjectEntity : public BaseEntity { //
+
+    public:
+    ObjectEntity(EntityData *_data);
+    ~ObjectEntity() override;
+    void Update() override;
+    void Draw() override;
+    void DrawOverlay() override;
+    void DrawUI()override;
+
+    float GetRenderScale() override;
+    void RegisterWithManagers(SelectionManager *sm) override;
+
+
+    ObjectEntityControllerData object_controller_data;
+    std::unique_ptr<ObjectEntityController> object_controller;
+
+};
+
+
 
 
 class CreatureEntity : public BaseEntity {
     public:
-        enum MOVEMENT_TYPE {
-            MOVEMENT_CHARACTER,
-            MOVEMENT_SHIP,
-        };
-    
+            
         ~CreatureEntity() = default;
 
         virtual void UpdateMovement() = 0;
@@ -76,17 +119,13 @@ class CreatureEntity : public BaseEntity {
         virtual void ExitShip() = 0;
         virtual void Die() = 0;
 
-        EntityData *entity_data = nullptr;
-
         MOVEMENT_TYPE movement_type = MOVEMENT_SHIP;
 
-        ShipData ship_data;
-        std::unique_ptr<Ship> ship;
+        ShipControllerData ship_controller_data;
+        std::unique_ptr<ShipController> ship_controller;
 
-        CharacterData character_data;
-        std::unique_ptr<Character> character;
-
-        Vector2 velocity = {0,0};
+        CharacterControllerData character_controller_data;
+        std::unique_ptr<CharacterController> character_controller;
 
         bool is_stunned = false;
         RayCast raycast;
@@ -118,3 +157,5 @@ extern PlayerCharacter * g_current_player;
 
 
 ENTITY_ID StrToEntityId(const std::string& s);
+
+OBJECTENTITY_ID StrToObjectEntityId(const std::string& s);

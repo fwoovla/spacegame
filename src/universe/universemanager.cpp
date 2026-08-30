@@ -197,7 +197,7 @@ void UniverseManager::Update() {
 
     selection_manager.Update();
     
-    if(g_current_player->ship) {
+    if(g_current_player->ship_controller) {
         hud.Update();
     }
 }
@@ -269,7 +269,7 @@ void UniverseManager::DrawUI() {
             break;
     }
 
-    if(g_current_player->ship) {
+    if(g_current_player->ship_controller) {
         hud.Draw();
     }
 }
@@ -352,7 +352,7 @@ void UniverseManager::LandAtLocation() {
 
         auto &fresh_data = current_location->location_data.entity_data[uid];
 
-        auto &system_entities = current_system->system_data.entity_list;
+        auto &system_entities = current_system->system_data.creature_entity_list;
 
         for(auto it = system_entities.begin(); it != system_entities.end(); ++it)
         {
@@ -413,7 +413,7 @@ void UniverseManager::LaunchFromLocation() {
     // Move player entity ownership back
     auto &location_entities = current_location->location_data.entity_list;
 
-    auto &system_entities = current_system->system_data.entity_list;
+    auto &system_entities = current_system->system_data.creature_entity_list;
 
 
     for(auto it = location_entities.begin(); it != location_entities.end(); ++it)
@@ -476,7 +476,7 @@ int UniverseManager::SelectRandomSystem() {
 
 
 /*  */
-EntityData GenerateEntityInstance(EntityTemplateData &tmpl, int uid, Vector2 position) {
+EntityData GenerateEntityInstance(EntityTemplateData &tmpl, Vector2 position) {
 
     EntityData instance_data;
 
@@ -487,8 +487,14 @@ EntityData GenerateEntityInstance(EntityTemplateData &tmpl, int uid, Vector2 pos
     instance_data.position = position;
     instance_data.render_mode = tmpl.render_mode;
 
+    instance_data.ship_controller_id = tmpl.ship_controller_id;
+    instance_data.character_controller_id = tmpl.character_controller_id;
+    instance_data.object_entity_controller_id = tmpl.object_entity_controller_id;
+    
     return instance_data;
 }
+
+
 
 
 

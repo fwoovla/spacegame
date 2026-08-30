@@ -84,7 +84,7 @@ class UniverseManager {
 
 
 
-EntityData GenerateEntityInstance(EntityTemplateData &tmpl, int uid, Vector2 position);
+EntityData GenerateEntityInstance(EntityTemplateData &tmpl, Vector2 position);
 
 SystemBodyData GenerateSystemStarData(SystemMapData &map_data);
 

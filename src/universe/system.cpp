@@ -33,6 +33,13 @@ void System::GenerateSystem(SelectionManager *sm) {
 
     ResolveParents();
 
+
+
+    EntityData asteroid = GenerateEntityInstance(g_entity_template_data[ENTITY_ASTEROID], system_data.star_position );
+    system_data.entity_data[asteroid.uid] = asteroid;
+
+    SpawnObjectEntity(asteroid);
+
     RegisterWithManagers();
 
 }
@@ -52,13 +59,22 @@ void System::Update() {
         body->Update();
     }
 
-    auto &vec = system_data.entity_list;
+    auto &creatures = system_data.creature_entity_list;
 
-    for (auto &entity : vec) {
-        entity->Update();
+    for (auto &creature : creatures) {
+        creature->Update();
     }
+    std::erase_if(creatures, [](const std::unique_ptr<CreatureEntity> &entity){return entity->should_delete;});
 
-    std::erase_if(vec, [](const std::unique_ptr<CreatureEntity> &entity){return entity->should_delete;});
+    
+    auto &objects = system_data.object_entity_list;
+
+    for (auto &object : objects) {
+        object->Update();
+    }
+    std::erase_if(objects, [](const std::unique_ptr<ObjectEntity> &entity){return entity->should_delete;});
+
+    
 }
 
 
@@ -86,10 +102,14 @@ void System::DrawWorld() {
         //DrawCircleLinesV(site->site_data->position, site->site_data->detect_radius, WHITE);
     }
     
-    for(auto &entity : system_data.entity_list) {
-        if(entity->entity_data->render_mode == RENDER_WORLD)
-            entity->Draw();
+    for(auto &creature : system_data.creature_entity_list) {
+        if(creature->entity_data->render_mode == RENDER_WORLD)
+            creature->Draw();
             
+    }
+    for(auto &object : system_data.creature_entity_list) {
+        if(object->entity_data->render_mode == RENDER_WORLD)
+            object->Draw(); 
     }
 }
 
@@ -106,9 +126,13 @@ void System::DrawOverlay() {
     }
     
     
-    for(auto &entity : system_data.entity_list) {
-        if(entity->entity_data->render_mode != RENDER_WORLD)
-            entity->DrawOverlay();
+    for(auto &creature : system_data.creature_entity_list) {
+        if(creature->entity_data->render_mode != RENDER_WORLD)
+            creature->DrawOverlay();
+    }
+    for(auto &object : system_data.object_entity_list) {
+        if(object->entity_data->render_mode != RENDER_WORLD)
+            object->DrawOverlay();
     }
 }
 
@@ -120,7 +144,7 @@ void System::DrawDebug() {
 
 void System::DrawUI() {
 
-    for(auto &entity : system_data.entity_list) {
+    for(auto &entity : system_data.creature_entity_list) {
         entity->DrawUI();
     }
     for(auto &site : system_data.site_list) {
@@ -133,17 +157,21 @@ void System::DrawUI() {
     for(auto &body : system_data.body_list) {
         body->DrawUI();
     }
+    for(auto &object : system_data.object_entity_list) {
+        object->DrawUI();
+    }
 }
 
 
 PlayerCharacter * System::SpawnNewPlayer(EntityTemplateData &tmpl, int uid, Vector2 position) {
 
-    EntityData entity_data = GenerateEntityInstance(tmpl, uid, position);
+    EntityData entity_data = GenerateEntityInstance(tmpl, position);
+    entity_data.uid = uid;
     system_data.entity_data[entity_data.uid] = entity_data;
 
     std::unique_ptr<PlayerCharacter> player = std::make_unique<PlayerCharacter>(&system_data.entity_data[entity_data.uid]);
     PlayerCharacter * ptr = player.get();
-    system_data.entity_list.push_back(std::move(player));
+    system_data.creature_entity_list.push_back(std::move(player));
 
     return ptr;
 }
@@ -155,7 +183,7 @@ PlayerCharacter * System::SpawnPlayer(EntityData data, Vector2 position) {
 
     std::unique_ptr<PlayerCharacter> player = std::make_unique<PlayerCharacter>(&system_data.entity_data[data.uid]);
     PlayerCharacter * ptr = player.get();
-    system_data.entity_list.push_back(std::move(player));
+    system_data.creature_entity_list.push_back(std::move(player));
 
     return ptr;
 }
@@ -189,6 +217,20 @@ SystemSite * System::SpawnSystemSite(SystemSiteData &data) {
 
     system_data.site_list.push_back(std::move(site));
     //printf("spawning site   |uid: %i   |body uid: %i\n", ptr->site_data->uid, ptr->site_data->body_uid);
+    return ptr;
+}
+
+
+
+
+ObjectEntity * System::SpawnObjectEntity(EntityData &data) {
+
+    system_data.entity_data[data.uid] = data;
+
+    std::unique_ptr<ObjectEntity> object = std::make_unique<ObjectEntity>(&system_data.entity_data[data.uid]);
+    ObjectEntity * ptr = object.get();
+    system_data.object_entity_list.push_back(std::move(object));
+
     return ptr;
 }
 
@@ -229,6 +271,10 @@ void System::RegisterWithManagers(){
     }
     for(auto &body : system_data.body_list) {
         body->RegisterWithManagers(selection_manager);
+    }
+
+    for(auto &object : system_data.object_entity_list) {
+        object->RegisterWithManagers(selection_manager);
     }
 
 }

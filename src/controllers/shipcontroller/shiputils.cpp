@@ -1,7 +1,7 @@
-#include "ships.hpp"
+#include "../controllers.hpp"
 
 
-SHIP_ID StrToShipId(std::string str) {
+SHIP_ID StrToShipControllerId(std::string str) {
     static const std::unordered_map<std::string, SHIP_ID> lookup_table = {
         {"SHIP_1",                       SHIP_ID::SHIP_1},   
     };

@@ -44,12 +44,13 @@ struct SystemInstanceData {
     std::vector<float> orbitals; 
 
     std::unordered_map<int, EntityData> entity_data;
-    std::vector<std::unique_ptr<CreatureEntity>> entity_list;
+
+    std::vector<std::unique_ptr<CreatureEntity>> creature_entity_list;
+    std::vector<std::unique_ptr<ObjectEntity>> object_entity_list;
 
     std::vector<std::unique_ptr<SystemBody>> body_list;
     std::vector<std::unique_ptr<SystemLocation>> location_list;
     std::vector<std::unique_ptr<SystemSite>> site_list;
-
 
 };
 
@@ -72,6 +73,8 @@ class System {
         SystemBody * SpawnSystemBody(SystemBodyData &data);
         SystemLocation * SpawnSystemLocation(SystemLocationData &data);
         SystemSite * SpawnSystemSite(SystemSiteData &data);
+
+        ObjectEntity * SpawnObjectEntity(EntityData &data);
 
         void ResolveParents();
 

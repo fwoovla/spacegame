@@ -1,16 +1,16 @@
-#include "characters.hpp"
-#include "../game.h"
+#include "../controllers.hpp"
+#include "../../game.h"
 
-Character::Character(CharacterData *_data) {
+CharacterController::CharacterController(CharacterControllerData *_data) {
 
     character_data = _data;
 }
 
-Character::~Character() {
+CharacterController::~CharacterController() {
 
 }
 
-void Character::Update(Vector2 &position) {
+void CharacterController::Update(Vector2 &position) {
 
     Vector2 input_dir = {0,0};
 
@@ -50,7 +50,7 @@ void Character::Update(Vector2 &position) {
     speed); */
 }
 
-void Character::Draw(Vector2 &position, float scale) {
+void CharacterController::Draw(Vector2 &position, float scale) {
 
     Vector2 screen = GetWorldToScreen2D(position, g_camera);    
     DrawCircleV(screen, 16 * scale, RAYWHITE);

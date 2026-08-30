@@ -5,8 +5,8 @@
             "name": "Player character",
             "speed":80,
 
-            "obstructable": false,
-            "render_mode": 1
+            "radius":20.0
+
         }
     ]
 }

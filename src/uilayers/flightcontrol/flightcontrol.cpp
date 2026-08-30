@@ -140,14 +140,14 @@ void FlightControl::Update() {
     }
 
     if(g_input.keys_pressed[0] == KEY_E) {
-        entity->ship->ToggleFlightAssist();
+        entity->ship_controller->ToggleFlightAssist();
     }
 
     if(g_input.keys_pressed[0] == KEY_X) {
-        entity->ship->SetFlightMode(SYSTEM_FLIGHT_MODE);
+        entity->ship_controller->SetFlightMode(SYSTEM_FLIGHT_MODE);
     }
     if(g_input.keys_pressed[0] == KEY_C) {
-        entity->ship->SetFlightMode(LOCAL_FLIGHT_MODE);
+        entity->ship_controller->SetFlightMode(LOCAL_FLIGHT_MODE);
     }
 
     if(g_input.keys_pressed[0] == KEY_J) {
@@ -155,10 +155,10 @@ void FlightControl::Update() {
     }
 
 
-    std::string  throttle = TextFormat("%0.2f", entity->ship->current_mode->throttle );
+    std::string  throttle = TextFormat("%0.2f", entity->ship_controller->current_mode->throttle );
     throttle_label.text = throttle + " %";
 
-    std::string speed = TextFormat("%0.4f km/s", entity->ship->current_mode->speed);
+    std::string speed = TextFormat("%0.4f km/s", entity->ship_controller->current_mode->speed);
     
 
     speed_label.text = speed;
@@ -183,7 +183,7 @@ void FlightControl::Draw() {
     }
 
     Color ap_color = RED;
-    if(entity->ship->autopilot_on) {
+    if(entity->ship_controller->autopilot_on) {
         ap_color = GREEN;
     }
     DrawRectangleRec(autopiolot_indicator, ap_color);
@@ -191,7 +191,7 @@ void FlightControl::Draw() {
     DrawLabel(autopilot_label, g_font);
 
     Color fa_color = RED;
-    if(entity->ship->flight_assist_on) {
+    if(entity->ship_controller->flight_assist_on) {
         fa_color = GREEN;
     }
     DrawRectangleRec(flight_assist_indicator, fa_color);
@@ -202,7 +202,7 @@ void FlightControl::Draw() {
     DrawLabel(speed_label, g_font);
     
     Color fm_color = BLUE;
-    if(entity->ship_data.flight_mode == SYSTEM_FLIGHT_MODE) {
+    if(entity->ship_controller_data.flight_mode == SYSTEM_FLIGHT_MODE) {
         fm_color = ORANGE;
     }
     
@@ -211,13 +211,13 @@ void FlightControl::Draw() {
     DrawLabel(flight_mode_label, g_font);
 
 //================================
-    if(entity->ship->autopilot_on) {
+    if(entity->ship_controller->autopilot_on) {
         Vector2 position;
         float radius;
 
-        if(entity->ship->autopilot.target_data.set) {
-            position = entity->ship->autopilot.target_data.position;
-            radius = entity->ship->autopilot.target_data.proximity_radius;
+        if(entity->ship_controller->autopilot.target_data.set) {
+            position = entity->ship_controller->autopilot.target_data.position;
+            radius = entity->ship_controller->autopilot.target_data.proximity_radius;
             position = GetWorldToScreen2D(position, g_camera);
 
             radius = radius * g_camera.zoom;
@@ -250,9 +250,9 @@ void FlightControl::SetTarget(CreatureEntity *_entity, System *sys, SelectionMan
     navigation->set_nav_target.Connect([this]() { OnNavTargetSelected();});
     target_screen->target_data = &shared_target_data;
 
-    entity->ship->autopilot.enter_local_space.Connect( [this]() { OnEnterTargetSpace();} );
-    entity->ship->autopilot.landing_at_target.Connect( [this]() { OnLandingAtTarget();} );
-    entity->ship->autopilot.initiate_autopilot.Connect( [this]() { OnAutopilotInitiated();} );
+    entity->ship_controller->autopilot.enter_local_space.Connect( [this]() { OnEnterTargetSpace();} );
+    entity->ship_controller->autopilot.landing_at_target.Connect( [this]() { OnLandingAtTarget();} );
+    entity->ship_controller->autopilot.initiate_autopilot.Connect( [this]() { OnAutopilotInitiated();} );
 
 }
 
@@ -352,9 +352,9 @@ void FlightControl::OnLandingAtTarget() {
     //if()
     system->SetCameraState(CAMERA_SITE);
     printf("fc: landed\n");
-    g_game_data.transition.body_id = entity->ship->autopilot.target_data.body_uid;
-    g_game_data.transition.location_id = entity->ship->autopilot.target_data.location_uid;
-    g_game_data.transition.site_id = entity->ship->autopilot.target_data.site_uid;
+    g_game_data.transition.body_id = entity->ship_controller->autopilot.target_data.body_uid;
+    g_game_data.transition.location_id = entity->ship_controller->autopilot.target_data.location_uid;
+    g_game_data.transition.site_id = entity->ship_controller->autopilot.target_data.site_uid;
 
     OnNavTargetDeSelected();
     system->landing_requested.EmitSignal();
@@ -393,15 +393,15 @@ void FlightControl::SetAutopilotTarget() {
         new_target.body_uid = shared_nav_data.body->uid;
     }
     if(Vector2Distance(entity->entity_data->position, new_target.position) > 1000.0f and new_target.set) {
-        entity->ship->SetFlightMode(SYSTEM_FLIGHT_MODE);
+        entity->ship_controller->SetFlightMode(SYSTEM_FLIGHT_MODE);
     }
     else if(new_target.set) {
-        entity->ship->SetFlightMode(LOCAL_FLIGHT_MODE);
+        entity->ship_controller->SetFlightMode(LOCAL_FLIGHT_MODE);
     }
 
-    entity->ship->ToggleAutoPilot(new_target);
+    entity->ship_controller->ToggleAutoPilot(new_target);
     
-    if(entity->ship->autopilot_on) {
+    if(entity->ship_controller->autopilot_on) {
         OnAutopilotInitiated();
     }
         
