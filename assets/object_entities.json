@@ -5,7 +5,7 @@
             "name": "asteroid",
 
             "obstructable": false,
-            "render_mode": 1,
+            "render_mode":0,
             "controllers": {
                 "object": "OBJECTENTITY_1"
             }

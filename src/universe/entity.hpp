@@ -42,7 +42,7 @@ struct EntityData {
     bool obstructable = false;
     bool obstructed = false;
 
-    RenderMode render_mode;
+    RenderMode render_mode = RENDER_WORLD;
 
     SHIP_ID ship_controller_id = SHIP_NONE;
     CHARACTER_ID character_controller_id = CHARACTER_NONE;

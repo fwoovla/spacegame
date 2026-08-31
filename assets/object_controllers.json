@@ -5,7 +5,7 @@
             "name": "asteroid",
             "speed":80,
 
-            "radius":200.0
+            "radius":20.0
 
         }
     ]

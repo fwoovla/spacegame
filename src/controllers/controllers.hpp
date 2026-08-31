@@ -99,6 +99,7 @@ enum CHARACTER_ID {
 struct CharacterMovement {
     float speed = 0.0f;
     Vector2 velocity = {0,0};
+    float rotation = 0.0f;
 };
 
 
@@ -154,6 +155,7 @@ enum OBJECTENTITY_ID {
 struct ObjectEntityMovement {
     float speed = 0.0f;
     Vector2 velocity = {0,0};
+    float rotation = 0.0f;
 };
 
 

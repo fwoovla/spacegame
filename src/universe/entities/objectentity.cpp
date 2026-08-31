@@ -20,16 +20,17 @@ ObjectEntity::~ObjectEntity() {
 }
 
 void ObjectEntity::Update() {
-    //printf("ObjectEntity update\n");
+    printf("\n\n\nObjectEntity update %i\n", entity_data->render_mode);
     object_controller->Update(entity_data->position);
 }
 
 void ObjectEntity::Draw() {
-    
+    printf("object Draw -obj\n");
+    object_controller->Draw(entity_data->position, 1.0f);
 }
 
 void ObjectEntity::DrawOverlay() {
-    //printf("object Draw\n");
+    printf("object Draw overlay -obj\n");
     object_controller->Draw(entity_data->position, 1.0f);
 
 }

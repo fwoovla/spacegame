@@ -103,13 +103,17 @@ void System::DrawWorld() {
     }
     
     for(auto &creature : system_data.creature_entity_list) {
-        if(creature->entity_data->render_mode == RENDER_WORLD)
+        if(creature->entity_data->render_mode == RENDER_WORLD) {
             creature->Draw();
+        }
             
     }
-    for(auto &object : system_data.creature_entity_list) {
-        if(object->entity_data->render_mode == RENDER_WORLD)
+    for(auto &object : system_data.object_entity_list) {
+        printf("object Draw -sys  %i\n", object->entity_data->render_mode);
+        if(object->entity_data->render_mode == RENDER_WORLD) {
+            printf("object Draw -sys\n");
             object->Draw(); 
+        }
     }
 }
 
@@ -127,12 +131,16 @@ void System::DrawOverlay() {
     
     
     for(auto &creature : system_data.creature_entity_list) {
-        if(creature->entity_data->render_mode != RENDER_WORLD)
+        if(creature->entity_data->render_mode != RENDER_WORLD) {
             creature->DrawOverlay();
+        }
     }
     for(auto &object : system_data.object_entity_list) {
-        if(object->entity_data->render_mode != RENDER_WORLD)
+        printf("object Draw overlay -sys  %i\n", object->entity_data->render_mode);
+        if(object->entity_data->render_mode != RENDER_WORLD) {
+            printf("object Draw overlay -sys\n");
             object->DrawOverlay();
+        }
     }
 }
 
@@ -230,7 +238,7 @@ ObjectEntity * System::SpawnObjectEntity(EntityData &data) {
     std::unique_ptr<ObjectEntity> object = std::make_unique<ObjectEntity>(&system_data.entity_data[data.uid]);
     ObjectEntity * ptr = object.get();
     system_data.object_entity_list.push_back(std::move(object));
-
+    printf("spawning object entity\n");
     return ptr;
 }
 

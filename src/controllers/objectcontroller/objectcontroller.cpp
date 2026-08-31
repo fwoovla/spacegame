@@ -4,6 +4,9 @@
 ObjectEntityController::ObjectEntityController(ObjectEntityControllerData *_data) {
 
     object_controller_data = _data;
+    object_controller_data->movement.rotation = GetRandomValue(0, 360) * DEG2RAD;
+    Vector2 vel = {1, 0};
+    object_controller_data->movement.velocity = Vector2Rotate(vel, object_controller_data->movement.rotation);
 }
 
 ObjectEntityController::~ObjectEntityController() {
@@ -11,45 +14,24 @@ ObjectEntityController::~ObjectEntityController() {
 }
 
 void ObjectEntityController::Update(Vector2 &position) {
-/* 
-    Vector2 input_dir = {0,0};
 
-    if(g_input.key_up) {input_dir.y = -1;}
-    if(g_input.key_down) {input_dir.y = 1;}
-    if(g_input.key_left) {input_dir.x = -1;}
-    if(g_input.key_right) {input_dir.x = 1;}     */
+    Vector2 previous_position = position;
+    float dt = GetFrameTime();
 
-/*     Vector2 next_position = position;
-    
-    if(object_controller_data->movement.velocity.x != 0 or object_controller_data->movement.velocity.y != 0 ) {
-        next_position = Vector2Add(next_position, object_controller_data->movement.velocity * GetFrameTime());
-    }
+    Vector2 &velocity = object_controller_data->movement.velocity;
 
-    position = next_position;
+    position = Vector2Add(position, velocity * dt);
 
-    float speed =  object_controller_data->movement.speed; */
-/* 
-    if( isnan(object_data->movement.velocity.x) || isnan(object_data->movement.velocity.y)) {object_data->movement.velocity = {0,0};}
-        
-    object_data->movement.velocity = Vector2Lerp(object_data->movement.velocity, input_dir * speed, .15);
-    object_data->movement.velocity.y = {0.0}; */
-    
-/*     printf("character movement\n");
-    printf("input %.1f %.1f  velocity %.1f %.1f  position %.1f %.1f speed %0.4f\n",
-    input_dir.x,
-    input_dir.y,
-    character_data->movement.velocity.x,
-    character_data->movement.velocity.y,
-    position.x,
-    position.y,
-    speed); */
-}
+}   
 
 void ObjectEntityController::Draw(Vector2 &position, float scale) {
 
-    Vector2 screen = GetWorldToScreen2D(position, g_camera);    
-    DrawCircleV(screen, object_controller_data->radius * scale, RAYWHITE);
-    printf("OBJECT DRAW  %0.3f  %0.3f  %0.3f\n", screen.x, screen.y, object_controller_data->radius);
+    //Vector2 screen = GetWorldToScreen2D(position, g_camera);    
+    //DrawCircleV(screen, object_controller_data->radius, RAYWHITE);
+    //printf("OBJECT DRAW  %0.3f  %0.3f  %0.3f\n", screen.x, screen.y, object_controller_data->radius);
+
+    DrawCircleV(position, object_controller_data->radius, RAYWHITE);
+    printf("OBJECT DRAW  %0.3f  %0.3f  %0.3f\n", position.x, position.y, object_controller_data->radius);
 
 }
 
