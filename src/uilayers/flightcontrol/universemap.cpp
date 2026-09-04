@@ -26,16 +26,24 @@ void UniverseMap::Draw() {
 
         entry.map_label.position = Vector2Add(map_pos, (Vector2{0, -10}));
         
-        Color color = WHITE;
+        Color star_color = WHITE;
+        Color label_color = GRAY;
+
+        if(entry.system->discovered) {
+            star_color = YELLOW;
+            DrawCircleV(map_pos, 5, star_color);
+        }
+        else {
+            star_color = DARKYELLOW;
+        }
+        DrawCircleV(map_pos, 4, star_color);
 
         if(entry.selected) {
             //color = GREEN;
+            label_color = WHITE;
+            //DrawLabelCentered(entry.map_label, g_font);
             DrawCircleLinesV(map_pos, 12, GREEN);
         }
-
-        //entry.map_label.default_color = color;
-        DrawLabelCentered(entry.map_label, g_font);
-        DrawCircleV(map_pos, 3, WHITE);
 
         if(entry.system->uid == current_system_uid) {
             DrawCircleLinesV(map_pos, 10, BLUE);
@@ -48,7 +56,9 @@ void UniverseMap::Draw() {
         }
 
         if(CheckCollisionPointCircle(g_input.screen_mouse_position, map_pos, 10)) {
-            DrawCircleV(map_pos, 10, WHITE);
+            label_color = WHITE;
+            
+            DrawCircleLinesV(map_pos, 10, WHITE);
             if(g_input.mouse_left) {
                 selected_system_data->selected = false;
 
@@ -61,6 +71,9 @@ void UniverseMap::Draw() {
             }
 
         }
+
+        entry.map_label.default_color = label_color;
+        DrawLabelCentered(entry.map_label, g_font);
     }
 }
 

@@ -93,12 +93,18 @@ void UniverseList::Draw(bool focussed) {
             bg_color = ORANGE;
             label->default_color = DARKERGRAY;
         }
-        else if(label_index == index and !focussed) {
+        if(display_system_list[label_index].selected and focussed) {
+            bg_color = ORANGE;
+            label->default_color = GREEN;
+        }
+
+
+        if(label_index == index and !focussed) {
             bg_color = DARKGRAY;
             label->default_color = RAYWHITE;
         }
 
-        else if(display_system_list[label_index].selected and focussed) {
+        else if(display_system_list[label_index].selected and focussed and label_index != index) {
             bg_color = GRAY;
             label->default_color = GREEN;
         }
@@ -123,6 +129,7 @@ void UniverseList::Draw(bool focussed) {
         if(label_index >= display_system_list.size()) {
             break;
         }
+
         label->position  = {bounds.x + 10, (bounds.y + 20) + (pos_index * 25)};
         DrawRectangle(label->position.x - 10, label->position.y, bounds.width, 20, bg_color);
         DrawLabel(*label, g_font);

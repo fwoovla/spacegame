@@ -60,8 +60,15 @@ class BaseEntity  {
             MOVEMENT_SHIP,
             MOVEMENT_OBJECTENTITY
         };
+        BaseEntity(EntityData *_data) {entity_data = _data;};
+        BaseEntity() = default;
 
-        virtual ~BaseEntity() = default;
+        virtual ~BaseEntity() {
+            if (selection_manager){
+                selection_manager->Unregister(&info_area);
+            }
+        };
+
         virtual void Update() = 0;   
         virtual void Draw() = 0; 
         virtual void DrawOverlay() = 0;
@@ -90,15 +97,8 @@ class BaseEntity  {
 class ObjectEntity : public BaseEntity { //
 
     public:
-    ObjectEntity(EntityData *_data);
-    ~ObjectEntity() override;
-    void Update() override;
-    void Draw() override;
-    void DrawOverlay() override;
-    void DrawUI()override;
-
-    float GetRenderScale() override;
-    void RegisterWithManagers(SelectionManager *sm) override;
+    ObjectEntity(EntityData *_data) : BaseEntity(_data) {};
+    ~ObjectEntity() = default;
 
 
     ObjectEntityControllerData object_controller_data;
@@ -112,8 +112,8 @@ class ObjectEntity : public BaseEntity { //
 class CreatureEntity : public BaseEntity {
     public:
             
+        CreatureEntity(EntityData *_data) : BaseEntity(_data) {};
         ~CreatureEntity() = default;
-
         virtual void UpdateMovement() = 0;
         virtual void EnterShip() = 0;
         virtual void ExitShip() = 0;
@@ -136,7 +136,7 @@ class CreatureEntity : public BaseEntity {
 class PlayerCharacter : public CreatureEntity {
     public:
         PlayerCharacter(EntityData *_data);
-        ~PlayerCharacter() override;
+        ~PlayerCharacter() = default;
         void Update() override;
         void Draw() override;
         void DrawOverlay() override;
@@ -159,3 +159,20 @@ extern PlayerCharacter * g_current_player;
 ENTITY_ID StrToEntityId(const std::string& s);
 
 OBJECTENTITY_ID StrToObjectEntityId(const std::string& s);
+
+
+class AsteroidEntity : public ObjectEntity {
+    public:
+        AsteroidEntity(EntityData *_data);
+        ~AsteroidEntity() = default;
+        void Update() override;
+        void Draw() override;
+        void DrawOverlay() override;
+        void DrawUI()override;
+
+        float GetRenderScale() override;
+        void RegisterWithManagers(SelectionManager *sm) override;
+
+        Timer lifetime_timer;
+
+};

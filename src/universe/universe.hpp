@@ -57,7 +57,7 @@ class UniverseManager {
         int SelectRandomSystem();
         
 
-       
+    SelectionManager selection_manager;
     UniverseData universe_data;
 
     std::unique_ptr<System> current_system;
@@ -79,7 +79,7 @@ class UniverseManager {
 
     FlightControl hud;
 
-    SelectionManager selection_manager;
+   
 };
 
 

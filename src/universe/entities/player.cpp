@@ -6,9 +6,9 @@ float max_render_scale = 2.0f;
 float min_render_scale = 0.5f;
 
 
-PlayerCharacter::PlayerCharacter(EntityData *_data) {
+PlayerCharacter::PlayerCharacter(EntityData *_data) : CreatureEntity(_data) {
 
-    entity_data = _data;
+    //entity_data = _data;
     
     y_sort = true;
     is_on_screen = true;
@@ -35,9 +35,12 @@ PlayerCharacter::PlayerCharacter(EntityData *_data) {
 
 }
 
-PlayerCharacter::~PlayerCharacter() {
+/* PlayerCharacter::~PlayerCharacter() {
+    if (selection_manager){
+        selection_manager->Unregister(&info_area);
+    }
 
-}
+} */
 
 void PlayerCharacter::Update() {
 

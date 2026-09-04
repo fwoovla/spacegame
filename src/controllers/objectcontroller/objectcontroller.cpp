@@ -5,7 +5,7 @@ ObjectEntityController::ObjectEntityController(ObjectEntityControllerData *_data
 
     object_controller_data = _data;
     object_controller_data->movement.rotation = GetRandomValue(0, 360) * DEG2RAD;
-    Vector2 vel = {1, 0};
+    Vector2 vel = {object_controller_data->movement.speed, 0};
     object_controller_data->movement.velocity = Vector2Rotate(vel, object_controller_data->movement.rotation);
 }
 
@@ -31,7 +31,7 @@ void ObjectEntityController::Draw(Vector2 &position, float scale) {
     //printf("OBJECT DRAW  %0.3f  %0.3f  %0.3f\n", screen.x, screen.y, object_controller_data->radius);
 
     DrawCircleV(position, object_controller_data->radius, RAYWHITE);
-    printf("OBJECT DRAW  %0.3f  %0.3f  %0.3f\n", position.x, position.y, object_controller_data->radius);
+    //printf("OBJECT DRAW  %0.3f  %0.3f  %0.3f\n", position.x, position.y, object_controller_data->radius);
 
 }
 

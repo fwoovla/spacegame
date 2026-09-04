@@ -33,12 +33,18 @@ void System::GenerateSystem(SelectionManager *sm) {
 
     ResolveParents();
 
+    for(int i = 0; i < 10; i++) {
+        EntityData asteroid = GenerateEntityInstance(g_entity_template_data[ENTITY_ASTEROID], system_data.star_position );
+        system_data.entity_data[asteroid.uid] = asteroid;
+
+        SpawnObjectEntity(asteroid);
+    }
 
 
-    EntityData asteroid = GenerateEntityInstance(g_entity_template_data[ENTITY_ASTEROID], system_data.star_position );
+/*     EntityData asteroid = GenerateEntityInstance(g_entity_template_data[ENTITY_ASTEROID], system_data.star_position );
     system_data.entity_data[asteroid.uid] = asteroid;
 
-    SpawnObjectEntity(asteroid);
+    SpawnObjectEntity(asteroid); */
 
     RegisterWithManagers();
 
@@ -109,9 +115,9 @@ void System::DrawWorld() {
             
     }
     for(auto &object : system_data.object_entity_list) {
-        printf("object Draw -sys  %i\n", object->entity_data->render_mode);
+        //printf("object Draw -sys  %i\n", object->entity_data->render_mode);
         if(object->entity_data->render_mode == RENDER_WORLD) {
-            printf("object Draw -sys\n");
+            //printf("object Draw -sys\n");
             object->Draw(); 
         }
     }
@@ -136,7 +142,7 @@ void System::DrawOverlay() {
         }
     }
     for(auto &object : system_data.object_entity_list) {
-        printf("object Draw overlay -sys  %i\n", object->entity_data->render_mode);
+        //printf("object Draw overlay -sys  %i\n", object->entity_data->render_mode);
         if(object->entity_data->render_mode != RENDER_WORLD) {
             printf("object Draw overlay -sys\n");
             object->DrawOverlay();
@@ -232,14 +238,21 @@ SystemSite * System::SpawnSystemSite(SystemSiteData &data) {
 
 
 ObjectEntity * System::SpawnObjectEntity(EntityData &data) {
+    //printf("spawning object entity %i\n", data.id);
 
     system_data.entity_data[data.uid] = data;
 
-    std::unique_ptr<ObjectEntity> object = std::make_unique<ObjectEntity>(&system_data.entity_data[data.uid]);
-    ObjectEntity * ptr = object.get();
-    system_data.object_entity_list.push_back(std::move(object));
-    printf("spawning object entity\n");
-    return ptr;
+    if(system_data.entity_data[data.uid].id == ENTITY_ASTEROID) {
+        std::unique_ptr<AsteroidEntity> object = std::make_unique<AsteroidEntity>(&system_data.entity_data[data.uid]);
+
+        AsteroidEntity * ptr = object.get();
+        system_data.object_entity_list.push_back(std::move(object));
+        printf("spawning asteroid entity\n");
+        return ptr;
+        
+    }
+
+    return nullptr;
 }
 
 

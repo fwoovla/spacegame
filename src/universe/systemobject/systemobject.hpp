@@ -153,7 +153,7 @@ class SystemObject  {
 class SystemBody : public SystemObject {
     public:
         SystemBody(SystemBodyData *_data);
-        ~SystemBody() = default;
+        ~SystemBody();
         void Update() override;
         void Draw() override;        
         void DrawOverlay() override;
@@ -171,7 +171,7 @@ class SystemBody : public SystemObject {
 class SystemLocation : public SystemObject {
     public:
         SystemLocation(SystemLocationData *_data);
-        ~SystemLocation() = default;
+        ~SystemLocation();
         void Update() override;
         void Draw() override;        
         void DrawOverlay() override;
@@ -188,7 +188,7 @@ class SystemLocation : public SystemObject {
 class SystemSite : public SystemObject {
     public:
         SystemSite(SystemSiteData *_data);
-        ~SystemSite() = default;
+        ~SystemSite();
         void Update() override;
         void Draw() override;        
         void DrawOverlay() override;

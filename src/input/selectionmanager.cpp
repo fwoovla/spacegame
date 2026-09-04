@@ -106,7 +106,7 @@ void SelectionManager::Unregister(MouseTriggerArea *area) {
 
 
 void SelectionManager::UnregisterAll() {
-    current_hover = nullptr;
+/*     current_hover = nullptr;
     selection = nullptr;
     for(auto & area : areas) {
         area->selected = false;
@@ -116,5 +116,15 @@ void SelectionManager::UnregisterAll() {
     selected.DisconnectAll();
     deselected.DisconnectAll();
     
-
+ */
 }
+
+
+
+/* 
+BaseEntity::~BaseEntity() {
+            printf("BaseEntity destructor: %p  SM: %p  area: %p\n", this, selection_manager, &info_area);
+            if (selection_manager){
+                selection_manager->Unregister(&info_area);
+            }
+        } */

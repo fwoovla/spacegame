@@ -79,6 +79,7 @@ GENERATED :=
 OBJECTS :=
 
 GENERATED += $(OBJDIR)/areas.o
+GENERATED += $(OBJDIR)/asteroidentity.o
 GENERATED += $(OBJDIR)/autopilot.o
 GENERATED += $(OBJDIR)/button.o
 GENERATED += $(OBJDIR)/buttonpanel.o
@@ -137,6 +138,7 @@ GENERATED += $(OBJDIR)/universepanel.o
 GENERATED += $(OBJDIR)/utils.o
 GENERATED += $(OBJDIR)/viewport.o
 OBJECTS += $(OBJDIR)/areas.o
+OBJECTS += $(OBJDIR)/asteroidentity.o
 OBJECTS += $(OBJDIR)/autopilot.o
 OBJECTS += $(OBJDIR)/button.o
 OBJECTS += $(OBJDIR)/buttonpanel.o
@@ -378,6 +380,9 @@ $(OBJDIR)/titleuilayer.o: src/uilayers/titleuilayer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/components.o: src/universe/components/components.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/asteroidentity.o: src/universe/entities/asteroidentity.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/objectentity.o: src/universe/entities/objectentity.cpp

@@ -168,8 +168,6 @@ void LoadShipControllerData(std::string file_path) {
 
 
 
-
-
 void LoadCharacterControllerData(std::string file_path) {
 
 

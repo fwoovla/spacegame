@@ -12,6 +12,8 @@ void UniverseManager::CreateUniverse(std::string player_name) {
     int selected_system = SelectRandomSystem();
 
     GenerateNewSystem(selected_system);
+    current_system->map_data.discovered = true;
+    
 
     g_current_player = current_system->SpawnNewPlayer(g_entity_template_data[ENTITY_PLAYER], 0, current_system->system_data.star_position); 
 
@@ -481,6 +483,7 @@ EntityData GenerateEntityInstance(EntityTemplateData &tmpl, Vector2 position) {
     EntityData instance_data;
 
     instance_data.uid = GetUID();
+    instance_data.id = tmpl.id;
     instance_data.name = tmpl.name;
     instance_data.id = tmpl.id;
     instance_data.obstructable = tmpl.obstructable;

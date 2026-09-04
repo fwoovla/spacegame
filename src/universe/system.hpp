@@ -15,6 +15,7 @@ struct SystemMapData {
     int uid = -1;
     std::string name = "system name";
     Vector2 map_position;
+    bool discovered = false;
 
     float radius = 0.0f;
 
