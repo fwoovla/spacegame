@@ -25,6 +25,12 @@ LocationSite::LocationSite(LocationSiteData *_data) {
 }
 
 
+LocationSite::~LocationSite() {
+    if (selection_manager){
+        selection_manager->Unregister(&info_area);
+    }
+}
+
 
 
 void LocationSite::Update() {

@@ -1,13 +1,17 @@
 #include "universe.hpp"
 #include "../game.h"
+#include <algorithm>
+#include <cmath>
+#include <random>
 
 
 void UniverseManager::CreateUniverse(std::string player_name) {
     printf("creating a  new universe for player:   %s\n", player_name.c_str());
 
-    universe_data.max_systems = 10;
+    universe_data.max_systems = 500;
 
     OutlineUniverse();
+    ConnectSystems();
 
     int selected_system = SelectRandomSystem();
 
@@ -23,7 +27,7 @@ void UniverseManager::CreateUniverse(std::string player_name) {
         printf("could not find player\n");
     }
 
-    hud.SetTarget(g_current_player, current_system.get(), &selection_manager, &universe_data.map_data);
+    hud.SetTarget(g_current_player, current_system.get(), &selection_manager, &universe_data);
     //hud.selection_manager = &selection_manager;
 }
 
@@ -37,11 +41,11 @@ void UniverseManager::OutlineUniverse() {
         
         new_map_data.uid = system_uid;
         new_map_data.name = "system " + std::to_string(system_uid);
-        new_map_data.radius = 100000.0f;
+        new_map_data.radius = 500000.0f;
         
         new_map_data.star_position = {new_map_data.radius, new_map_data.radius};
 
-        new_map_data.map_position = { (float)GetRandomValue(-100000, 100000), (float)GetRandomValue(-100000, 100000) };
+        new_map_data.map_position = { (float)GetRandomValue(-(int)new_map_data.radius, (int)new_map_data.radius), (float)GetRandomValue(-(int)new_map_data.radius, (int)new_map_data.radius) };
 
 
         SystemBodyData star_body_data = GenerateSystemStarData(new_map_data);
@@ -106,6 +110,183 @@ void UniverseManager::OutlineUniverse() {
 
 
 
+void UniverseManager::ConnectSystems() {
+
+    //=================================================  SETUP ==========================================================================
+    struct GraphEdge {
+        int a;
+        int b;
+        float distance;
+        bool selected = false;
+    };
+
+    int extra_connections = 25;
+
+    universe_data.connections.clear();
+    int num_systems = universe_data.map_data.size();
+
+    if(num_systems < 2) {
+         return;
+    }
+
+    std::vector<GraphEdge> edges;
+
+    std::vector<SystemMapData *> map_data_vector;
+    for(auto &system : universe_data.map_data) {
+        map_data_vector.push_back(&system.second);
+    }
+
+    for(int i = 0; i < num_systems; ++i) {
+        for(int j = i+1; j < num_systems; j++) {
+            GraphEdge edge;
+            edge.a = i;
+            edge.b = j;
+
+            edge.distance = Vector2DistanceSqr(map_data_vector[i]->map_position, map_data_vector[j]->map_position);
+            edges.push_back(edge);
+        }
+    }
+
+
+    std::sort(
+        edges.begin(),
+        edges.end(),
+        [](const GraphEdge& a, const GraphEdge& b)
+        {
+            return a.distance < b.distance;
+        }
+    );
+
+    std::vector<int> parent(num_systems);
+
+    for(int i = 0; i < num_systems; ++i)
+        parent[i] = i;
+
+    auto Find = [&](auto&& self, int x) -> int
+    {
+        if(parent[x] == x)
+            return x;
+
+        parent[x] = self(self, parent[x]);
+        return parent[x];
+    };
+
+    auto Union = [&](int a, int b)
+    {
+        a = Find(Find, a);
+        b = Find(Find, b);
+
+        if(a == b)
+            return false;
+
+        parent[b] = a;
+        return true;
+    };
+
+    //=================================================  END SETUP ==========================================================================
+
+    // ------------------------------------------------------------
+    // First pass:
+    //
+    // Build a minimum spanning tree.
+    //
+    // This guarantees every system is reachable.
+    // ------------------------------------------------------------
+
+
+    int connection_uid = 0;
+
+    for(auto& edge : edges)
+    {
+        if(Union(edge.a, edge.b))
+        {
+            edge.selected = true;
+            SystemConnection connection;
+
+            connection.uid = connection_uid++;
+            connection.system_a_uid = map_data_vector[edge.a]->uid;
+            connection.system_b_uid = map_data_vector[edge.b]->uid;
+            connection.discovered = false;
+            connection.activated = false;
+/*             
+            if(GetRandomValue(0, 100) > 50) {
+                connection.activated = true;
+            }
+            else {
+                connection.activated = false;
+            }
+ */
+            universe_data.connections.push_back(connection);
+            printf("first pass connection: %i  from: %i   to: %i\n", connection.uid, connection.system_a_uid, connection.system_b_uid);
+
+            if(static_cast<int>(universe_data.connections.size()) == num_systems - 1)
+                break;
+        }
+    }
+
+    // ------------------------------------------------------------
+    // Second pass:
+    //
+    // Add extra edges.
+    //
+    // These create loops in the graph.
+    // ------------------------------------------------------------
+
+    std::vector<GraphEdge> possible_extra_edges;
+
+    for(const auto& edge : edges) {
+        if(!edge.selected) {
+            possible_extra_edges.push_back(edge);
+        }
+    }
+
+    std::mt19937 rng;
+
+    std::shuffle(
+        possible_extra_edges.begin(),
+        possible_extra_edges.end(),
+        rng
+    );
+    
+
+    for(const auto& edge : possible_extra_edges)
+    {
+        //printf("extra new edge %i %i\n", edge.a, edge.b);
+        if(extra_connections <= 0)
+            break;
+
+        SystemConnection connection;
+
+        connection.uid = connection_uid++;
+        connection.system_a_uid = map_data_vector[edge.a]->uid;
+        connection.system_b_uid = map_data_vector[edge.b]->uid;
+
+        universe_data.connections.push_back(connection);
+        printf("seccond pass connection: %i  from: %i   to: %i\n", connection.uid, connection.system_a_uid, connection.system_b_uid);
+
+        --extra_connections;
+    }
+
+    printf("\ntotal connections: %i\n", universe_data.connections.size());
+    for(auto &connection : universe_data.connections) {
+        printf("connection: %i  from: %i   to: %i\n", connection.uid, connection.system_a_uid, connection.system_b_uid);
+    }
+
+}
+
+
+void UniverseManager::DiscoverSystemConnections(int system_uid) {
+    for(auto &connection : universe_data.connections)
+    {
+        if(connection.system_a_uid == system_uid ||
+           connection.system_b_uid == system_uid)
+        {
+            connection.discovered = true;
+            connection.activated = true;
+        }
+    }
+}
+
 
 void UniverseManager::GenerateLocations(SystemMapData &map_data) {
     std::vector<SystemBodyData*> bodies;
@@ -152,6 +333,8 @@ void UniverseManager::GenerateNewSystem(int system_uid) {
     current_system = std::make_unique<System>(universe_data.map_data[system_uid]);
 
     current_system->GenerateSystem(&selection_manager);
+    DiscoverSystemConnections(current_system->system_data.uid);
+
     current_system->landing_requested.Connect( [&]() { OnLandAtLocationRequested();});
     current_system->system_travel_requested.Connect( [&]() { OnTravelToSystemRequested();});
 }
@@ -167,12 +350,12 @@ void UniverseManager::Update() {
         current_location.reset();
         return;
     }
+
     if(location_ready_to_load) {
         location_ready_to_load = false;
         LandAtLocation();
         return;
     }
-
 
     if(system_ready_to_load) {
         system_ready_to_load = false;
@@ -309,7 +492,7 @@ void UniverseManager::TravelToSystem() {
         printf("could not spawn player\n");
     }
 
-    hud.SetTarget(g_current_player, current_system.get(), &selection_manager, &universe_data.map_data);
+    hud.SetTarget(g_current_player, current_system.get(), &selection_manager, &universe_data);
 
 
 
@@ -402,9 +585,9 @@ void UniverseManager::LaunchFromLocation() {
 
     int player_uid = g_current_player->entity_data->uid;
 
-    //Vector2 return_position = g_game_data.transition.return_position;
-
     selection_manager.UnregisterAll();
+    //hud.ClearTarget();
+
     // Move entity data back to the system
     current_system->RegisterWithManagers();
     current_system->system_data.entity_data[player_uid] = std::move(current_location->location_data.entity_data[player_uid]);

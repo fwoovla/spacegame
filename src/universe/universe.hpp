@@ -1,8 +1,5 @@
 #pragma once
 
-//#include "entity.hpp"
-//#include "../scenes/scenes.hpp"
-//#include "../uilayers/uilayers.hpp"
 #include "../uilayers/flightcontrol/flightcontrol.hpp"
 #include "system.hpp"
 #include "location.hpp"
@@ -16,11 +13,22 @@ struct Chunk {
 
 
 
+struct SystemConnection {
+    int uid = -1;
+    int system_a_uid = -1;
+    int system_b_uid = -1;
+
+    bool discovered = false;
+    bool activated = false;
+};
+
+
 struct UniverseData {
     uint64_t seed;
     int max_systems = 0;
 
     std::unordered_map<int, SystemMapData> map_data;
+    std::vector<SystemConnection> connections;
 
 };
 
@@ -31,6 +39,8 @@ class UniverseManager {
         ~UniverseManager(){};
         void CreateUniverse(std::string player_name);
         void OutlineUniverse();
+        void ConnectSystems();
+        void DiscoverSystemConnections(int system_uid);
 
         void GenerateLocations(SystemMapData &map_data);
         void GenerateSites(SystemMapData &map_data);
@@ -97,4 +107,6 @@ SystemSiteData GenerateSystemSiteData(SystemLocationData *parent, int uid);
 LocationMapData GenerateLocationMapData(System *system, int location_uid);
 
 LocationSiteData GenerateLocationSiteData(SystemSiteData *site, Vector2 position);
+
+
 

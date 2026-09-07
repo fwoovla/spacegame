@@ -37,15 +37,13 @@ void UniversePanel::Draw() {
     //DrawRectangleRoundedLines(map_frame, 0.02f, 10, WHITE);
     //DrawRectangleRoundedLines(list_frame, 0.02f, 10, WHITE);
 
-    universe_list.Draw(true);
+    //universe_list.Draw(true);
     universe_map.Draw();
     DrawButton(close_button);
 
-    if(selected_system_data.system != nullptr) {
-        if(current_system_uid != selected_system_data.system->uid) {
-            DrawButton(set_target_button);
-        }
-    }
+    if(can_jump) {
+        DrawButton(set_target_button);
+    }    
 
 }
 
@@ -58,10 +56,22 @@ void UniversePanel::Update() {
         close_universe_panel.EmitSignal();
     }
 
+    can_jump = false;
     if(selected_system_data.system != nullptr) {
         if(current_system_uid != selected_system_data.system->uid) {
-            if(IsButtonHovered(set_target_button, g_viewport.scale) and g_input.mouse_left_down) {
-                set_system_target.EmitSignal();
+
+            for(auto &connection : universe->connections) {
+
+                if(connection.system_a_uid == selected_system_data.system->uid or connection.system_b_uid == selected_system_data.system->uid) {
+                    if(connection.activated) {
+                        can_jump = true;           
+                    }
+                }
+            }
+            if(can_jump) {
+                if(IsButtonHovered(set_target_button, g_viewport.scale) and g_input.mouse_left_down) {
+                    set_system_target.EmitSignal();
+                }
             }
         }
     }
@@ -69,15 +79,22 @@ void UniversePanel::Update() {
 }
 
 
-void UniversePanel::CreateUniverseList(std::unordered_map<int, SystemMapData> *_map_data, int system_uid) {
 
-    universe_list.master_system_list.clear();
+
+void UniversePanel::CreateUniverseList(UniverseData *_universe, int system_uid) {
 
     current_system_uid = system_uid;
+
+    universe = _universe;
+    map_data = &universe->map_data;
+
+    
     universe_map.current_system_uid = system_uid;
+    universe_map.universe = universe;
+    
+    universe_list.master_system_list.clear();
     universe_list.current_system_uid = system_uid;
 
-    map_data = _map_data;
 
     for(auto &[uid, system] : *map_data) {
         UniverseListEntry new_system;
@@ -86,6 +103,23 @@ void UniversePanel::CreateUniverseList(std::unordered_map<int, SystemMapData> *_
         CreateLabel(new_system.list_label, {0,0}, 24, RAYWHITE, system.name);
         CreateLabel(new_system.map_label, {0,0}, 24, RAYWHITE, system.name);
         new_system.selected = false;
+
+/* 
+        for(auto &connection : universe->connections) {
+            if(connection.system_a_uid == system.uid or connection.system_b_uid == system.uid) {
+                Vector2 c_pos;
+                if(connection.system_a_uid == system.uid) {
+                    c_pos = map_data->at(connection.system_b_uid).map_position;
+                    //c_pos = universe->map_data[connection.system_b_uid].map_position;
+                }
+                else if(connection.system_b_uid == system.uid) {
+                    c_pos = map_data->at(connection.system_a_uid).map_position;
+                }
+                //new_system.master_connection_points.push_back(c_pos);
+                //new_system.display_connection_points.push_back(c_pos);
+            }
+        } */
+
         universe_list.master_system_list.push_back(new_system);
     }
 

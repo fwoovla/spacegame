@@ -15,6 +15,9 @@ void UniverseMap::Draw() {
 
     //DrawRectangleRounded(bounds, 0.2f, 10, BLACK);
     //DrawRectangleRoundedLines(bounds, 0.02f, 10, WHITE);
+    if(!universe) {
+        return;
+    }
 
     for(UniverseListEntry &entry : *display_system_list) {
         Vector2 map_pos = Vector2Add(entry.position, center);
@@ -59,6 +62,8 @@ void UniverseMap::Draw() {
             label_color = WHITE;
             
             DrawCircleLinesV(map_pos, 10, WHITE);
+
+/*             
             if(g_input.mouse_left) {
                 selected_system_data->selected = false;
 
@@ -69,15 +74,65 @@ void UniverseMap::Draw() {
                 entry.selected = true;
                 *selected_system_data = entry;
             }
-
+ */
         }
 
         entry.map_label.default_color = label_color;
         DrawLabelCentered(entry.map_label, g_font);
+
+    }
+
+    for(auto &connection : universe->connections) {
+        if(!connection.discovered) {
+            continue;
+        }
+               
+        else {
+
+            UniverseListEntry *a = nullptr;
+            UniverseListEntry *b = nullptr;
+            for(auto &entry : *display_system_list)
+            {
+                if(entry.system->uid == connection.system_a_uid)
+                a = &entry;
+                if(entry.system->uid == connection.system_b_uid)
+                b = &entry;
+            }
+            if(a != nullptr && b != nullptr) {
+                Vector2 a_pos = Vector2Add(a->position, center);
+                Vector2 b_pos = Vector2Add(b->position, center);
+                
+                if(!CheckCollisionPointRec(a_pos, bounds)) {
+                    continue;
+                }
+                if(!CheckCollisionPointRec(b_pos, bounds)) {
+                    continue;
+                }
+
+                if(!connection.activated) {
+                    DrawRectangle(a_pos.x, a_pos.y, 5, 5, RED);
+                    DrawRectangle(b_pos.x, b_pos.y, 5, 5, RED);
+                    
+                }
+                else {
+                    DrawRectangle(a_pos.x, a_pos.y, 5, 5, GREEN);
+                    DrawRectangle(b_pos.x, b_pos.y, 5, 5, GREEN);
+                    DrawLineV(
+                        a_pos,
+                        b_pos,
+                        RAYWHITE
+                    );
+                }
+            }
+        }
     }
 }
 
 void UniverseMap::Update() {
+
+    if(!universe) {
+        return;
+    }
     animation_factor = sin( GetTime() * 3 );
     //printf("animation : %0.5f\n", animation_factor);
 
@@ -87,6 +142,19 @@ void UniverseMap::Update() {
     
     HandleMapMovement();
 
+    for(UniverseListEntry &entry : *display_system_list) {
+        Vector2 map_pos = Vector2Add(entry.position, center);
+        if(CheckCollisionPointCircle(g_input.screen_mouse_position, map_pos, 10)) {
+            if(g_input.mouse_left) {
+                selected_system_data->selected = false;
+                for(auto &e : *display_system_list) {
+                    e.selected = false;
+                }
+                entry.selected = true;
+                *selected_system_data = entry;
+            }
+        }
+    }   
 }
 
 
@@ -112,5 +180,6 @@ void UniverseMap::HandleMapMovement() {
         Vector2 map_pos = entry.system->map_position / map_scale;
         Vector2 target_pos = Vector2Subtract(map_pos, offset);
         entry.position = Vector2Lerp(entry.position, target_pos, 0.1f);
+
     }
 }

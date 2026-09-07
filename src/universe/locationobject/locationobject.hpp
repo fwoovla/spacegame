@@ -60,7 +60,7 @@ class LocationObject  {
 class LocationSite : public LocationObject {
     public:
         LocationSite(LocationSiteData *_data);
-        ~LocationSite() = default;
+        ~LocationSite();
         void Update() override;
         void Draw() override;        
         void DrawOverlay() override;
@@ -80,7 +80,7 @@ class LocationSite : public LocationObject {
 class LocationShip : public LocationObject {
     public:
         LocationShip(ShipControllerData *_data, Vector2 position);
-        ~LocationShip() = default;
+        ~LocationShip();
         void Update() override;
         void Draw() override;        
         void DrawOverlay() override;

@@ -22,6 +22,14 @@ LocationShip::LocationShip(ShipControllerData *_data, Vector2 position) {
 
 
 
+LocationShip::~LocationShip() {
+    if (selection_manager){
+        selection_manager->Unregister(&info_area);
+    }
+}
+
+
+
 
 void LocationShip::Update() {
     float detect_radius = ship_data->radius * DETECT_RADIUS_FACTOR;

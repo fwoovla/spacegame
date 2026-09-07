@@ -33,7 +33,6 @@ FlightControl::FlightControl() {
     components.push_back(std::move(info));
 //=====================================================
 
-
     autopiolot_indicator = {
         .x = 250,
         .y = g_viewport.resolution.y - 100,
@@ -68,7 +67,11 @@ FlightControl::FlightControl() {
 
 
 FlightControl::~FlightControl() {
-
+/*     if(selection_manager) {
+        selection_manager->selected.Disconnect(select_signal_id);
+        selection_manager->deselected.Disconnect(deselect_signal_id);
+    }
+ */
 }
 
 
@@ -228,7 +231,7 @@ void FlightControl::Draw() {
 }
 
 
-void FlightControl::SetTarget(CreatureEntity *_entity, System *sys, SelectionManager *sm, std::unordered_map<int, SystemMapData> *_universe_map) {
+void FlightControl::SetTarget(CreatureEntity *_entity, System *sys, SelectionManager *sm, UniverseData *_universe) {
 
     shared_nav_data = {};
     shared_target_data = {};
@@ -238,10 +241,11 @@ void FlightControl::SetTarget(CreatureEntity *_entity, System *sys, SelectionMan
     selection_manager->selected.Connect([this]() { OnTargetSelected();});
     selection_manager->deselected.Connect([this]() { OnTargetDeSelected();});
     system = sys;
-    universe_map = _universe_map;
+    universe = _universe;
+    universe_map = &_universe->map_data;
 
     navigation->CreateSystemList(system);
-    navigation->universe_panel.CreateUniverseList(universe_map, system->system_data.uid);
+    navigation->universe_panel.CreateUniverseList(universe, system->system_data.uid);
 
     navigation->SetSharedData(&shared_nav_data, system->system_data.uid);
 
@@ -271,6 +275,9 @@ void FlightControl::ClearTarget() {
 
 void FlightControl::OnTargetSelected() {
 
+    if(!selection_manager) {
+        return;
+    } 
     if(selection_manager->selection) {
          MouseTriggerArea *selected_area = selection_manager->selection;
         

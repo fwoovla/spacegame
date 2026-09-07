@@ -25,7 +25,7 @@ SystemLocation::SystemLocation(SystemLocationData *_data) {
 
 SystemLocation::~SystemLocation() {
     if (selection_manager){
-        //selection_manager->Unregister(&info_area);
+        selection_manager->Unregister(&info_area);
     }
 }
 

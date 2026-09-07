@@ -28,7 +28,7 @@ SystemSite::SystemSite(SystemSiteData *_data) {
 
 SystemSite::~SystemSite() {
     if (selection_manager){
-        //selection_manager->Unregister(&info_area);
+        selection_manager->Unregister(&info_area);
     }
 }
 

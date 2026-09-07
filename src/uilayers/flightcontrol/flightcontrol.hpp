@@ -3,6 +3,8 @@
 #include "autppilot.hpp"
 
 
+struct UniverseData;  //from universe.hpp
+
 struct NavTargetSharedData {
 
     SystemSiteData *site = nullptr;
@@ -116,6 +118,9 @@ struct UniverseListEntry {
     SystemMapData *system = nullptr;
     Vector2 position = {0, 0};
     bool selected = false;
+
+    //std::vector<Vector2> master_connection_points;
+    //std::vector<Vector2> display_connection_points;
 };
 
 class UniverseList {
@@ -139,7 +144,7 @@ class UniverseList {
     std::vector<UniverseListEntry> master_system_list;
     std::vector<UniverseListEntry> display_system_list;
 
-    UniverseListEntry *selected_system_data;
+    UniverseListEntry *selected_system_data = nullptr;
 
     Rectangle bounds;
 
@@ -164,8 +169,10 @@ class UniverseMap {
     void Draw();
     void HandleMapMovement();
 
-    std::vector<UniverseListEntry> *display_system_list;
-    UniverseListEntry *selected_system_data;
+    std::vector<UniverseListEntry> *display_system_list = nullptr;
+    UniverseListEntry *selected_system_data = nullptr;
+
+    UniverseData *universe = nullptr;
 
     Rectangle bounds;
     Vector2 center;
@@ -177,15 +184,19 @@ class UniverseMap {
 
 };
 
+
+
+
 class UniversePanel {
     public:
     UniversePanel() = default;
     UniversePanel(Rectangle _bounds);
     void Draw();
     void Update();
-    void CreateUniverseList(std::unordered_map<int, SystemMapData> *universe_map, int system_uid);
+    void CreateUniverseList(UniverseData *_universe, int system_uid);
 
-    std::unordered_map<int, SystemMapData> *map_data;
+    UniverseData *universe = nullptr;
+    std::unordered_map<int, SystemMapData> *map_data = nullptr;
 
     UniverseListEntry selected_system_data;
 
@@ -206,6 +217,8 @@ class UniversePanel {
     Signal set_system_target;
 
     int current_system_uid;
+
+    bool can_jump = false;
 
 };
 
@@ -330,11 +343,12 @@ class FlightControl : public UILayer {
         void Update() override;
         void Draw() override;
 
-        void SetTarget(CreatureEntity *_entity, System *sys, SelectionManager *sm, std::unordered_map<int, SystemMapData> *_universe_map);
+        void SetTarget(CreatureEntity *_entity, System *sys, SelectionManager *sm, UniverseData *_universe);
         void ClearTarget();
 
         void OnTargetSelected();
         void OnTargetDeSelected();
+
         void OnNavTargetDeSelected();
         void OnNavTargetSelected();
         void OnEnterTargetSpace();
@@ -350,6 +364,7 @@ class FlightControl : public UILayer {
         CreatureEntity *entity; //this is the entity controlling the ship
         SelectionManager *selection_manager = nullptr; //gets area info and signals out
         System *system = nullptr; // system.map_data has all the data
+        UniverseData *universe;
         std::unordered_map<int, SystemMapData> *universe_map; 
 
         Navigation *navigation;
