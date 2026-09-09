@@ -9,21 +9,28 @@ UniversePanel::UniversePanel(Rectangle _bounds) {
     };
 
     map_frame = {
-        .x = center.x - (bounds.y + bounds.height - 110)/2,
+        .x = center.x - (bounds.y + bounds.height + 500)/2,
         .y = center.y - (bounds.y + bounds.height - 110)/2,
-        .width = bounds.y + bounds.height - 110,
+        .width = bounds.y + bounds.height + 200,
         .height = bounds.y + bounds.height - 110
     };
 
     list_frame = {
         .x = bounds.x + 20,
         .y = map_frame.y,
-        .width = 250,
+        .width = 200,
         .height = bounds.y + bounds.height - 175
     };
 
     CreateButton(close_button, {bounds.x + (bounds.width/2), bounds.y + bounds.height - 25}, {100, 30}, GREEN, "CLOSE");
-    CreateButton(set_target_button, {list_frame.x + (list_frame.width/2), list_frame.y + list_frame.height + 90}, {100, 30}, GREEN, "SET");
+    
+    CreateLabel(details_header_label, {map_frame.x + map_frame.width + 25, map_frame.y + 10}, 40, WHITE, "DEATILS");
+    CreateLabel(details_label, {details_header_label.position.x + 10, details_header_label.position.y + 30}, 24, WHITE, "DEATILS");
+
+    CreateButton(set_target_button, {details_label.position.x + 100, bounds.y + bounds.height - 25}, {100, 30}, GREEN, "SET");
+
+    CreateButton(center_button, {details_header_label.position.x + 240, details_header_label.position.y}, {100, 30}, GREEN, "CENTER");
+    center_button.text_size = 24;
 
     universe_list = UniverseList(list_frame);
 
@@ -34,7 +41,7 @@ UniversePanel::UniversePanel(Rectangle _bounds) {
 void UniversePanel::Draw() {
     DrawRectangleRounded(bounds, 0.2f, 10, BLACK);
 
-    //DrawRectangleRoundedLines(map_frame, 0.02f, 10, WHITE);
+    DrawRectangleRoundedLines(map_frame, 0.02f, 10, WHITE);
     //DrawRectangleRoundedLines(list_frame, 0.02f, 10, WHITE);
 
     //universe_list.Draw(true);
@@ -43,13 +50,26 @@ void UniversePanel::Draw() {
 
     if(can_jump) {
         DrawButton(set_target_button);
-    }    
+    }
+    if(!universe_map.use_selected_to_center) {
+        DrawButton(center_button);
+    }
+
+    DrawLine(details_header_label.position.x - 20, 
+        details_header_label.position.y - 10, 
+        details_header_label.position.x + 150, 
+        details_header_label.position.y - 10, 
+        WHITE
+    );
+
+    DrawLabel(details_header_label, g_font);
+    DrawLabel(details_label, g_font);
 
 }
 
 void UniversePanel::Update() {
 
-    universe_list.Update(true);
+    universe_list.Update(false);
     universe_map.Update();
 
     if(IsButtonHovered(close_button, g_viewport.scale) and g_input.mouse_left_down) {
@@ -73,6 +93,37 @@ void UniversePanel::Update() {
                     set_system_target.EmitSignal();
                 }
             }
+        }
+    }
+    if(selected_system_data.system != nullptr) {
+
+        if(!universe_map.use_selected_to_center) {
+            if(IsButtonHovered(center_button, g_viewport.scale) and g_input.mouse_left_down) {
+                    universe_map.use_selected_to_center = true;
+                }
+        }
+
+        details_label.default_color = RED;
+
+        details_label.text = "name: unexplored";
+        details_label.text += "\nbodies: ?";
+        details_label.text += "\nlocations: ?";
+        details_label.text += "\nlanding sites: ?";
+        
+        if(selected_system_data.system->examined) {
+            details_label.default_color = GOLD;
+            details_label.text = "name: " + selected_system_data.system->name;
+            details_label.text += "\nbodies: " + std::to_string(selected_system_data.system->bodies.size());
+            details_label.text += "\nlocations: ?";
+            details_label.text += "\nlanding sites: ?";
+        }
+
+        if(selected_system_data.system->discovered) {
+            details_label.default_color = GREEN;
+            details_label.text = "name: " + selected_system_data.system->name;
+            details_label.text += "\nbodies: " + std::to_string(selected_system_data.system->bodies.size());
+            details_label.text += "\nlocations: " + std::to_string(selected_system_data.system->locations.size());
+            details_label.text += "\nlanding sites: " + std::to_string(selected_system_data.system->sites.size());
         }
     }
 

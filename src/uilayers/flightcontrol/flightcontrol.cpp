@@ -86,13 +86,15 @@ void FlightControl::Update() {
 
     if(g_input.keys_pressed[0] == KEY_ONE) {
         if(focused_component) {
-            focused_component->state = COMPONENT_STATE::MINIMIZED;
+            focused_component->SetState(COMPONENT_STATE::MINIMIZED);
+            //focused_component->state = COMPONENT_STATE::MINIMIZED;
             g_input.in_use = false;
         }
         FlightComponent *next = components[0].get();
         if(focused_component != next) {   
             focused_component = components[0].get();
-            focused_component->state = COMPONENT_STATE::FOCUSED;
+            focused_component->SetState(COMPONENT_STATE::FOCUSED);
+            //focused_component->state = COMPONENT_STATE::FOCUSED;
             g_input.in_use = true;
         }
         else {
@@ -102,13 +104,13 @@ void FlightControl::Update() {
     }
     if(g_input.keys_pressed[0] == KEY_TWO) {
         if(focused_component) {
-            focused_component->state = COMPONENT_STATE::MINIMIZED;
+            focused_component->SetState(COMPONENT_STATE::MINIMIZED);
             g_input.in_use = false;
         }
         FlightComponent *next = components[1].get();
         if(focused_component != next) {   
             focused_component = components[1].get();
-            focused_component->state = COMPONENT_STATE::FOCUSED;
+            focused_component->SetState(COMPONENT_STATE::FOCUSED);
             g_input.in_use = true;
         }
         else {
@@ -120,12 +122,12 @@ void FlightControl::Update() {
     }
     if(g_input.keys_pressed[0] == KEY_THREE) {
         if(focused_component) {
-            focused_component->state = COMPONENT_STATE::MINIMIZED;
+            focused_component->SetState(COMPONENT_STATE::MINIMIZED);
         }
         FlightComponent *next = components[2].get();
         if(focused_component != next) {   
             focused_component = components[2].get();
-            focused_component->state = COMPONENT_STATE::FOCUSED;
+            focused_component->SetState(COMPONENT_STATE::FOCUSED);
         }
         else {
             focused_component = nullptr;

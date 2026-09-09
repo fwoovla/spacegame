@@ -62,7 +62,7 @@ void ShipController::Update(Vector2 &position) {
             }
         }
     }
-    else {
+    else if(!g_input.in_use) {
         ManualFlightInput(dt);
     }
     FlightUpdate(position, dt);

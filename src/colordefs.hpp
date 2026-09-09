@@ -1,6 +1,7 @@
 #pragma once
 
 #include <raylib.h>
+#include <vector>
 
 
 inline const Color DARKRED = {.r = 131, .g = 12, .b = 0, .a = 255};
@@ -19,16 +20,66 @@ inline const Color TRANSGREEN = {.r = 0, .g = 255, .b = 0, .a = 60};
 
 
 
-//pivot on red  0- 100
-inline const int OCEAN_RED_LOW = 0;
-inline const Color TERRAINCOLOR_OCEAN = DARKBLUE;
+inline const Color PLANET_BLUE = {.r = 70, .g = 130, .b = 200, .a = 255};
+inline const Color PLANET_DARKBLUE = {.r = 25, .g = 65, .b = 130, .a = 255};
+inline const Color PLANET_CYAN = {.r = 60, .g = 180, .b = 180, .a = 255};
 
-//pivot on red  65 - 125
-inline const int GRASS_RED_LOW = 37;
-inline const Color TERRAINCOLOR_GRASS = DARKGREEN;
+inline const Color PLANET_GREEN = {.r = 70, .g = 150, .b = 80, .a = 255};
+inline const Color PLANET_DARKGREEN = {.r = 35, .g = 95, .b = 45, .a = 255};
 
-inline const Color TERRAINCOLOR_DIRT = DARKBROWN;
+inline const Color PLANET_EARTH = {.r = 80, .g = 150, .b = 190, .a = 255};
+inline const Color PLANET_TERRAN = {.r = 100, .g = 155, .b = 110, .a = 255};
 
-//pivot on all  100 - 200
-inline const int ROCK_LOW = 100;
-inline const Color TERRAINCOLOR_ROCK = DARKGRAY;
+inline const Color PLANET_RED = {.r = 180, .g = 65, .b = 45, .a = 255};
+inline const Color PLANET_DARKRED = {.r = 110, .g = 40, .b = 30, .a = 255};
+
+inline const Color PLANET_ORANGE = {.r = 200, .g = 115, .b = 45, .a = 255};
+inline const Color PLANET_YELLOW = {.r = 200, .g = 175, .b = 65, .a = 255};
+
+inline const Color PLANET_SAND = {.r = 190, .g = 165, .b = 110, .a = 255};
+inline const Color PLANET_BROWN = {.r = 125, .g = 85, .b = 55, .a = 255};
+inline const Color PLANET_DARKBROWN = {.r = 75, .g = 50, .b = 35, .a = 255};
+
+inline const Color PLANET_PURPLE = {.r = 125, .g = 75, .b = 155, .a = 255};
+inline const Color PLANET_DARKPURPLE = {.r = 70, .g = 40, .b = 90, .a = 255};
+
+inline const Color PLANET_PINK = {.r = 190, .g = 100, .b = 140, .a = 255};
+
+inline const Color PLANET_GRAY = {.r = 125, .g = 125, .b = 130, .a = 255};
+inline const Color PLANET_DARKGRAY = {.r = 70, .g = 70, .b = 75, .a = 255};
+inline const Color PLANET_LIGHTGRAY = {.r = 175, .g = 175, .b = 180, .a = 255};
+
+inline const Color PLANET_ICE = {.r = 150, .g = 205, .b = 220, .a = 255};
+inline const Color PLANET_PALEBLUE = {.r = 120, .g = 170, .b = 205, .a = 255};
+
+inline const Color PLANET_GAS = {.r = 175, .g = 135, .b = 100, .a = 255};
+inline const Color PLANET_GAS_LIGHT = {.r = 205, .g = 175, .b = 135, .a = 255};
+inline const Color PLANET_GAS_DARK = {.r = 115, .g = 80, .b = 65, .a = 255};
+
+inline const std::vector<Color> g_planet_colors = {
+    PLANET_BLUE,
+    PLANET_DARKBLUE,
+    PLANET_CYAN,
+    PLANET_GREEN,
+    PLANET_DARKGREEN,
+    PLANET_EARTH,
+    PLANET_TERRAN,
+    PLANET_RED,
+    PLANET_DARKRED,
+    PLANET_ORANGE,
+    PLANET_YELLOW,
+    PLANET_SAND,
+    PLANET_BROWN,
+    PLANET_DARKBROWN,
+    PLANET_PURPLE,
+    PLANET_DARKPURPLE,
+    PLANET_PINK,
+    PLANET_GRAY,
+    PLANET_DARKGRAY,
+    PLANET_LIGHTGRAY,
+    PLANET_ICE,
+    PLANET_PALEBLUE,
+    PLANET_GAS,
+    PLANET_GAS_LIGHT,
+    PLANET_GAS_DARK
+};

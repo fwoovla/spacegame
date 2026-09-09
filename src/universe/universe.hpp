@@ -26,6 +26,7 @@ struct SystemConnection {
 struct UniverseData {
     uint64_t seed;
     int max_systems = 0;
+    float radius = 0.0f;
 
     std::unordered_map<int, SystemMapData> map_data;
     std::vector<SystemConnection> connections;
@@ -42,8 +43,8 @@ class UniverseManager {
         void ConnectSystems();
         void DiscoverSystemConnections(int system_uid);
 
-        void GenerateLocations(SystemMapData &map_data);
-        void GenerateSites(SystemMapData &map_data);
+        //void GenerateLocations(SystemMapData &map_data);
+        //void GenerateSites(SystemMapData &map_data);
 
         //void PopulateSystem(SystemMapData &map_data);
         void GenerateNewSystem(int system_uid);
@@ -92,6 +93,10 @@ class UniverseManager {
    
 };
 
+
+void UniverseGen_MakeSystem(SystemMapData &sys_map_data);
+void UniverseGen_MakeLocations(SystemMapData &sys_map_data);
+void UniverseGen_MakeSites(SystemMapData &sys_map_data);
 
 
 EntityData GenerateEntityInstance(EntityTemplateData &tmpl, Vector2 position);

@@ -91,7 +91,7 @@ class SystemList {
     int list_size = 0;
     LIST_TYPE list_type = LIST_TYPE::ALL;
     int scroll_index = 0;
-    int visible_count = 8;
+    int visible_count = 9;
 
     Signal select_item;
 };
@@ -176,6 +176,8 @@ class UniverseMap {
 
     Rectangle bounds;
     Vector2 center;
+    Vector2 offset;
+    bool use_selected_to_center = true;
     float map_scale = 500.0;
 
     int current_system_uid = -1;
@@ -212,6 +214,11 @@ class UniversePanel {
 
     Button close_button;
     Button set_target_button;
+    Button center_button;
+
+
+    Label details_header_label;
+    Label details_label;
 
     Signal close_universe_panel;
     Signal set_system_target;
@@ -236,7 +243,8 @@ enum COMPONENT_STATE {
 
 class FlightComponent : public UILayer {
     public:
-    virtual ~FlightComponent() = default;
+    ~FlightComponent() = default;
+    virtual void SetState(COMPONENT_STATE new_state) = 0;
     COMPONENT_STATE state = MINIMIZED;
     Rectangle min_bounds;
     Rectangle max_bounds;
@@ -263,6 +271,7 @@ class Navigation : public FlightComponent{
     ~Navigation() override;
     void Update() override;
     void Draw() override;
+    void SetState(COMPONENT_STATE new_state) override;
 
 
     void CreateSystemList(System *system);
@@ -312,6 +321,7 @@ class ShipInfo : public FlightComponent{
     ~ShipInfo() override;
     void Update() override;
     void Draw() override;
+    void SetState(COMPONENT_STATE new_state) override;
 
     Label entity_label;
     
@@ -325,6 +335,7 @@ class TargetScreen : public FlightComponent {
     ~TargetScreen() override;
     void Update() override;
     void Draw() override;
+    void SetState(COMPONENT_STATE new_state) override;
 
     NavTargetSharedData *target_data = nullptr;
 

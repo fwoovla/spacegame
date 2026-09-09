@@ -72,3 +72,6 @@ void TargetScreen::Draw() {
 }
 
 
+void TargetScreen::SetState(COMPONENT_STATE new_state) {
+    state = new_state;
+}

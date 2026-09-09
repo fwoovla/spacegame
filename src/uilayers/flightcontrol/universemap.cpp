@@ -78,7 +78,9 @@ void UniverseMap::Draw() {
         }
 
         entry.map_label.default_color = label_color;
-        DrawLabelCentered(entry.map_label, g_font);
+        if(entry.system->examined) {
+            DrawLabelCentered(entry.map_label, g_font);
+        }
 
     }
 
@@ -154,7 +156,8 @@ void UniverseMap::Update() {
                 *selected_system_data = entry;
             }
         }
-    }   
+    }
+    
 }
 
 
@@ -174,12 +177,40 @@ void UniverseMap::HandleMapMovement() {
         return;
     }
 
-    Vector2 offset = selected_system_data->system->map_position / map_scale;
+    float step = 500.0f;
+
+    if(g_input.key_up) {
+        offset.y -= step * GetFrameTime();
+        use_selected_to_center = false;
+        //printf("up\n");
+
+    }
+    else if(g_input.key_down) {
+        offset.y += step * GetFrameTime();
+        use_selected_to_center = false;
+        ///printf("down\n");
+    }
+    if(g_input.key_left) {
+        offset.x -= step * GetFrameTime();
+        use_selected_to_center = false;
+        //printf("left\n");
+    }
+    if(g_input.key_right) {
+        offset.x += step * GetFrameTime();
+        use_selected_to_center = false;
+        //printf("right\n");
+    }
+
+    if(use_selected_to_center){
+        offset = selected_system_data->system->map_position / map_scale;
+        //printf("selected\n");
+        
+    }
 
     for(auto &entry : *display_system_list) {
         Vector2 map_pos = entry.system->map_position / map_scale;
         Vector2 target_pos = Vector2Subtract(map_pos, offset);
         entry.position = Vector2Lerp(entry.position, target_pos, 0.1f);
-
     }
+
 }

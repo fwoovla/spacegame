@@ -32,3 +32,7 @@ void ShipInfo::Draw() {
     DrawLabelCentered(top_label, g_font);
 
 }
+
+void ShipInfo::SetState(COMPONENT_STATE new_state) {
+    state = new_state;
+}

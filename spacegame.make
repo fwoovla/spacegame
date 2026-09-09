@@ -131,6 +131,7 @@ GENERATED += $(OBJDIR)/textinput.o
 GENERATED += $(OBJDIR)/timer.o
 GENERATED += $(OBJDIR)/titlescene.o
 GENERATED += $(OBJDIR)/titleuilayer.o
+GENERATED += $(OBJDIR)/universegen.o
 GENERATED += $(OBJDIR)/universelist.o
 GENERATED += $(OBJDIR)/universemanager.o
 GENERATED += $(OBJDIR)/universemap.o
@@ -190,6 +191,7 @@ OBJECTS += $(OBJDIR)/textinput.o
 OBJECTS += $(OBJDIR)/timer.o
 OBJECTS += $(OBJDIR)/titlescene.o
 OBJECTS += $(OBJDIR)/titleuilayer.o
+OBJECTS += $(OBJDIR)/universegen.o
 OBJECTS += $(OBJDIR)/universelist.o
 OBJECTS += $(OBJDIR)/universemanager.o
 OBJECTS += $(OBJDIR)/universemap.o
@@ -419,6 +421,9 @@ $(OBJDIR)/systemlocation.o: src/universe/systemobject/systemlocation.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/systemsite.o: src/universe/systemobject/systemsite.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/universegen.o: src/universe/universegen.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/universemanager.o: src/universe/universemanager.cpp

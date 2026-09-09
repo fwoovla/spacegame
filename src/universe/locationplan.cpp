@@ -42,7 +42,7 @@ LocationPlan GenerateNewPlan(LocationLocalData local_data) {
         pos.y = GetRandomValue(0, (new_plan.size_y - 2) - 1) + 1;
 
         new_plan.site_locations[uid] = pos *  new_plan.grid_size;
-        printf("new site %i  at grid %0.1f  %0.1f\n", uid, pos.x, pos.y); 
+        //printf("new site %i  at grid %0.1f  %0.1f\n", uid, pos.x, pos.y); 
     }
 
     return new_plan;

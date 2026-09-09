@@ -76,7 +76,7 @@ Navigation::Navigation(Rectangle min, Rectangle max) {
     state_buttons[SYSTEM] = sys;
     state_buttons[UNIVERSE] = uni;
 
-    universe_panel = UniversePanel( {75, 25, g_viewport.resolution.x - 100, g_viewport.resolution.y - 175} );
+    universe_panel = UniversePanel( {0, 0, g_viewport.resolution.x, g_viewport.resolution.y - 120} );
     universe_panel.close_universe_panel.Connect([this]() {OnCloseUniversePanel();});
     universe_panel.set_system_target.Connect([this]() {OnSetSystemTarget();});
 
@@ -207,10 +207,11 @@ void Navigation::Draw() {
         color = GREEN;
         bounds = max_bounds;
     }
-    DrawRectangleRounded(bounds, 0.2f, 2, TRANSDARKERGRAY);
-    DrawRectangleRoundedLines(bounds, 0.2f, 2, color);
-
+    
     if(nav_state != UNIVERSE) {
+        
+        DrawRectangleRounded(bounds, 0.2f, 2, TRANSDARKERGRAY);
+        DrawRectangleRoundedLines(bounds, 0.2f, 2, color);
 
         top_label.position = {(bounds.width/2) + bounds.x, bounds.y + 20};
         DrawLabelCentered(top_label, g_font);
@@ -367,4 +368,13 @@ void Navigation::OnSetSystemTarget() {
 
     g_game_data.transition.system_id = universe_panel.selected_system_data.system->uid;
 
+}
+
+void Navigation::SetState(COMPONENT_STATE new_state) {
+    state = new_state;
+    if(new_state == COMPONENT_STATE::MINIMIZED) {
+        nav_state = SYSTEM;
+        column = LIST;
+        state_button_index = SYSTEM;
+    }
 }

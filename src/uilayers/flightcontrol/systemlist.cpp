@@ -41,6 +41,9 @@ void SystemList::Update(bool focussed) {
         if(display_nav_list.size() < 8) {
             visible_count = display_nav_list.size();
         }
+        else {
+            visible_count = 8;
+        }
         //printf("sys list new!!\n");
     }
 
