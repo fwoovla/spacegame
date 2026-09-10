@@ -51,6 +51,9 @@ void Location::DrawWorld() {
 
 
     int grid_size = map_data.location_plan->grid_size * 10; 
+
+    DrawRectangle(-1500, -1500, 3000 + map_data.location_plan->size_x * grid_size, 3000 + map_data.location_plan->size_y * grid_size, map_data.modulate);
+
     DrawRectangle(0, 0, map_data.location_plan->size_x * grid_size, map_data.location_plan->size_y * grid_size, DARKGRAY);
 
     if(g_game_data.show_debug) {

@@ -103,9 +103,15 @@ void UniversePanel::Update() {
                 }
         }
 
+        Vector2 current_system_pos = map_data->at(current_system_uid).map_position;
+
+        std::string distance = TextFormat("%0.2f", Vector2Distance(current_system_pos, selected_system_data.system->map_position)/10000);
+
         details_label.default_color = RED;
 
         details_label.text = "name: unexplored";
+        details_label.text += "\ndistance: " + distance + " LY";
+        details_label.text += "\nstar type: ?";
         details_label.text += "\nbodies: ?";
         details_label.text += "\nlocations: ?";
         details_label.text += "\nlanding sites: ?";
@@ -113,6 +119,8 @@ void UniversePanel::Update() {
         if(selected_system_data.system->examined) {
             details_label.default_color = GOLD;
             details_label.text = "name: " + selected_system_data.system->name;
+            details_label.text += "\ndistance: " + distance + " LY";
+            details_label.text += "\nstar type: " + StarTypeToStr(selected_system_data.system->star_type);
             details_label.text += "\nbodies: " + std::to_string(selected_system_data.system->bodies.size());
             details_label.text += "\nlocations: ?";
             details_label.text += "\nlanding sites: ?";
@@ -121,6 +129,8 @@ void UniversePanel::Update() {
         if(selected_system_data.system->discovered) {
             details_label.default_color = GREEN;
             details_label.text = "name: " + selected_system_data.system->name;
+            details_label.text += "\ndistance: " + distance + " LY";
+            details_label.text += "\nstar type: " + StarTypeToStr(selected_system_data.system->star_type);
             details_label.text += "\nbodies: " + std::to_string(selected_system_data.system->bodies.size());
             details_label.text += "\nlocations: " + std::to_string(selected_system_data.system->locations.size());
             details_label.text += "\nlanding sites: " + std::to_string(selected_system_data.system->sites.size());

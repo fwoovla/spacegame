@@ -1,7 +1,10 @@
 #include "universe.hpp"
 
 void UniverseGen_MakeSystem(SystemMapData &sys_map_data) {
+
     printf("------------------- System: %s -------------------\n", sys_map_data.name.c_str());
+
+
     SystemBodyData star_body_data = GenerateSystemStarData(sys_map_data);
     sys_map_data.bodies[star_body_data.uid] = star_body_data;
 
@@ -52,6 +55,7 @@ void UniverseGen_MakeLocations(SystemMapData &sys_map_data) {
         }
 
     int s = 1;
+
     for (SystemBodyData *body : bodies) {
 
         printf(" Location on Body: %s -------------------\n", body->name.c_str());
@@ -96,78 +100,140 @@ void UniverseGen_MakeSites(SystemMapData &sys_map_data) {
 SystemBodyData GenerateSystemStarData(SystemMapData &map_data) {
 
 
-    SystemBodyData instance_data;
-    instance_data.body_type = BODY_STAR;
+    SystemBodyData data;
+    data.body_type = BODY_STAR;
     int uid = GetUID();
-    instance_data.uid = uid;
-    instance_data.obstructable = false;
-    instance_data.landable = false;
-    instance_data.position = map_data.star_position;
-    instance_data.parent_uid = uid;
+    data.uid = uid;
+    data.obstructable = false;
+    data.landable = false;
+    data.position = map_data.star_position;
+    data.parent_uid = uid;
 
+    data.name = "star " + std::to_string(uid);
+    data.radius = 8000.0f;
+    
+    data.orbital_body_count = GetRandomValue(1,10);
+    data.orbital_layer_count = GetRandomValue(10, 20);
+    data.orbital_layer_delta = map_data.radius / data.orbital_layer_count;
 
-    instance_data.name = "star " + std::to_string(uid);
-    instance_data.modulate = ORANGE;
-    instance_data.radius = 8000.0f;
-
-    instance_data.orbital_body_count = GetRandomValue(1,10);
-    instance_data.orbital_layer_count = GetRandomValue(10, 20);
-    instance_data.orbital_layer_delta = map_data.radius / instance_data.orbital_layer_count;
+    data.modulate = ORANGE;
 
     
-    printf("star  %0.5f %0.5f  delta %0.5f\n", instance_data.position.x, instance_data.position.y, instance_data.orbital_layer_delta);
-    return instance_data;
+    printf("star  %0.5f %0.5f  delta %0.5f\n", data.position.x, data.position.y, data.orbital_layer_delta);
+    return data;
 
 }
 
-/*  */
+//
+//==========================BODY DATA =========================================
+//
 SystemBodyData GenerateSystemBodyData( BODY_TYPE type, int layer, float layer_delta, SystemBodyData *parent) {
 
-    SystemBodyData instance_data;
-    instance_data.body_type = type;
+    SystemBodyData data;
+    data.body_type = type;
     int uid = GetUID();
-    instance_data.uid = uid;
-    instance_data.obstructable = false;
-    instance_data.landable = true;
-    instance_data.position = {0,0};
-    instance_data.parent_uid = parent->uid;
+    data.uid = uid;
+    data.obstructable = false;
+    data.landable = true;
+    data.position = {0,0};
+    data.parent_uid = parent->uid;
 
     if(type == BODY_PLANET) {
-        instance_data.name = "planet " + std::to_string(uid);
-        instance_data.modulate = g_planet_colors[GetRandomValue(0, g_planet_colors.size() - 1)];
-        instance_data.radius = 4000.0f;
-        instance_data.orbital_body_count = GetRandomValue(0,5);
-        instance_data.orbital_layer_count = GetRandomValue(5, 20);
-        instance_data.orbital_layer_delta = (instance_data.radius * 5) /instance_data.orbital_layer_count;
-        
+        data.name = "planet " + std::to_string(uid);
+        GeneratePlanet(data);
     }
+
     else if(type == BODY_MOON) {
-        instance_data.name = "moon " + std::to_string(uid);
-        instance_data.modulate = g_planet_colors[GetRandomValue(0, g_planet_colors.size() - 1)];
-        instance_data.radius = 1800.0f;
-        instance_data.orbital_body_count = 0;
+        data.name = "moon " + std::to_string(uid);
+        GenerateMoon(data);
     }
 
-    instance_data.orbit_radius = layer * layer_delta;
-    instance_data.orbit_angle = DEG2RAD * GetRandomValue(0, 359);           
-
-    
+    data.orbit_radius = layer * layer_delta;
+    data.orbit_angle = DEG2RAD * GetRandomValue(0, 359);    
+        
     if(parent != nullptr) {
 
         Vector2 pos = {0,0};
-        pos.x = parent->position.x + cosf(instance_data.orbit_angle) * instance_data.orbit_radius;
-        pos.y = parent->position.y + sinf(instance_data.orbit_angle) * instance_data.orbit_radius;
-        instance_data.position = pos;
+        pos.x = parent->position.x + cosf(data.orbit_angle) * data.orbit_radius;
+        pos.y = parent->position.y + sinf(data.orbit_angle) * data.orbit_radius;
+        data.position = pos;
 
-        instance_data.parent_orbital = layer;
+        data.parent_orbital = layer;
     }
 
-    printf("body: %i  uid: %i data created  %0.5f %0.5f  delta %0.5f\n", type, instance_data.uid, instance_data.position.x, instance_data.position.y + layer, instance_data.orbital_layer_delta);
-    return instance_data;
+    printf("body: %i  uid: %i data created  %0.5f %0.5f  delta %0.5f\n", type, data.uid, data.position.x, data.position.y + layer, data.orbital_layer_delta);
+    return data;
 }
 
 
 
+void GeneratePlanet(SystemBodyData &body_data) {
+    
+    body_data.body_composition = (BODY_COMPOSITION)GetRandomValue(0, BODY_COMPOSITION_COUNT - 1);
+    body_data.body_environment = (BODY_ENVIRONMENT)GetRandomValue(0, BODY_ENVIRONMENT_COUNT - 1);
+    
+
+    std::vector<Color> colors = GetBodyColors(body_data);
+
+    body_data.modulate = colors[GetRandomValue(0, colors.size() - 1)];
+
+    body_data.radius = (float)GetRandomValue(1500, 4000);
+
+    if(body_data.body_composition == SUPEREARTH) {
+        body_data.radius *= 2;
+    }
+
+    if(body_data.body_composition != SUPEREARTH and body_data.body_composition != TERRESTRIAL) {
+        body_data.landable = false;
+    }
+
+    body_data.orbital_body_count = GetRandomValue(0,5);
+    body_data.orbital_layer_count = GetRandomValue(5, 20);
+    body_data.orbital_layer_delta = (body_data.radius * 5) /body_data.orbital_layer_count;
+    printf("body comp %s\n", CompositionTypeToStr(body_data.body_composition).c_str());
+}
+
+
+
+void GenerateMoon(SystemBodyData &body_data) {
+    body_data.body_composition = (BODY_COMPOSITION)GetRandomValue(0, BODY_COMPOSITION_COUNT - 1);
+    body_data.body_environment = (BODY_ENVIRONMENT)GetRandomValue(0, BODY_ENVIRONMENT_COUNT - 1);
+
+    if(body_data.body_composition == SUPEREARTH) {
+        body_data.body_composition = TERRESTRIAL;
+    }
+
+    if(body_data.body_composition != TERRESTRIAL) {
+        body_data.landable = false;
+    }
+
+    std::vector<Color> colors = GetBodyColors(body_data);
+
+    body_data.modulate = colors[GetRandomValue(0, colors.size() - 1)];
+
+    body_data.radius = (float)GetRandomValue(500, 1200);
+
+    body_data.orbital_body_count = 0;
+    body_data.orbital_layer_count = 0;
+    body_data.orbital_layer_delta = 0;
+
+    printf("body comp %s\n", CompositionTypeToStr(body_data.body_composition).c_str());
+
+}
+
+
+
+
+
+
+
+
+
+
+
+//
+//==========================LOCATION DATA =========================================
+//
 SystemLocationData GenerateSystemLocationData(SystemBodyData *body) {
 
     SystemLocationData data;
@@ -200,9 +266,20 @@ SystemLocationData GenerateSystemLocationData(SystemBodyData *body) {
     data.radius = (data.location_plan.size_x * data.location_plan.grid_size) / 2;
 
     printf("location data created   name: %s\n", data.name.c_str());
+    body->location_uids.push_back(data.uid);
     return data;
 }
 
+
+
+
+
+
+
+
+//
+//==========================SITE DATA =========================================
+//
 SystemSiteData GenerateSystemSiteData(SystemLocationData *location, int uid) {
 
     SystemSiteData new_site;
@@ -228,9 +305,156 @@ SystemSiteData GenerateSystemSiteData(SystemLocationData *location, int uid) {
 
 }
 
+
+
+
+
+
+std::string StarTypeToStr(STAR_TYPE star_type) {
+
+
+    static const std::unordered_map<STAR_TYPE, std::string> lookup_table = {
+        {STAR_TYPE::REDDWARF,                       "Red Dwarf"},   
+        {STAR_TYPE::WHITEDWARF,                       "Red Dwarf"},
+        {STAR_TYPE::BLUESTAR,                       "Blue Star"},
+        {STAR_TYPE::GIANT,                       "Red Giant"},
+        {STAR_TYPE::YELLOWSTAR,                       "Red Yellow Star"},
+        {STAR_TYPE::NEUTRONSTAR,                       "Neutron Star"},
+        {STAR_TYPE::BLACKHOLE,                       "Black Hole"},
+
+    };
+
+    if (auto it = lookup_table.find(star_type); it != lookup_table.end()) {
+        return it->second;
+    }
+    return "star type not found";
+}
+
+
+std::string CompositionTypeToStr(BODY_COMPOSITION composition_type) {
+
+
+    static const std::unordered_map<BODY_COMPOSITION, std::string> lookup_table = {
+        {BODY_COMPOSITION::TERRESTRIAL,                       "Terrestrial"},
+        {BODY_COMPOSITION::SUPEREARTH,                       "SuperEarth"},
+        {BODY_COMPOSITION::NEPTUNIAN,                       "Neptunin"},
+        {BODY_COMPOSITION::GASGIANT,                       "Gas Giant"},
+
+    };
+
+    if (auto it = lookup_table.find(composition_type); it != lookup_table.end()) {
+        return it->second;
+    }
+    return "composition type not found";
+}
+
+
+std::string EnvoronmentTypeToStr(BODY_ENVIRONMENT environment_type) {
+
+
+    static const std::unordered_map<BODY_ENVIRONMENT, std::string> lookup_table = {
+        {BODY_ENVIRONMENT::TEMPERATE,                       "Temperate"},
+        {BODY_ENVIRONMENT::DESERT,                       "Desert"},
+        {BODY_ENVIRONMENT::OCEAN,                       "Ocean"},
+        {BODY_ENVIRONMENT::FROZEN,                       "Frozen"},
+        {BODY_ENVIRONMENT::VOLCANIC,                       "Volcanic"},
+        {BODY_ENVIRONMENT::TOXIC,                       "Toxic"},
+    };
+
+
+    if (auto it = lookup_table.find(environment_type); it != lookup_table.end()) {
+        return it->second;
+    }
+    return "environment type not found";
+}
+
+
+
+
+
+std::vector<Color> GetBodyColors(SystemBodyData &body_data) {
+    BODY_COMPOSITION composition = body_data.body_composition;
+    BODY_ENVIRONMENT environment = body_data.body_environment;
+
+    switch (composition) {
+        case TERRESTRIAL:
+            return {
+                PLANET_BLUE,
+                PLANET_CYAN,
+                PLANET_TEAL,
+                PLANET_GREEN,
+                PLANET_OLIVE,
+                PLANET_SAND,
+                PLANET_BROWN
+            };
+
+        case SUPEREARTH:
+            return {
+                PLANET_GREEN,
+                PLANET_DARKGREEN,
+                PLANET_OLIVE,
+                PLANET_RED,
+                PLANET_ORANGE,
+                PLANET_BROWN,
+                PLANET_PURPLE
+            };
+
+        case NEPTUNIAN:
+            return {
+                PLANET_BLUE,
+                PLANET_DARKBLUE,
+                PLANET_CYAN,
+                PLANET_TEAL,
+                PLANET_PURPLE,
+                PLANET_DARKPURPLE,
+                PLANET_ICE
+            };
+
+        case GASGIANT:
+            return {
+                PLANET_ORANGE,
+                PLANET_YELLOW,
+                PLANET_SAND,
+            };
+
+
+        default:
+            return {
+                PLANET_GRAY
+            };
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+//========================== LOCATION LOCATION LOCATION =========================================
+//
+
 LocationMapData GenerateLocationMapData(System *system, int location_uid) {
 
     SystemLocationData &sys_map_data = system->map_data.locations[location_uid];
+
+    SystemBodyData body_data = system->map_data.bodies[sys_map_data.body_uid];
 
 
     LocationMapData new_location;
@@ -238,10 +462,15 @@ LocationMapData GenerateLocationMapData(System *system, int location_uid) {
     new_location.uid = sys_map_data.uid;
     new_location.body_uid = sys_map_data.body_uid;
     new_location.system_uid = sys_map_data.system_uid;
+
     new_location.radius = sys_map_data.radius * 10;
+
     new_location.local_data = &sys_map_data.local_data;
     new_location.name = sys_map_data.name;
     new_location.location_plan = &sys_map_data.location_plan;
+
+    new_location.location_environment = body_data.body_environment;
+    new_location.modulate = body_data.modulate;
     
 
     for(auto &[site_uid, pos] : sys_map_data.location_plan.site_locations) {
@@ -279,3 +508,13 @@ LocationSiteData GenerateLocationSiteData(SystemSiteData *s_site, Vector2 positi
     return new_site;
     
 }
+
+
+
+
+
+
+
+
+
+

@@ -119,6 +119,7 @@ void GameScene::OnEnterShip() {
 
 void GameScene::OnExitShip() {
     universe_manager.hud.ClearTarget();
+    g_input.in_use = false;
 }
 
 

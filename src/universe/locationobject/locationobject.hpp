@@ -13,6 +13,9 @@
     std::string name = "no site name";
 };
  */
+
+
+
 class LocationSite;
 struct LocationSiteData {
     LocationSite *site_instance;

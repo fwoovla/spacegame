@@ -16,6 +16,8 @@ struct LocationMapData { //this is generated from SystemLocationMapData at runti
     LocationLocalData *local_data;
     LocationPlan *location_plan;
     std::string name = "location name";
+    BODY_ENVIRONMENT location_environment = TEMPERATE;
+    Color modulate;
     int uid = -1;
     int body_uid = -1;
     int system_uid = -1;

@@ -27,6 +27,43 @@ struct BodyLocalData {
 };
 
 
+
+
+enum STAR_TYPE {
+    REDDWARF,
+    WHITEDWARF,
+    BLUESTAR,
+    GIANT,
+    YELLOWSTAR,
+    NEUTRONSTAR,
+    BLACKHOLE,
+    STAR_TYPE_COUNT
+};
+
+enum BODY_COMPOSITION {
+    TERRESTRIAL,
+    SUPEREARTH,
+    NEPTUNIAN,
+    GASGIANT,
+    BODY_COMPOSITION_COUNT
+};
+
+
+enum BODY_ENVIRONMENT {
+    TEMPERATE,
+    DESERT,
+    OCEAN,
+    FROZEN,
+    VOLCANIC,
+    TOXIC,
+    BODY_ENVIRONMENT_COUNT
+};
+
+
+
+
+
+
 enum BODY_TYPE {
     BODY_STAR,
     BODY_PLANET,
@@ -50,7 +87,10 @@ struct SystemBodyData {
     float orbit_radius = 0.0f;
     float orbit_angle = 0.0f;
 
+
     BODY_TYPE body_type;
+    BODY_COMPOSITION body_composition = TERRESTRIAL;
+    BODY_ENVIRONMENT body_environment = TEMPERATE;
 
     bool landable = false;
     

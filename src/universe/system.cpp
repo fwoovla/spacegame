@@ -92,7 +92,7 @@ void System::Draw() {
 
 void System::DrawWorld() {
 
-    
+    DrawRectangle(0, 0, g_viewport.resolution.x, g_viewport.resolution.y, SPACEBLUE);
     
     for(auto &body : system_data.body_list) {
         body->Draw();

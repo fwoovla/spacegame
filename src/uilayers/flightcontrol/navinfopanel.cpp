@@ -1,4 +1,5 @@
 #include "flightcontrol.hpp"
+#include "../../universe/universe.hpp"
 
 
 NavInfoPanel::NavInfoPanel(Vector2 position) {
@@ -45,14 +46,21 @@ void NavInfoPanel::UpdateInfo() {
 
     if(shared_list_data->body != nullptr) {
         std::string info = shared_list_data->body->name;
+        if(shared_list_data->body->body_type != BODY_STAR) {
+            info += "\n" + CompositionTypeToStr(shared_list_data->body->body_composition);
+            info += "\n" + EnvoronmentTypeToStr(shared_list_data->body->body_environment);
+            info += "\n locations: " +  std::to_string(shared_list_data->body->location_uids.size());
+        }
         info_label.text = info;
     }
     else if(shared_list_data->location != nullptr) {
         std::string info = shared_list_data->location->name;
+        info += "\n landing sites: " +  std::to_string(shared_list_data->location->site_uids.size());
         info_label.text = info;
     }
     else if(shared_list_data->site != nullptr) {
         std::string info = shared_list_data->site->name;
+        
         info_label.text = info;
     }
     else {

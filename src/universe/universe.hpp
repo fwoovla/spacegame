@@ -90,11 +90,13 @@ class UniverseManager {
 
     FlightControl hud;
 
-   
+    FastNoiseLite system_noise;
 };
 
 
 void UniverseGen_MakeSystem(SystemMapData &sys_map_data);
+void GeneratePlanet(SystemBodyData &body_data);
+void GenerateMoon(SystemBodyData &body_data);
 void UniverseGen_MakeLocations(SystemMapData &sys_map_data);
 void UniverseGen_MakeSites(SystemMapData &sys_map_data);
 
@@ -115,3 +117,7 @@ LocationSiteData GenerateLocationSiteData(SystemSiteData *site, Vector2 position
 
 
 
+std::string StarTypeToStr(STAR_TYPE star_type);
+std::string CompositionTypeToStr(BODY_COMPOSITION composition_type);
+std::string EnvoronmentTypeToStr(BODY_ENVIRONMENT environment_type);
+std::vector<Color> GetBodyColors(SystemBodyData &body_data);

@@ -21,6 +21,7 @@ struct SystemMapData {
     float radius = 0.0f;
 
     Vector2 star_position;
+    STAR_TYPE star_type = REDDWARF;
 
     int orbital_layer_count = 0;
     float orbital_layer_delta = 0.0f;

@@ -10,8 +10,10 @@ void UniverseManager::CreateUniverse(std::string player_name) {
 
     universe_data.max_systems = 500;
     universe_data.radius = 500000.0f;
+    universe_data.seed = GetRandomValue(0, 100000);
 
     OutlineUniverse();
+
     for(auto &[uid, system] : universe_data.map_data) {
         UniverseGen_MakeSystem(system);
     }
