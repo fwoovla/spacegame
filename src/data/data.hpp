@@ -11,7 +11,7 @@ void LoadCreatureEntityData(std::string file_path);
 void LoadObjectEntityData(std::string file_path);
 
 
-void LoadShipControllerData(std::string file_path);
+void LoadShipData(std::string file_path);
 
 void LoadCharacterControllerData(std::string file_path);
 

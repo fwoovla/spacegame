@@ -14,20 +14,21 @@ enum SHIP_ID {
 
 
 
+//this is thie ship
+//a ship is:
+//a visual representation,
+//a controller including all flight systems
+//a collection of components
 
-struct ShipControllerTemplateData {
-    SHIP_ID id;
+struct ShipTemplateData {  //initial ship data.  
+    SHIP_ID id = SHIP_NONE;    // ship class/type
     std::string name = "no name";
-
     int value = 0;
     float radius = 0.0f;
 
-    FlightMode system_drive;
-    FlightMode planet_drive;
-
 };
 
-extern std::unordered_map<int, ShipControllerTemplateData> g_ship_controller_template_data;
+extern std::unordered_map<int, ShipTemplateData> g_ship_template_data;
 
 struct TargetData {
     int uid = -1;
@@ -36,27 +37,46 @@ struct TargetData {
 };
 
 
-struct ShipControllerData {
+/* struct ShipControllerData {
     int uid;
     SHIP_ID id;
     std::string name = "no name";
 
     int value = 0;
 
-    FLIGHT_MODE flight_mode = SYSTEM_FLIGHT_MODE;
-
-    TargetData target_data;
-
-    std::array<FlightMode, 2> flight_modes; 
+    
 
     float radius = 0.0f;
   
 };
 
+
+ */
+
+struct ShipData {
+    int uid = -1;              
+
+    SHIP_ID id = SHIP_NONE;    // ship class/type
+    std::string name = "no name";
+
+    int value = 0;
+    float radius = 0.0f;
+
+    int fuel = 0;
+
+    //std::vector<ShipComponentData> components;
+    //std::vector<ShipEquipmentData> equipment;
+};
+
+
+
+
+
+
 class ShipController {
     
     public:
-        ShipController(ShipControllerData *_data);
+        ShipController(ShipData *_data);
         ~ShipController();
         void Update(Vector2 &position);
         void Draw(Vector2 &position, float scale);
@@ -71,7 +91,11 @@ class ShipController {
         void AutopilotUpdate(Vector2 position);
         void FlightAssistUpdateUpdate(Vector2 &position);
 
-        ShipControllerData *ship_data;
+        ShipData *ship_data;
+
+        FLIGHT_MODE flight_mode = SYSTEM_FLIGHT_MODE;
+
+        std::array<FlightMode, 2> flight_modes;
         FlightMode *current_mode = nullptr;
         
         Autopilot autopilot;
@@ -82,7 +106,7 @@ class ShipController {
 
 
 
-SHIP_ID StrToShipControllerId(std::string str);
+SHIP_ID StrToShipId(std::string str);
 
 
 

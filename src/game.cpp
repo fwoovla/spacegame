@@ -10,7 +10,7 @@ Viewport g_viewport;
 PlayerCharacter *g_current_player;
 std::unordered_map<int, EntityTemplateData> g_entity_template_data;
 
-std::unordered_map<int, ShipControllerTemplateData> g_ship_controller_template_data;
+std::unordered_map<int, ShipTemplateData> g_ship_template_data;
 std::unordered_map<int, CharacterControllerTemplateData> g_character_controller_template_data;
 std::unordered_map<int, ObjectEntityControllerTemplateData> g_object_entity_controller_template_data;
 

@@ -82,7 +82,7 @@ class LocationSite : public LocationObject {
 
 class LocationShip : public LocationObject {
     public:
-        LocationShip(ShipControllerData *_data, Vector2 position);
+        LocationShip(ShipData *_data, Vector2 position);
         ~LocationShip();
         void Update() override;
         void Draw() override;        
@@ -92,7 +92,7 @@ class LocationShip : public LocationObject {
         float GetRenderScale() override;
         void RegisterWithManagers(SelectionManager *sm) override;
 
-        ShipControllerData *ship_data = nullptr;
+        ShipData *ship_data = nullptr;
         SelectionManager *selection_manager = nullptr;
 
         Vector2 position;

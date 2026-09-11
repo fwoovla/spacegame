@@ -9,7 +9,7 @@ using json = nlohmann::json;
 void LoadData() {
     LoadCreatureEntityData("assets/creature_entities.json");
     LoadObjectEntityData("assets/object_entities.json");
-    LoadShipControllerData("assets/ship_controllers.json");
+    LoadShipData("assets/ships.json");
     LoadCharacterControllerData("assets/character_controllers.json");
     LoadObjectControllerData("assets/object_controllers.json");
 }
@@ -43,15 +43,9 @@ void LoadCreatureEntityData(std::string file_path) {
         if(e.contains("render_mode"))
             new_template.render_mode = e["render_mode"];
 
-        auto &controllers = e["controllers"];
+        new_template.ship_id = SHIP_1;
+        new_template.character_controller_id = CHARACTER_PLAYER;
 
-        if(controllers.contains("ship")) {
-            new_template.ship_controller_id = StrToShipControllerId(controllers["ship"]);
-        }
-
-        if(controllers.contains("character")) {
-            new_template.character_controller_id = StrToCharacterControllerId(controllers["character"]);
-        }
 
         //if(controllers.contains("passive")) {
         //new_template.passive_id = StrToPassiveId(controllers["passive"]);
@@ -59,7 +53,7 @@ void LoadCreatureEntityData(std::string file_path) {
 
         g_entity_template_data[new_template.id] = new_template;
         
-        printf("--ENTITY LOADED: id: %i  name: %s   sc: %i  cc: %i\n", new_template.id, new_template.name.c_str(), new_template.ship_controller_id, new_template.character_controller_id);   
+        printf("--ENTITY LOADED: id: %i  name: %s   sc: %i  cc: %i\n", new_template.id, new_template.name.c_str(), new_template.ship_id, new_template.character_controller_id);   
     }
 
     printf("LOADED: %i ENTITIES\n\n", g_entity_template_data.size());
@@ -108,7 +102,7 @@ void LoadObjectEntityData(std::string file_path) {
 
 }
 
-void LoadShipControllerData(std::string file_path) {
+void LoadShipData(std::string file_path) {
 
 
     std::ifstream cfile(file_path);
@@ -124,18 +118,14 @@ void LoadShipControllerData(std::string file_path) {
 
     for(auto &e : j["data"]) {
         
-        ShipControllerTemplateData new_template;
+        ShipTemplateData new_template;
 
-        new_template.id = StrToShipControllerId(e["id"]);
+        new_template.id = StrToShipId(e["id"]);
         new_template.name = e["name"];
-
-
         new_template.value = e["value"];
-
         new_template.radius = e["radius"];
 
-
-        for(auto &m : e["flight_modes"]) {
+/*         for(auto &m : e["flight_modes"]) {
 
             if(m["mode"] == 0) {
                 new_template.system_drive.max_speed = m["max_speed"];
@@ -148,17 +138,17 @@ void LoadShipControllerData(std::string file_path) {
                 new_template.planet_drive.thrust = m["thrust"];
                 new_template.planet_drive.reverse_thrust = m["reverse_thrust"];
                 new_template.planet_drive.turn_speed = m["turn_speed"];
-            }
+            } */
             
-        }
+       // }
 
 
-        g_ship_controller_template_data[new_template.id] = new_template;
+        g_ship_template_data[new_template.id] = new_template;
         
         printf("--SHIP DATA LOADED: id: %i  name: %s  radius: %0.4f\n", new_template.id, new_template.name.c_str(), new_template.radius);   
     }
 
-    printf("LOADED: %i SHIPS\n\n", g_ship_controller_template_data.size());
+    printf("LOADED: %i SHIPS\n\n", g_ship_template_data.size());
 
 }
 

@@ -20,18 +20,27 @@ PlayerCharacter::PlayerCharacter(EntityData *_data) : CreatureEntity(_data) {
     character_controller_data.movement = char_Tdata.movement;
 
 
-    ShipControllerTemplateData ship_Tdata = g_ship_controller_template_data[entity_data->ship_controller_id];
-    ship_controller_data.flight_modes[0] = ship_Tdata.system_drive;
-    ship_controller_data.flight_modes[1] = ship_Tdata.planet_drive;
+    //ship_data = &;
+    /* ShipTemplateData ship_Tdata = g_ship_template_data[entity_data->ship_id];
 
-    ship_controller_data.name = ship_Tdata.name;
-    ship_controller_data.value = ship_Tdata.value;
+    ship_data.id = ship_Tdata.id;
+    ship_data.name = ship_Tdata.name;
+    ship_data.uid = GetUID();
+    ship_data.value = ship_Tdata.value;
+    ship_data.radius = ship_Tdata.radius;
+    ship_data.fuel = 100;
+ */
 
-    ship_controller_data.radius = ship_Tdata.radius;  //rendering data
+    //ship_controller_data.flight_modes[1] = ship_Tdata.planet_drive;
 
-    printf("SHIP data  entity id: %i   controller id: %i  radius: %0.3f\n", entity_data->id, entity_data->ship_controller_id, ship_controller_data.radius);
+    //ship_controller_data.name = ship_Tdata.name;
+    //ship_controller_data.value = ship_Tdata.value;
 
-    EnterShip();
+    //ship_controller_data.radius = ship_Tdata.radius;  //rendering data
+
+    //printf("SHIP data  entity id: %i   ship id: %i  radius: %0.3f\n", entity_data->id, entity_data->ship_id, ship_data->radius);
+
+    //EnterShip();
 
 }
 
@@ -120,13 +129,14 @@ void PlayerCharacter::RegisterWithManagers(SelectionManager *sm) {
 }
 
 
-void PlayerCharacter::EnterShip() {
+void PlayerCharacter::EnterShip(ShipData *_data) {
+    ship_data = _data;
     
     character_controller.reset();
-    ship_controller = std::make_unique<ShipController>(&ship_controller_data);
+    ship_controller = std::make_unique<ShipController>(_data);
     ship_controller->SetFlightMode(LOCAL_FLIGHT_MODE);
-    ship_controller->ship_data->flight_modes[LOCAL_FLIGHT_MODE].velocity = {0,0};
-    ship_controller->ship_data->flight_modes[LOCAL_FLIGHT_MODE].throttle = 0.0f;
+    ship_controller->flight_modes[LOCAL_FLIGHT_MODE].velocity = {0,0};
+    ship_controller->flight_modes[LOCAL_FLIGHT_MODE].throttle = 0.0f;
 
     movement_type = MOVEMENT_SHIP;
     printf("enter ship\n");

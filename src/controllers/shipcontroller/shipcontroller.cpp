@@ -1,10 +1,10 @@
 #include "../controllers.hpp"
 #include "../../game.h"
 
-ShipController::ShipController(ShipControllerData *_data) {
+ShipController::ShipController(ShipData *_data) {
     ship_data = _data;
-    ship_data->flight_mode = SYSTEM_FLIGHT_MODE;
-    current_mode = &ship_data->flight_modes.at(ship_data->flight_mode);
+    flight_mode = SYSTEM_FLIGHT_MODE;
+    current_mode = &flight_modes.at(flight_mode);
     autopilot.flight_mode = current_mode;
 }
 
@@ -27,7 +27,7 @@ void ShipController::Update(Vector2 &position) {
     }
     else if(autopilot_on and autopilot.target_data.set) {
         
-        if(Vector2Distance(position, autopilot.target_data.position) < autopilot.target_data.proximity_radius and ship_data->flight_mode != LOCAL_FLIGHT_MODE) {
+        if(Vector2Distance(position, autopilot.target_data.position) < autopilot.target_data.proximity_radius and flight_mode != LOCAL_FLIGHT_MODE) {
             SetFlightMode(LOCAL_FLIGHT_MODE);
             //autopilot.enter_local_space.EmitSignal();
             //autopilot.state = ACCELERATE;
@@ -40,8 +40,8 @@ void ShipController::Update(Vector2 &position) {
         FlightInput f_input = autopilot.Update(ap_input, dt);
 
         if(autopilot.state == ARRIVE) {
-            ship_data->flight_mode = LOCAL_FLIGHT_MODE;
-            current_mode =  &ship_data->flight_modes.at(ship_data->flight_mode);
+            flight_mode = LOCAL_FLIGHT_MODE;
+            current_mode =  &flight_modes.at(flight_mode);
             current_mode->rotation = f_input.turn;
             current_mode->velocity = {0,0};
         }
@@ -120,13 +120,13 @@ bool ShipController::ToggleFlightAssist() {
 }
 
 void ShipController::SetFlightMode(FLIGHT_MODE mode) {
-    ship_data->flight_mode = mode;
+    flight_mode = mode;
     
-    ship_data->flight_modes[ship_data->flight_mode].velocity = current_mode->velocity;
-    ship_data->flight_modes[ship_data->flight_mode].rotation = current_mode->rotation;
-    ship_data->flight_modes[ship_data->flight_mode].throttle = current_mode->throttle;
+    flight_modes[flight_mode].velocity = current_mode->velocity;
+    flight_modes[flight_mode].rotation = current_mode->rotation;
+    flight_modes[flight_mode].throttle = current_mode->throttle;
 
-    current_mode = &ship_data->flight_modes.at(ship_data->flight_mode);
+    current_mode = &flight_modes.at(flight_mode);
     autopilot.flight_mode = current_mode;
 }
 

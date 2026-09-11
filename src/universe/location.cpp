@@ -153,7 +153,7 @@ void Location::AddPlayer() {
     }
     g_current_player->entity_data->position = player_pos;
 
-    location_data.ship = std::make_unique<LocationShip>(&g_current_player->ship_controller_data, player_pos);
+    location_data.ship = std::make_unique<LocationShip>(g_current_player->ship_data, player_pos);
 
     location_data.ship->RegisterWithManagers(selection_manager);
 }

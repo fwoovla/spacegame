@@ -23,7 +23,7 @@ struct EntityTemplateData {
     bool obstructable;
     RenderMode render_mode;
 
-    SHIP_ID ship_controller_id = SHIP_NONE;
+    SHIP_ID ship_id = SHIP_NONE;
     CHARACTER_ID character_controller_id = CHARACTER_NONE;
     OBJECTENTITY_ID object_entity_controller_id = OBJECTENTITY_NONE;
 };
@@ -44,7 +44,7 @@ struct EntityData {
 
     RenderMode render_mode = RENDER_WORLD;
 
-    SHIP_ID ship_controller_id = SHIP_NONE;
+    SHIP_ID ship_id = SHIP_NONE;
     CHARACTER_ID character_controller_id = CHARACTER_NONE;
     OBJECTENTITY_ID object_entity_controller_id = OBJECTENTITY_NONE;
 };
@@ -115,13 +115,13 @@ class CreatureEntity : public BaseEntity {
         CreatureEntity(EntityData *_data) : BaseEntity(_data) {};
         ~CreatureEntity() = default;
         virtual void UpdateMovement() = 0;
-        virtual void EnterShip() = 0;
+        virtual void EnterShip(ShipData *_data) = 0;
         virtual void ExitShip() = 0;
         virtual void Die() = 0;
 
         MOVEMENT_TYPE movement_type = MOVEMENT_SHIP;
 
-        ShipControllerData ship_controller_data;
+        ShipData *ship_data;
         std::unique_ptr<ShipController> ship_controller;
 
         CharacterControllerData character_controller_data;
@@ -143,7 +143,7 @@ class PlayerCharacter : public CreatureEntity {
         void DrawUI()override;
 
         void UpdateMovement() override;
-        void EnterShip() override;
+        void EnterShip(ShipData *_data) override;
         void ExitShip() override;
         void Die() override;
 

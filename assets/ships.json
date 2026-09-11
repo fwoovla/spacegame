@@ -1,0 +1,14 @@
+{
+    "data":[
+        {
+            "id": "SHIP_1",
+            "name": "ship 1",
+
+            "value":100,
+            "radius":20.0
+
+        }
+    ]
+}
+
+
