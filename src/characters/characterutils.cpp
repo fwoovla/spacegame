@@ -1,6 +1,6 @@
-#include "../controllers.hpp"
+#include "characters.hpp"
 
-CHARACTER_ID StrToCharacterControllerId(std::string str) {
+CHARACTER_ID StrToCharacterId(std::string str) {
     static const std::unordered_map<std::string, CHARACTER_ID> lookup_table = {
         {"CHARACTER_PLAYER",                       CHARACTER_ID::CHARACTER_PLAYER},   
     };

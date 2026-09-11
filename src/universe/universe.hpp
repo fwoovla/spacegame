@@ -30,7 +30,9 @@ struct UniverseData {
 
     std::unordered_map<int, SystemMapData> map_data;
     std::vector<SystemConnection> connections;
+
     std::unordered_map<int, ShipData> ship_data;
+    std::unordered_map<int, CharacterData> character_data;
 
 };
 

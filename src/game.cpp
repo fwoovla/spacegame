@@ -11,8 +11,10 @@ PlayerCharacter *g_current_player;
 std::unordered_map<int, EntityTemplateData> g_entity_template_data;
 
 std::unordered_map<int, ShipTemplateData> g_ship_template_data;
-std::unordered_map<int, CharacterControllerTemplateData> g_character_controller_template_data;
+std::unordered_map<int, CharacterTemplateData> g_character_template_data;
 std::unordered_map<int, ObjectEntityControllerTemplateData> g_object_entity_controller_template_data;
+
+std::unordered_map<SHIP_PART_ID, SystemDriveData> g_system_drive_data;
 
 Game::Game() {
     printf("game created\n");

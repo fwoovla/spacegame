@@ -5,6 +5,8 @@
 #include "components/components.hpp"
 #include "../areas/areas.hpp"
 #include "../sprite/sprite.h"
+#include "../ships/ships.hpp"
+#include "../characters/characters.hpp"
 //#include "../controllers/controllers.hpp"
 #include "../input/selectionmanager.hpp"
 
@@ -23,8 +25,8 @@ struct EntityTemplateData {
     bool obstructable;
     RenderMode render_mode;
 
-    SHIP_ID ship_id = SHIP_NONE;
-    CHARACTER_ID character_controller_id = CHARACTER_NONE;
+    //SHIP_ID ship_id = SHIP_NONE;
+    //CHARACTER_ID character_controller_id = CHARACTER_NONE;
     OBJECTENTITY_ID object_entity_controller_id = OBJECTENTITY_NONE;
 };
 
@@ -44,8 +46,8 @@ struct EntityData {
 
     RenderMode render_mode = RENDER_WORLD;
 
-    SHIP_ID ship_id = SHIP_NONE;
-    CHARACTER_ID character_controller_id = CHARACTER_NONE;
+    int ship_uid = -1;
+    int character_uid = -1;
     OBJECTENTITY_ID object_entity_controller_id = OBJECTENTITY_NONE;
 };
 
@@ -116,16 +118,18 @@ class CreatureEntity : public BaseEntity {
         ~CreatureEntity() = default;
         virtual void UpdateMovement() = 0;
         virtual void EnterShip(ShipData *_data) = 0;
-        virtual void ExitShip() = 0;
+        virtual void ExitShip(CharacterData *_data) = 0;
         virtual void Die() = 0;
 
         MOVEMENT_TYPE movement_type = MOVEMENT_SHIP;
 
         ShipData *ship_data;
-        std::unique_ptr<ShipController> ship_controller;
+        std::unique_ptr<Ship> ship;
 
-        CharacterControllerData character_controller_data;
-        std::unique_ptr<CharacterController> character_controller;
+        //std::unique_ptr<ShipController> ship_controller;
+
+        CharacterData *character_data;
+        std::unique_ptr<Character> character;
 
         bool is_stunned = false;
         RayCast raycast;
@@ -144,7 +148,7 @@ class PlayerCharacter : public CreatureEntity {
 
         void UpdateMovement() override;
         void EnterShip(ShipData *_data) override;
-        void ExitShip() override;
+        void ExitShip(CharacterData *_data) override;
         void Die() override;
 
         float GetRenderScale() override;

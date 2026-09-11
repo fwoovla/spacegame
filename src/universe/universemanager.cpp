@@ -37,11 +37,31 @@ void UniverseManager::CreateUniverse(std::string player_name) {
     ship_data.radius = ship_Tdata.radius;
     ship_data.fuel = 100;
 
+    ship_data.equipment_tags = ship_Tdata.equipment_tags;
+
+    printf("ship tags\n");
+    for(auto &tag : ship_data.equipment_tags) {
+        printf("tag  e id: %i  p id: %i\n",tag.equipment_id, tag.part_id);
+    }
+
     universe_data.ship_data[ship_data.uid] = ship_data;
 
 
+    CharacterTemplateData character_Tdata = g_character_template_data[CHARACTER_PLAYER];
+    CharacterData character_data;
+    character_data.id = character_Tdata.id;
+    character_data.name = character_Tdata.name;
+    character_data.radius = character_Tdata.radius;
+    character_data.speed = character_Tdata.speed;
+    character_data.uid = GetUID();
+
+    universe_data.character_data[character_data.uid] = character_data;
+
+
     g_current_player = current_system->SpawnNewPlayer(g_entity_template_data[ENTITY_PLAYER], 0, current_system->system_data.star_position);
-    g_current_player->EnterShip(&universe_data.ship_data[g_current_player->entity_data->ship_id]);
+    g_current_player->entity_data->ship_uid = ship_data.uid;
+    g_current_player->entity_data->character_uid = character_data.uid;
+    g_current_player->EnterShip(&universe_data.ship_data[g_current_player->entity_data->ship_uid]);
 
     if(g_current_player != nullptr) {
     }
@@ -320,7 +340,7 @@ void UniverseManager::Update() {
 
     selection_manager.Update();
     
-    if(g_current_player->ship_controller) {
+    if(g_current_player->ship) {
         hud.Update();
     }
 }
@@ -392,7 +412,7 @@ void UniverseManager::DrawUI() {
             break;
     }
 
-    if(g_current_player->ship_controller) {
+    if(g_current_player->ship) {
         hud.Draw();
     }
 }
@@ -422,7 +442,8 @@ void UniverseManager::TravelToSystem() {
     GenerateNewSystem(destination_system);
 
 
-    g_current_player = current_system->SpawnPlayer(data_to_move, current_system->system_data.star_position); 
+    g_current_player = current_system->SpawnPlayer(data_to_move, current_system->system_data.star_position);
+    g_current_player->EnterShip(&universe_data.ship_data[g_current_player->entity_data->ship_uid]);
 
     if(g_current_player != nullptr) {
     }
@@ -494,7 +515,7 @@ void UniverseManager::LandAtLocation() {
 
         current_location->launch_requested.Connect([this]() { LaunchFromLocationRequested();});
 
-        g_current_player->ExitShip();
+        g_current_player->ExitShip(&universe_data.character_data[g_current_player->entity_data->character_uid]);
         exit_ship.EmitSignal();
         current_location->AddPlayer();
 
@@ -567,7 +588,7 @@ void UniverseManager::LaunchFromLocation() {
     g_camera.target = g_current_player->entity_data->position;
 
 
-    g_current_player->EnterShip(&universe_data.ship_data[g_current_player->entity_data->ship_id]);
+    g_current_player->EnterShip(&universe_data.ship_data[g_current_player->entity_data->ship_uid]);
 
     enter_ship.EmitSignal();
 
@@ -611,8 +632,8 @@ EntityData GenerateEntityInstance(EntityTemplateData &tmpl, Vector2 position) {
     instance_data.position = position;
     instance_data.render_mode = tmpl.render_mode;
 
-    instance_data.ship_id = tmpl.ship_id;
-    instance_data.character_controller_id = tmpl.character_controller_id;
+    //instance_data.ship_uid = tmpl.ship_id;
+    //instance_data.character_controller_id = tmpl.character_controller_id;
     instance_data.object_entity_controller_id = tmpl.object_entity_controller_id;
     
     return instance_data;

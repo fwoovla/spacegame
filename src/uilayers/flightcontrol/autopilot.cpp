@@ -190,8 +190,6 @@ FlightInput Autopilot::Cruise(const AutopilotInput &input, const float dt) {
 
 FlightInput Autopilot::Brake(const AutopilotInput &input, const float dt) {
 
-
-
     FlightInput new_input;
 
     Vector2 brake_direction = Vector2Normalize(input.velocity);

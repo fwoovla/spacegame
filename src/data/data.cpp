@@ -10,7 +10,8 @@ void LoadData() {
     LoadCreatureEntityData("assets/creature_entities.json");
     LoadObjectEntityData("assets/object_entities.json");
     LoadShipData("assets/ships.json");
-    LoadCharacterControllerData("assets/character_controllers.json");
+    LoadShipEquipment("assets/ship_equipment.json");
+    LoadCharacterControllerData("assets/characters.json");
     LoadObjectControllerData("assets/object_controllers.json");
 }
 
@@ -43,8 +44,8 @@ void LoadCreatureEntityData(std::string file_path) {
         if(e.contains("render_mode"))
             new_template.render_mode = e["render_mode"];
 
-        new_template.ship_id = SHIP_1;
-        new_template.character_controller_id = CHARACTER_PLAYER;
+        //new_template.ship_id = SHIP_1;
+        //new_template.character_controller_id = CHARACTER_PLAYER;
 
 
         //if(controllers.contains("passive")) {
@@ -53,7 +54,7 @@ void LoadCreatureEntityData(std::string file_path) {
 
         g_entity_template_data[new_template.id] = new_template;
         
-        printf("--ENTITY LOADED: id: %i  name: %s   sc: %i  cc: %i\n", new_template.id, new_template.name.c_str(), new_template.ship_id, new_template.character_controller_id);   
+        printf("--ENTITY LOADED: id: %i  name: %s  \n", new_template.id, new_template.name.c_str() );   
     }
 
     printf("LOADED: %i ENTITIES\n\n", g_entity_template_data.size());
@@ -125,23 +126,23 @@ void LoadShipData(std::string file_path) {
         new_template.value = e["value"];
         new_template.radius = e["radius"];
 
-/*         for(auto &m : e["flight_modes"]) {
+        new_template.equipment_tags.resize(EQUIPMENT_COUNT);
 
-            if(m["mode"] == 0) {
-                new_template.system_drive.max_speed = m["max_speed"];
-                new_template.system_drive.thrust = m["thrust"];
-                new_template.system_drive.reverse_thrust = m["reverse_thrust"];
-                new_template.system_drive.turn_speed = m["turn_speed"];
-            }
-            if(m["mode"] == 1) {
-                new_template.planet_drive.max_speed = m["max_speed"];
-                new_template.planet_drive.thrust = m["thrust"];
-                new_template.planet_drive.reverse_thrust = m["reverse_thrust"];
-                new_template.planet_drive.turn_speed = m["turn_speed"];
-            } */
-            
-       // }
+        for(auto &eq : e["equipment"]) {
 
+
+            std::string equipment_id_s = eq.begin().key();
+            std::string part_id_s = eq.begin().value();
+
+            SHIP_EQUIPMENT_ID e_id = StrToShipEquipmentId(equipment_id_s);
+            SHIP_PART_ID p_id = StrToShipPartId(part_id_s);
+
+
+            ShipEquipmentTag new_tag = {.equipment_id = e_id, .part_id = p_id};
+
+            new_template.equipment_tags[e_id] = new_tag;
+
+        }
 
         g_ship_template_data[new_template.id] = new_template;
         
@@ -154,8 +155,55 @@ void LoadShipData(std::string file_path) {
 
 
 
+void LoadShipEquipment(std::string file_path) {
+
+    std::ifstream file(file_path);
+
+    if(!file.is_open()) {
+        printf("could not load drives\n");
+        return;
+    }
+
+    printf("\n\nLOADING SHIP EQUIPMENT DATA FROM %s\n", file_path.c_str());
+
+    json j;
+    file >> j;
+
+    for(auto& e : j["data"]) {
+
+        SHIP_EQUIPMENT_ID equipment_id = StrToShipEquipmentId(e["equipment_id"].get<std::string>());
+
+        if(equipment_id == EQUIPMENT_SYSTEM_DRIVE) {
+            SystemDriveData drive = LoadSystemDriveData(e);
+            g_system_drive_data[drive.part_id] = drive;
+        }
+
+    }
+}
 
 
+
+
+SystemDriveData LoadSystemDriveData(json &e) {
+    SystemDriveData drive;
+
+    drive.equipment_id = StrToShipEquipmentId(e["equipment_id"].get<std::string>());
+
+    drive.part_id = StrToShipPartId( e["part_id"].get<std::string>());
+
+        drive.name = e["name"];
+        drive.value = e["value"];
+
+        auto& stats = e["stats"];
+
+        drive.thrust = stats["thrust"];
+        drive.reverse_thrust = stats["reverse_thrust"];
+        drive.max_speed = stats["max_speed"];
+        drive.turn_speed = stats["turn_speed"];
+        drive.drag = stats["drag"];
+
+        return drive;
+}
 
 
 void LoadCharacterControllerData(std::string file_path) {
@@ -174,20 +222,20 @@ void LoadCharacterControllerData(std::string file_path) {
 
     for(auto &e : j["data"]) {
         
-        CharacterControllerTemplateData new_template;
+        CharacterTemplateData new_template;
 
-        new_template.id = StrToCharacterControllerId(e["id"]);
+        new_template.id = StrToCharacterId(e["id"]);
         new_template.name = e["name"];
 
-        new_template.movement.speed = e["speed"];
+        new_template.speed = e["speed"];
 
         new_template.radius = e["radius"];
 
-        g_character_controller_template_data[new_template.id] = new_template;
+        g_character_template_data[new_template.id] = new_template;
         
         printf("--CHARACTER DATA LOADED: id: %i  name: %s\n", new_template.id, new_template.name.c_str());   
     }
-    printf("LOADED: %i CHARACTERs\n\n", g_character_controller_template_data.size());
+    printf("LOADED: %i CHARACTERs\n\n", g_character_template_data.size());
 
 
 }

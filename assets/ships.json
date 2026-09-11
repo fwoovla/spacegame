@@ -5,7 +5,13 @@
             "name": "ship 1",
 
             "value":100,
-            "radius":20.0
+            "radius":20.0,
+
+            "equipment":[
+                {
+                    "EQUIPMENT_SYSTEM_DRIVE": "SYSTEM_DRIVE_MK1"
+                }
+            ]
 
         }
     ]

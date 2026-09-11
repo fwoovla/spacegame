@@ -1,9 +1,10 @@
 #include "../controllers.hpp"
 #include "../../game.h"
 
-CharacterController::CharacterController(CharacterControllerData *_data) {
+CharacterController::CharacterController(CharacterData *_data) {
 
     character_data = _data;
+    movement.speed = character_data->speed;
 }
 
 CharacterController::~CharacterController() {
@@ -21,23 +22,23 @@ void CharacterController::Update(Vector2 &position) {
 
     Vector2 next_position = position;
 
-    if(character_data->movement.velocity.x != 0 or character_data->movement.velocity.y != 0 ) {
-        next_position = Vector2Add(next_position, character_data->movement.velocity * GetFrameTime());
+    if(movement.velocity.x != 0 or movement.velocity.y != 0 ) {
+        next_position = Vector2Add(next_position, movement.velocity * GetFrameTime());
     }
 
     position = next_position;
 
-    float speed =  character_data->movement.speed;
+    float speed =  movement.speed;
 
-    if( isnan(character_data->movement.velocity.x) || isnan(character_data->movement.velocity.y)) {character_data->movement.velocity = {0,0};}
+    if( isnan(movement.velocity.x) || isnan(movement.velocity.y)) {movement.velocity = {0,0};}
         
-    character_data->movement.velocity = Vector2Lerp(character_data->movement.velocity, input_dir * speed, .15);
+    movement.velocity = Vector2Lerp(movement.velocity, input_dir * speed, .15);
 
-    if(abs(character_data->movement.velocity.x) < 4.0f) {
-        character_data->movement.velocity.x = {0.0};
+    if(abs(movement.velocity.x) < 4.0f) {
+        movement.velocity.x = {0.0};
     }
-    if (abs(character_data->movement.velocity.y) < 4.0f) {
-        character_data->movement.velocity.y = {0.0};
+    if (abs(movement.velocity.y) < 4.0f) {
+        movement.velocity.y = {0.0};
     }
 /*     printf("character movement\n");
     printf("input %.1f %.1f  velocity %.1f %.1f  position %.1f %.1f speed %0.4f\n",

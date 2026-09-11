@@ -3,7 +3,11 @@
 
 ShipController::ShipController(ShipData *_data) {
     ship_data = _data;
-    flight_mode = SYSTEM_FLIGHT_MODE;
+
+    printf("setting fm\n");
+
+    SetFlightModes();
+
     current_mode = &flight_modes.at(flight_mode);
     autopilot.flight_mode = current_mode;
 }
@@ -75,7 +79,7 @@ void ShipController::Draw(Vector2 &position, float scale) {
 
     forward = Vector2Add(screen, forward);
     
-    DrawCircleV(screen, ship_data->radius * scale, PINK);
+    //DrawCircleV(screen, ship_data->radius * scale, PINK);
     DrawLineV(screen, forward, RED);
 
     if(autopilot_on) {
@@ -194,4 +198,23 @@ void ShipController::FlightUpdate(Vector2 &position, float dt) {
     current_mode->velocity.y *= 1.0f - current_mode->drag * dt;
     position.x += current_mode->velocity.x * dt;
     position.y += current_mode->velocity.y * dt;
+}
+
+void ShipController::SetFlightModes() {
+
+    printf("set fm   equimnent tags: %i\n", ship_data->equipment_tags.size());
+
+    SystemDriveData &drive = g_system_drive_data[ (SHIP_PART_ID)ship_data->equipment_tags[EQUIPMENT_SYSTEM_DRIVE].part_id ];
+
+    flight_modes[SYSTEM_FLIGHT_MODE].thrust = drive.thrust;
+    flight_modes[SYSTEM_FLIGHT_MODE].reverse_thrust = drive.reverse_thrust;
+    flight_modes[SYSTEM_FLIGHT_MODE].turn_speed = drive.turn_speed;
+    flight_modes[SYSTEM_FLIGHT_MODE].drag = drive.drag;
+    flight_modes[SYSTEM_FLIGHT_MODE].max_speed = drive.max_speed;
+
+    flight_modes[LOCAL_FLIGHT_MODE].thrust = drive.thrust * 0.25f;
+    flight_modes[LOCAL_FLIGHT_MODE].reverse_thrust = drive.reverse_thrust * 0.25f;
+    flight_modes[LOCAL_FLIGHT_MODE].turn_speed = drive.turn_speed;
+    flight_modes[LOCAL_FLIGHT_MODE].drag = drive.drag * 4;
+    flight_modes[LOCAL_FLIGHT_MODE].max_speed = drive.max_speed * 0.10;
 }

@@ -14,10 +14,11 @@ PlayerCharacter::PlayerCharacter(EntityData *_data) : CreatureEntity(_data) {
     is_on_screen = true;
     is_stunned = false;
 
-    CharacterControllerTemplateData char_Tdata = g_character_controller_template_data[entity_data->character_controller_id];
+
+    /* CharacterControllerTemplateData char_Tdata = g_character_controller_template_data[entity_data->character_controller_id];
     character_controller_data.id = char_Tdata.id;
     character_controller_data.name = char_Tdata.name;
-    character_controller_data.movement = char_Tdata.movement;
+    character_controller_data.movement = char_Tdata.movement; */
 
 
     //ship_data = &;
@@ -66,10 +67,11 @@ void PlayerCharacter::Draw() {
 void PlayerCharacter::DrawOverlay() {
 
     float scale = GetRenderScale();
-    if (movement_type == MOVEMENT_SHIP and ship_controller != nullptr) {
-        ship_controller->Draw(entity_data->position, scale);
-    } else if (movement_type == MOVEMENT_CHARACTER and character_controller != nullptr) {
-        character_controller->Draw(entity_data->position, scale);
+    if (movement_type == MOVEMENT_SHIP and ship != nullptr) {
+        ship->Draw(entity_data->position, scale);
+        //ship->Draw();
+    } else if (movement_type == MOVEMENT_CHARACTER and character != nullptr) {
+        character->Draw(entity_data->position, scale);
     }
     else {
         TraceLog(LOG_INFO, "PlayerCharacter::DrawOverlay() movement_type is invalid or ship/character is null");
@@ -90,10 +92,10 @@ void PlayerCharacter::Die() {
 
 void PlayerCharacter::UpdateMovement() {
 
-    if (movement_type == MOVEMENT_SHIP and ship_controller != nullptr) {
-        ship_controller->Update(entity_data->position);
-    } else if (movement_type == MOVEMENT_CHARACTER and character_controller != nullptr) {
-        character_controller->Update(entity_data->position);
+    if (movement_type == MOVEMENT_SHIP and ship != nullptr) {
+        ship->Update(entity_data->position);
+    } else if (movement_type == MOVEMENT_CHARACTER and character != nullptr) {
+        character->Update(entity_data->position);
         
     }
     else {
@@ -131,23 +133,27 @@ void PlayerCharacter::RegisterWithManagers(SelectionManager *sm) {
 
 void PlayerCharacter::EnterShip(ShipData *_data) {
     ship_data = _data;
+    character.reset();
     
-    character_controller.reset();
-    ship_controller = std::make_unique<ShipController>(_data);
+    printf("entering ship   equimnent tags: %i\n", ship_data->equipment_tags.size());
+    ship = std::make_unique<Ship>(_data);
+
+    
+    /* ship_controller = std::make_unique<ShipController>(_data);
     ship_controller->SetFlightMode(LOCAL_FLIGHT_MODE);
     ship_controller->flight_modes[LOCAL_FLIGHT_MODE].velocity = {0,0};
-    ship_controller->flight_modes[LOCAL_FLIGHT_MODE].throttle = 0.0f;
+    ship_controller->flight_modes[LOCAL_FLIGHT_MODE].throttle = 0.0f; */
 
     movement_type = MOVEMENT_SHIP;
     printf("enter ship\n");
 
 }
 
-void PlayerCharacter::ExitShip() {
-
-    ship_controller.reset();
-    character_controller = std::make_unique<CharacterController>(&character_controller_data);
-    character_controller->character_data->movement.velocity = {0,0};
+void PlayerCharacter::ExitShip(CharacterData *_data) {
+    character_data = _data;
+    ship.reset();
+    character = std::make_unique<Character>(character_data);
+    character->character_controller->movement.velocity = {0,0};
     
     movement_type = MOVEMENT_CHARACTER;
     printf("exit ship\n");

@@ -83,6 +83,7 @@ GENERATED += $(OBJDIR)/asteroidentity.o
 GENERATED += $(OBJDIR)/autopilot.o
 GENERATED += $(OBJDIR)/button.o
 GENERATED += $(OBJDIR)/buttonpanel.o
+GENERATED += $(OBJDIR)/character.o
 GENERATED += $(OBJDIR)/charactercontroller.o
 GENERATED += $(OBJDIR)/characterutils.o
 GENERATED += $(OBJDIR)/components.o
@@ -115,6 +116,7 @@ GENERATED += $(OBJDIR)/resource_loader.o
 GENERATED += $(OBJDIR)/scenemanager.o
 GENERATED += $(OBJDIR)/sceneutils.o
 GENERATED += $(OBJDIR)/selectionmanager.o
+GENERATED += $(OBJDIR)/ship.o
 GENERATED += $(OBJDIR)/shipcontroller.o
 GENERATED += $(OBJDIR)/shipinfo.o
 GENERATED += $(OBJDIR)/shiputils.o
@@ -143,6 +145,7 @@ OBJECTS += $(OBJDIR)/asteroidentity.o
 OBJECTS += $(OBJDIR)/autopilot.o
 OBJECTS += $(OBJDIR)/button.o
 OBJECTS += $(OBJDIR)/buttonpanel.o
+OBJECTS += $(OBJDIR)/character.o
 OBJECTS += $(OBJDIR)/charactercontroller.o
 OBJECTS += $(OBJDIR)/characterutils.o
 OBJECTS += $(OBJDIR)/components.o
@@ -175,6 +178,7 @@ OBJECTS += $(OBJDIR)/resource_loader.o
 OBJECTS += $(OBJDIR)/scenemanager.o
 OBJECTS += $(OBJDIR)/sceneutils.o
 OBJECTS += $(OBJDIR)/selectionmanager.o
+OBJECTS += $(OBJDIR)/ship.o
 OBJECTS += $(OBJDIR)/shipcontroller.o
 OBJECTS += $(OBJDIR)/shipinfo.o
 OBJECTS += $(OBJDIR)/shiputils.o
@@ -264,10 +268,13 @@ endif
 $(OBJDIR)/areas.o: src/areas/areas.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/charactercontroller.o: src/controllers/charactercontroller/charactercontroller.cpp
+$(OBJDIR)/character.o: src/characters/character.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/characterutils.o: src/controllers/charactercontroller/characterutils.cpp
+$(OBJDIR)/characterutils.o: src/characters/characterutils.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/charactercontroller.o: src/controllers/charactercontroller/charactercontroller.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/objectcontroller.o: src/controllers/objectcontroller/objectcontroller.cpp
@@ -277,9 +284,6 @@ $(OBJDIR)/objectutils.o: src/controllers/objectcontroller/objectutils.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/shipcontroller.o: src/controllers/shipcontroller/shipcontroller.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/shiputils.o: src/controllers/shipcontroller/shiputils.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/data.o: src/data/data.cpp
@@ -319,6 +323,12 @@ $(OBJDIR)/splashscene.o: src/scenes/splashscene.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/titlescene.o: src/scenes/titlescene.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/ship.o: src/ships/ship.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/shiputils.o: src/ships/shiputils.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/sprite.o: src/sprite/sprite.cpp

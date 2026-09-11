@@ -14,11 +14,11 @@ enum FLIGHT_MODE {
 struct FlightMode {
     Vector2 velocity = {0,0};
     float rotation = 0.0f;          // radians
-    float thrust = 600.0f;          // acceleration
-    float reverse_thrust = 300.0f;
-    float max_speed = 3000.0f;
-    float turn_speed = DEG2RAD * 180.0f;
-    float drag = 0.1f;             // gameplay drag
+    float thrust = 0.0f;          // acceleration
+    float reverse_thrust = 0.0f;
+    float max_speed = 0.0f;
+    float turn_speed = DEG2RAD * 0.0f;
+    float drag = 0.0f;             // gameplay drag
     float throttle = 0.0f;          // 0-1
     bool throttle_override = false;
     float speed;
