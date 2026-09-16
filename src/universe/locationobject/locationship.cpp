@@ -33,8 +33,7 @@ LocationShip::~LocationShip() {
 
 void LocationShip::Update() {
     float detect_radius = ship_data->radius * DETECT_RADIUS_FACTOR;
-    if(
-        CheckCollisionPointCircle(g_current_player->entity_data->position, position, detect_radius) and info_area.selected) {
+    if(CheckCollisionPointCircle(g_current_player->entity_data->position, position, detect_radius) and info_area.selected) {
         can_board_ship = true;
     }
     else {

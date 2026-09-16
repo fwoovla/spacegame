@@ -60,9 +60,11 @@ SiteLocalData GenerateSiteLocalData() {
     if(GetRandomValue(0, 100) < 50) {
         local_data.site_type = SITE_FUEL_SHOP;
     }
+    else {
+        local_data.site_type = SITE_LANDING;
+    }
 
     return local_data;
-
 }
 
 

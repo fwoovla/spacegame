@@ -54,8 +54,10 @@ void ShipController::Update(Vector2 &position) {
         current_mode->throttle = f_input.throttle;
 
         if(autopilot.state == DONE) {
+            //autopilot.state = NONE;
             autopilot.enter_local_space.EmitSignal();
             if(autopilot.landed) {
+                autopilot.state = NONE;
                 autopilot.landing_at_target.EmitSignal();
             }
             else {

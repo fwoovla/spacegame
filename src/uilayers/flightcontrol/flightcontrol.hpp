@@ -323,7 +323,11 @@ class ShipInfo : public FlightComponent{
     void Draw() override;
     void SetState(COMPONENT_STATE new_state) override;
 
+    Ship *ship = nullptr;
+
     Label entity_label;
+
+    Label fuel_label;
     
 };
 
@@ -397,4 +401,7 @@ class FlightControl : public UILayer {
 
         Rectangle flight_mode_indicator;
         Label flight_mode_label;
+
+        //Rectangle flight_mode_indicator;
+        
 };

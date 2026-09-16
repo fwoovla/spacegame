@@ -9,9 +9,9 @@
 #define ZOOM_STEP 0.05f
 
 #define SYSTEM_ZOOM 0.005f
-#define BODY_ZOOM 8.0f
-#define LOCATION_ZOOM 10.5f
-#define SITE_ZOOM 18.0f
+#define BODY_ZOOM 5.0f
+#define LOCATION_ZOOM 8.0f
+#define SITE_ZOOM 15.0f
 
 
 float max_dist_sqr = 150*150;
@@ -79,8 +79,12 @@ void HandleCamera() {
             target_zoom = SITE_ZOOM;
             step = 0.05f;
         }
+        else if(g_game_data.camera_state == CAMERA_LANDING) {
+            target_zoom = MAX_ZOOM;
+            step = 0.02f;
+        }
         g_camera.zoom = lerp(g_camera.zoom, target_zoom, step);
-        if( abs(g_camera.zoom  - target_zoom) < (target_zoom * 0.01f)) { 
+        if( abs(g_camera.zoom  - target_zoom) < 0.1f) { 
             g_game_data.do_camera_transition = false;
         }
 

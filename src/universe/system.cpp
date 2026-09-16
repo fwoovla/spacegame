@@ -80,6 +80,13 @@ void System::Update() {
     }
     std::erase_if(objects, [](const std::unique_ptr<ObjectEntity> &entity){return entity->should_delete;});
 
+
+    if(landing_initiated) {
+        if(!g_game_data.do_camera_transition) {
+            landing_initiated = false;
+            landing_requested.EmitSignal();
+        }
+    }
     
 }
 
@@ -91,8 +98,6 @@ void System::Draw() {
 
 
 void System::DrawWorld() {
-
-    DrawRectangle(0, 0, g_viewport.resolution.x, g_viewport.resolution.y, SPACEBLUE);
     
     for(auto &body : system_data.body_list) {
         body->Draw();
@@ -298,4 +303,9 @@ void System::RegisterWithManagers(){
         object->RegisterWithManagers(selection_manager);
     }
 
+}
+
+void System::InitiateLanding() {
+    landing_initiated = true;
+    SetCameraState(CAMERA_LANDING);
 }

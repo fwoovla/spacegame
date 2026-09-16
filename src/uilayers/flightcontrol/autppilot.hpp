@@ -27,6 +27,7 @@ struct FlightMode {
 
 
 enum AUTOPILOT_STATE {
+    NONE,
     ALIGN,
     ACCELERATE,
     CRUISE,
@@ -80,7 +81,7 @@ class Autopilot {
 
         AutopilotTarget target_data;
 
-        AUTOPILOT_STATE state;
+        AUTOPILOT_STATE state = NONE;
 
         FlightMode *flight_mode;
 

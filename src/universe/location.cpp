@@ -20,6 +20,8 @@ void Location::GenerateLocation(SelectionManager *sm) {
 
     for(auto &site : location_data.site_list) {
         site->RegisterWithManagers(selection_manager);
+        site->shared_site_data = &shared_site_data;
+        site->open_shop.Connect( [this]() { OnOpenShop();} );
         
     }
 
@@ -34,12 +36,15 @@ void Location::Update() {
 
     std::erase_if(vec, [](const std::unique_ptr<CreatureEntity> &entity){return entity->should_delete;});
 
+    for(auto &site : location_data.site_list) {
+        site->Update();
+    }
 
     location_data.ship->Update();
 
     if(g_input.keys_pressed[0] == KEY_SPACE and location_data.ship->can_board_ship) {
         launch_requested.EmitSignal();
-    } 
+    }
 
 }
 
@@ -159,3 +164,7 @@ void Location::AddPlayer() {
 }
 
 
+void Location::OnOpenShop() {
+    printf("openning shop %i\n", shared_site_data.type);
+
+}

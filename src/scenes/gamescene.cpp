@@ -73,7 +73,7 @@ void GameScene::DrawScene() {
     if(g_game_data.show_debug) {
         DrawCircleV(g_input.screen_mouse_position, 6, YELLOW);
     }
-
+    DrawRectangle(0, 0, g_viewport.resolution.x, g_viewport.resolution.y, SPACEBLUE);
     BeginMode2D(g_camera);
 
     universe_manager.DrawWorld();

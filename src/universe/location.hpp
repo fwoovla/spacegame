@@ -55,6 +55,8 @@ class Location {
         void AddPlayer();
 
         void OnLaunchRequested();
+        void OnOpenShop();
+
 
         PlayerCharacter * SpawnPlayer(EntityTemplateData &tmpl, int uid, Vector2 position);
         LocationSite * SpawnLocationSite(LocationSiteData &data);
@@ -62,6 +64,8 @@ class Location {
         LocationInstanceData location_data; 
         LocationMapData map_data; 
         SelectionManager *selection_manager = nullptr;
+
+        LocationSiteSharedData shared_site_data;
 
         //Signal landing_requested;
         Signal launch_requested;

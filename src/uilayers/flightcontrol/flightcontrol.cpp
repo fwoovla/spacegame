@@ -63,6 +63,9 @@ FlightControl::FlightControl() {
     CreateLabel(flight_mode_label, {flight_mode_indicator.x + 25, flight_mode_indicator.y}, 30, WHITE, "flight mode (X/C)");
 
 
+    //CreateLabel(fuel_label, {flight_mode_indicator.x + 25, flight_mode_indicator.y}, 30, WHITE, "flight mode (X/C)");
+
+
 }
 
 
@@ -239,6 +242,7 @@ void FlightControl::SetTarget(CreatureEntity *_entity, System *sys, SelectionMan
     shared_target_data = {};
 
     entity = _entity; //only need entity for potition.  maybe just get ship and figure out a better way?
+    ship_info->ship = entity->ship.get();
     selection_manager = sm;
     selection_manager->selected.Connect([this]() { OnTargetSelected();});
     selection_manager->deselected.Connect([this]() { OnTargetDeSelected();});
@@ -269,9 +273,9 @@ void FlightControl::ClearTarget() {
     selection_manager = nullptr;
     system = nullptr;
 
-/*     shared_nav_data.site = nullptr;
+    shared_nav_data.site = nullptr;
     shared_nav_data.location = nullptr;
-    shared_nav_data.body = nullptr; */
+    shared_nav_data.body = nullptr;
 
 }
 
@@ -358,15 +362,15 @@ void FlightControl::OnEnterTargetSpace() {
 }
 
 void FlightControl::OnLandingAtTarget() {
-    //if()
-    system->SetCameraState(CAMERA_SITE);
+    //system->SetCameraState(CAMERA_SITE);
     printf("fc: landed\n");
     g_game_data.transition.body_id = entity->ship->ship_controller->autopilot.target_data.body_uid;
     g_game_data.transition.location_id = entity->ship->ship_controller->autopilot.target_data.location_uid;
     g_game_data.transition.site_id = entity->ship->ship_controller->autopilot.target_data.site_uid;
 
     OnNavTargetDeSelected();
-    system->landing_requested.EmitSignal();
+    system->InitiateLanding();
+    //system->landing_requested.EmitSignal();
 }
 
 void FlightControl::OnAutopilotInitiated() {

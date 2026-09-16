@@ -85,6 +85,10 @@ class System {
 
         void RegisterWithManagers();
 
+        void InitiateLanding();
+        
+        bool landing_initiated = false;
+
 
         SelectionManager *selection_manager = nullptr;
 

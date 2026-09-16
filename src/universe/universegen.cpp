@@ -241,7 +241,7 @@ SystemLocationData GenerateSystemLocationData(SystemBodyData *body) {
     data.body_uid = body->uid;
     data.system_uid = body->system_uid;
 
-    data.name = "location " + std::to_string(data.uid) + " on body " + std::to_string(data.body_uid);
+    data.name = "location " + std::to_string(data.uid);
 
     
     data.position = body->position;
@@ -286,7 +286,6 @@ SystemSiteData GenerateSystemSiteData(SystemLocationData *location, int uid) {
     new_site.location_uid = location->uid;
     new_site.body_uid = location->body_uid;
     new_site.system_uid = location->system_uid;
-    new_site.name = "site " +   std::to_string(new_site.uid) +  " @ location " + std::to_string(location->uid);
 
     new_site.position.x = location->position.x + location->location_plan.site_locations[uid].x - location->location_plan.px_offset.x + (location->location_plan.grid_size/2);
     new_site.position.y = location->position.y + (location->location_plan.site_locations[uid].y) - location->location_plan.px_offset.y + (location->location_plan.grid_size/2);
@@ -296,6 +295,15 @@ SystemSiteData GenerateSystemSiteData(SystemLocationData *location, int uid) {
 
     new_site.local_data = GenerateSiteLocalData();  
     new_site.site_plan = GenerateNewSitePlan(new_site.local_data);
+
+    if(new_site.local_data.site_type == SITE_LANDING) {
+        new_site.name = " landing pad" + std::to_string(new_site.uid);
+    }
+    else if(new_site.local_data.site_type == SITE_FUEL_SHOP) {
+        new_site.name = " fuel shop" + std::to_string(new_site.uid);
+    }
+
+
     new_site.radius = 10;
 
     

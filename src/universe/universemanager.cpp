@@ -35,7 +35,9 @@ void UniverseManager::CreateUniverse(std::string player_name) {
     ship_data.uid = GetUID();
     ship_data.value = ship_Tdata.value;
     ship_data.radius = ship_Tdata.radius;
-    ship_data.fuel = 100;
+    ship_data.max_fuel = ship_Tdata.max_fuel;
+    
+    ship_data.fuel = ship_data.max_fuel;
 
     ship_data.equipment_tags = ship_Tdata.equipment_tags;
 
@@ -527,7 +529,7 @@ void UniverseManager::LandAtLocation() {
 
         g_camera.target = g_current_player->entity_data->position;
         g_game_data.do_camera_transition = false;
-        g_camera.zoom = 0.5f;
+        g_camera.zoom = 2.0f;
 
         printf("transition to: %i position: %0.5f %0.5f\n", g_game_data.transition.location_id, g_current_player->entity_data->position.x, g_current_player->entity_data->position.y);
     }
@@ -591,6 +593,7 @@ void UniverseManager::LaunchFromLocation() {
 
     // Reset camera
     g_camera.target = g_current_player->entity_data->position;
+    g_camera.zoom = 10.5f;
 
     g_current_player->EnterShip(&universe_data.ship_data[g_current_player->entity_data->ship_uid]);
 

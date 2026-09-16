@@ -58,7 +58,9 @@ class LocationObject  {
         
 };
 
-
+struct LocationSiteSharedData {
+    SITE_TYPE type;
+};
 
 class LocationSite : public LocationObject {
     public:
@@ -75,7 +77,10 @@ class LocationSite : public LocationObject {
         LocationSiteData *site_data = nullptr;
         SelectionManager *selection_manager = nullptr;
         
-        Signal launch_requested;
+        //Signal launch_requested;
+        LocationSiteSharedData *shared_site_data;
+        bool can_open_shop = false;
+        Signal open_shop;
 
 }; 
 

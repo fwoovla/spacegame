@@ -8,7 +8,7 @@ LocationSite::LocationSite(LocationSiteData *_data) {
     site_data = _data;
     site_data->site_instance = this;
 
-    site_data->detect_radius = site_data->radius * DETECT_RADIUS_FACTOR;
+    site_data->detect_radius = site_data->radius * 1.5;
 
     info_area.shape = MouseTriggerArea::CIRCLE;
     info_area.position = site_data->position;
@@ -34,6 +34,20 @@ LocationSite::~LocationSite() {
 
 
 void LocationSite::Update() {
+    if(shared_site_data == nullptr) {
+        return;
+    }
+
+    if(CheckCollisionPointCircle(g_current_player->entity_data->position, site_data->position, site_data->detect_radius) and info_area.selected) {
+        can_open_shop = true;
+        if(g_input.keys_pressed[0] == KEY_SPACE) {
+            shared_site_data->type = site_data->local_data->site_type;
+            open_shop.EmitSignal();
+        }
+    }
+    else {
+        can_open_shop = false;
+    }
 
 }
 
@@ -48,7 +62,14 @@ void LocationSite::Draw() {
     }
 
     DrawRectangle(site_data->position.x - site_data->radius, site_data->position.y - site_data->radius, site_data->radius*2, site_data->radius*2, color);
-    //DrawCircleV(site_data->position, site_data->radius, BLUE);
+
+    if(info_area.selected) {
+        Color c_color = RED;
+        if(can_open_shop) {
+            c_color = BLUE;
+        }
+        DrawCircleLinesV(site_data->position, site_data->detect_radius, c_color);
+    }
 
     
 }
@@ -67,7 +88,7 @@ void LocationSite::DrawOverlay() {
         }
         if(info_area.selected) {
             Vector2 center = GetWorldToScreen2D(site_data->position, g_camera);
-            DrawCircleLinesV(center, (site_data->radius * 1.25f) * g_camera.zoom, GREEN);
+            DrawCircleLinesV(center, (site_data->radius * 1.25f) * g_camera.zoom, PURPLE);
         }
     }
 }
@@ -87,3 +108,4 @@ void LocationSite::RegisterWithManagers(SelectionManager *sm) {
     selection_manager->Register(&info_area);
 
 }
+

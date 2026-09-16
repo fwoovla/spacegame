@@ -29,6 +29,7 @@ struct ShipTemplateData {  //initial ship data.
     std::string name = "no name";
     int value = 0;
     float radius = 0.0f;
+    int max_fuel = 0;
 
     std::vector<ShipEquipmentTag> equipment_tags;
 
@@ -46,6 +47,7 @@ struct ShipData {
 
     int value = 0;
     float radius = 0.0f;
+    int max_fuel = 0;
 
     int fuel = 0;
 

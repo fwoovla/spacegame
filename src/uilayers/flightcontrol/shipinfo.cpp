@@ -2,10 +2,13 @@
 
 
 ShipInfo::ShipInfo(Rectangle min, Rectangle max) {
+    //ship = _ship;
+
     min_bounds = min;
     max_bounds = max;
 
-    CreateLabel(top_label, {(min_bounds.width/2) + min_bounds.x, min_bounds.y + 20}, 30, RAYWHITE, "this ship");
+    CreateLabel(top_label, {top_label.position.x, top_label.position.y + 30}, 30, RAYWHITE, "this ship");
+    CreateLabel(fuel_label, {(min_bounds.width/2) + min_bounds.x, min_bounds.y + 20}, 30, RAYWHITE, "fuel");
 
 }
 
@@ -14,7 +17,11 @@ ShipInfo::~ShipInfo() {
 }
 
 void ShipInfo::Update() {
+    if(ship == nullptr) {
+        return;
+    }
 
+    fuel_label.text = std::to_string(int(ship->ship_data->fuel));
 }
 
 void ShipInfo::Draw() {
@@ -30,6 +37,9 @@ void ShipInfo::Draw() {
 
     top_label.position = {(bounds.width/2) + bounds.x, bounds.y + 20};
     DrawLabelCentered(top_label, g_font);
+
+    fuel_label.position = {top_label.position.x, top_label.position.y + 30};
+    DrawLabelCentered(fuel_label, g_font);
 
 }
 

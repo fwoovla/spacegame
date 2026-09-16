@@ -125,6 +125,7 @@ void LoadShipData(std::string file_path) {
         new_template.name = e["name"];
         new_template.value = e["value"];
         new_template.radius = e["radius"];
+        new_template.max_fuel = e["max_fuel"];
 
         new_template.equipment_tags.resize(EQUIPMENT_COUNT);
 
