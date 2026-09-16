@@ -3,9 +3,9 @@
         {
             "id": "CHARACTER_PLAYER",
             "name": "Player character",
-            "speed":80,
+            "speed":60,
 
-            "radius":20.0
+            "radius":15.0
 
         }
     ]

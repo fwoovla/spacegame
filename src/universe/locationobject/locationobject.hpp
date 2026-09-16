@@ -19,6 +19,7 @@
 class LocationSite;
 struct LocationSiteData {
     LocationSite *site_instance;
+    SitePlan *site_plan;
     SiteLocalData *local_data;
     int uid = -1;
     int location_uid = -1;
@@ -28,7 +29,6 @@ struct LocationSiteData {
     Vector2 position;
 
     float radius = 0.0f;
-    //float location_radius = 0.0f;
     float detect_radius = 0.0f;
 };
 

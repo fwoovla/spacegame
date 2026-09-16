@@ -19,7 +19,6 @@ SystemSite::SystemSite(SystemSiteData *_data) {
     info_area.location_payload = site_data->location_uid;
     info_area.body_payload = site_data->body_uid;
 
-
     CreateLabel(info_label, site_data->position, 40, WHITE, site_data->name.c_str());
 
 }
@@ -40,7 +39,17 @@ void SystemSite::Update() {
 
 
 void SystemSite::Draw() {
-    DrawCircleV(site_data->position, site_data->radius, DARKGRAY);
+    Color color = RAYWHITE;
+
+    if(site_data->local_data.site_type == SITE_LANDING) {
+        color = GREEN;
+    }
+    else if(site_data->local_data.site_type == SITE_FUEL_SHOP) {
+        color = ORANGE;
+    }
+
+    DrawRectangle(site_data->position.x - site_data->radius, site_data->position.y - site_data->radius, site_data->radius*2, site_data->radius*2, color);
+    //DrawCircleV(site_data->position, site_data->radius, DARKGRAY);
 
 }
 

@@ -17,7 +17,6 @@ struct CharacterTemplateData {
     CHARACTER_ID id = CHARACTER_NONE;
     int credits = 0;
     
-    //CharacterMovement movement;
     float speed = 0.0f;
 
     float radius = 0.0f;
@@ -48,6 +47,7 @@ class Character {
 
     void Update(Vector2 &position);
     void Draw(Vector2 &position, float scale);
+    void Draw(Vector2 &position);
 
     CharacterData *character_data = nullptr;
     std::unique_ptr<CharacterController> character_controller;

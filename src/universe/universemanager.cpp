@@ -423,21 +423,28 @@ void UniverseManager::OnTravelToSystemRequested() {
     if(!universe_data.map_data.contains(g_game_data.transition.system_id) or g_game_data.transition.system_id == current_system->system_data.uid) {
         return;
     }
+
+    if(g_current_player->ship->ship_data->fuel <= 0) {
+        printf("!!! out of fuel  !!!!\n");
+        return;
+    }
+
+    g_current_player->ship->UseFuel(1);
+
     system_ready_to_load = true;
-    //printf("going to new system???\n");
 }
 
 void UniverseManager::TravelToSystem() {
 
     selection_manager.UnregisterAll();
 
-    int player_uid = g_current_player->entity_data->uid; 
+    int player_uid = g_current_player->entity_data->uid;
+
     //get data
     EntityData data_to_move = current_system->system_data.entity_data[player_uid];
 
     current_system->system_data.entity_data.clear();
 
-    //int selected_system = SelectRandomSystem();
     int destination_system = g_game_data.transition.system_id;
     GenerateNewSystem(destination_system);
 
@@ -452,8 +459,6 @@ void UniverseManager::TravelToSystem() {
     }
 
     hud.SetTarget(g_current_player, current_system.get(), &selection_manager, &universe_data);
-
-
 
     printf("arived at new system!!!!\n--\n%s\n", current_system->system_data.name.c_str());
 }
@@ -518,9 +523,11 @@ void UniverseManager::LandAtLocation() {
         g_current_player->ExitShip(&universe_data.character_data[g_current_player->entity_data->character_uid]);
         exit_ship.EmitSignal();
         current_location->AddPlayer();
+        g_current_player->entity_data->render_mode = RENDER_WORLD;
 
         g_camera.target = g_current_player->entity_data->position;
-        g_camera.zoom = 1.0f;
+        g_game_data.do_camera_transition = false;
+        g_camera.zoom = 0.5f;
 
         printf("transition to: %i position: %0.5f %0.5f\n", g_game_data.transition.location_id, g_current_player->entity_data->position.x, g_current_player->entity_data->position.y);
     }
@@ -577,20 +584,18 @@ void UniverseManager::LaunchFromLocation() {
 
     g_current_player->entity_data->position = g_game_data.transition.return_position;
 
-
     // Destroy location
     if(save_location){ /*save here*/ };
 
     location_active = false;
 
-
     // Reset camera
     g_camera.target = g_current_player->entity_data->position;
-
 
     g_current_player->EnterShip(&universe_data.ship_data[g_current_player->entity_data->ship_uid]);
 
     enter_ship.EmitSignal();
+    g_current_player->entity_data->render_mode = RENDER_CAPPED;
 
     printf("returned to system %f %f\n",
         g_current_player->entity_data->position.x,

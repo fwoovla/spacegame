@@ -38,7 +38,17 @@ void LocationSite::Update() {
 }
 
 void LocationSite::Draw() {
-    DrawCircleV(site_data->position, site_data->radius, BLUE);
+    Color color = RAYWHITE;
+
+    if(site_data->local_data->site_type == SITE_LANDING) {
+        color = GREEN;
+    }
+    else if(site_data->local_data->site_type == SITE_FUEL_SHOP) {
+        color = ORANGE;
+    }
+
+    DrawRectangle(site_data->position.x - site_data->radius, site_data->position.y - site_data->radius, site_data->radius*2, site_data->radius*2, color);
+    //DrawCircleV(site_data->position, site_data->radius, BLUE);
 
     
 }

@@ -64,6 +64,8 @@ class Ship {
 
     void Update(Vector2 &position);
     void Draw(Vector2 &position, float scale);
+    void Draw(Vector2 &position);
+    void UseFuel(int fuel_use);
 
     ShipData *ship_data = nullptr;
     std::unique_ptr<ShipController> ship_controller;

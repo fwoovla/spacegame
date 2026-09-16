@@ -23,3 +23,16 @@ void Ship::Draw(Vector2 &position, float scale) {
     ship_controller->Draw(position, scale);
 
 }
+
+
+void Ship::UseFuel(int fuel_use) {
+    ship_data->fuel -= fuel_use;
+
+    if(ship_data->fuel < 0) {
+        ship_data->fuel = 0;
+    }
+}
+
+void Ship::Draw(Vector2 &position) {
+    DrawCircleV({position.x, position.y}, 20, PINK);
+}

@@ -5,7 +5,7 @@
             "name": "ship 1",
 
             "value":100,
-            "radius":20.0,
+            "radius":50.0,
 
             "equipment":[
                 {

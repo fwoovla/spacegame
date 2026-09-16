@@ -262,15 +262,13 @@ SystemLocationData GenerateSystemLocationData(SystemBodyData *body) {
     data.local_data.uid = data.uid;
     data.local_data.name = data.name;
     
-    data.location_plan = GenerateNewPlan(data.local_data);
+    data.location_plan = GenerateNewLocationPlan(data.local_data);
     data.radius = (data.location_plan.size_x * data.location_plan.grid_size) / 2;
 
     printf("location data created   name: %s\n", data.name.c_str());
     body->location_uids.push_back(data.uid);
     return data;
 }
-
-
 
 
 
@@ -290,14 +288,17 @@ SystemSiteData GenerateSystemSiteData(SystemLocationData *location, int uid) {
     new_site.system_uid = location->system_uid;
     new_site.name = "site " +   std::to_string(new_site.uid) +  " @ location " + std::to_string(location->uid);
 
-
-    new_site.radius = 16;
-    
     new_site.position.x = location->position.x + location->location_plan.site_locations[uid].x - location->location_plan.px_offset.x + (location->location_plan.grid_size/2);
     new_site.position.y = location->position.y + (location->location_plan.site_locations[uid].y) - location->location_plan.px_offset.y + (location->location_plan.grid_size/2);
-
+    
     new_site.local_data.uid = new_site.uid;
     new_site.local_data.name = new_site.name;
+
+    new_site.local_data = GenerateSiteLocalData();  
+    new_site.site_plan = GenerateNewSitePlan(new_site.local_data);
+    new_site.radius = 10;
+
+    
 
     printf("site data created    name: %s  uid: %i \n", new_site.name.c_str(), new_site.uid);
     return new_site;
@@ -502,6 +503,7 @@ LocationSiteData GenerateLocationSiteData(SystemSiteData *s_site, Vector2 positi
     new_site.position = position;
 
     new_site.local_data = &s_site->local_data;
+
 
     printf("location site data created    name: %s  uid: %i     %0.4f %0.4f\n", new_site.name.c_str(), new_site.uid, new_site.position.x, new_site.position.y);
 

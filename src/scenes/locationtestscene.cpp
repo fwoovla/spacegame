@@ -103,7 +103,7 @@ void LocationTestScene::OnRegenerateLocation() {
     int size = GetRandomValue(1, 10) * 10;
     local_data = GenerateLocationLocalData(size);
     
-    plan = GenerateNewPlan(local_data);
+    plan = GenerateNewLocationPlan(local_data);
     
     ui.size_input.text =  std::to_string(local_data.size);
     ui.grid_size_input.text = std::to_string(plan.grid_size);

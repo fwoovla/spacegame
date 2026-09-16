@@ -380,26 +380,34 @@ void FlightControl::SetAutopilotTarget() {
     if(shared_nav_data.site != nullptr) {
         new_target.set = true;
         new_target.position = shared_nav_data.site->position;
-        new_target.auto_land = true;
         new_target.proximity_radius = shared_nav_data.site->detect_radius;
         new_target.site_uid = shared_nav_data.site->uid;
         new_target.location_uid = shared_nav_data.site->location_uid;
         new_target.body_uid = shared_nav_data.site->body_uid;
+
+        if(shared_nav_data.site->local_data.site_type == SITE_LANDING) {
+            new_target.auto_land = true;
+        }
+        else {
+            new_target.auto_land = false;
+        }
+
+
     }
     else if(shared_nav_data.location != nullptr) {
         new_target.set = true;
         new_target.position = shared_nav_data.location->position;
-        new_target.auto_land = false;
         new_target.proximity_radius = shared_nav_data.location->detect_radius;
         new_target.location_uid = shared_nav_data.location->uid;
         new_target.body_uid = shared_nav_data.location->body_uid;
+        new_target.auto_land = false;
     }
     else if(shared_nav_data.body != nullptr) {            
         new_target.set = true;
         new_target.position = shared_nav_data.body->position;
-        new_target.auto_land = false;
         new_target.proximity_radius = shared_nav_data.body->detect_radius;
         new_target.body_uid = shared_nav_data.body->uid;
+        new_target.auto_land = false;
     }
     if(Vector2Distance(entity->entity_data->position, new_target.position) > 1000.0f and new_target.set) {
         entity->ship->ship_controller->SetFlightMode(SYSTEM_FLIGHT_MODE);

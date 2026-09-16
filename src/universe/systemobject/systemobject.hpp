@@ -5,9 +5,19 @@
 #include <string>
 
 
+enum SITE_TYPE {
+    SITE_LANDING,
+    SITE_FUEL_SHOP,
+};
+
+
+
+
 struct SiteLocalData {
     int uid = -1;
     std::string name = "no site name";
+    SITE_TYPE site_type = SITE_LANDING;
+    int size = 0;
 };
 
 
@@ -18,6 +28,7 @@ struct LocationLocalData {
     int size = 0;
 
     std::vector<int> site_uids;
+
 };
 
 
@@ -143,9 +154,25 @@ struct SystemLocationData {
 
 };
 
+
+
+
+struct SitePlan {
+    int size_x = 10;
+    int size_y = 10;
+    int grid_size = 32;
+
+    Vector2 px_offset;
+    
+    std::unordered_map<int, Vector2> sub_site_locations;
+    
+};
+
+
 class SystemSite;
 struct SystemSiteData {
     SystemSite *site_instance;
+    SitePlan site_plan;
     SiteLocalData local_data;
     int uid = -1;
     int location_uid = -1;
@@ -246,4 +273,7 @@ class SystemSite : public SystemObject {
 
 
 LocationLocalData GenerateLocationLocalData(int size);
-LocationPlan GenerateNewPlan(LocationLocalData local_data);
+LocationPlan GenerateNewLocationPlan(LocationLocalData local_data);
+
+SiteLocalData GenerateSiteLocalData();
+SitePlan GenerateNewSitePlan(SiteLocalData local_data);
