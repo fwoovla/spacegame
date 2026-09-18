@@ -87,6 +87,10 @@ void System::Update() {
             landing_requested.EmitSignal();
         }
     }
+
+    if(g_game_data.show_debug) {
+        printf("draw count %i  zoom: %0.05f\n", g_game_data.debug_data.draw_count, g_camera.zoom);
+    }
     
 }
 

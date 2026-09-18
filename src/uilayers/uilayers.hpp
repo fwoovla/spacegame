@@ -8,9 +8,26 @@
 #include "../ui/textinput.hpp"
 #include "../universe/entity.hpp"
 #include "../controllers/controllers.hpp"
-//#include "../universe/components/components.hpp"
+//#include "../uilayers/uilayers.hpp"
 #include "../colordefs.hpp"
 
+
+enum COMPONENT_STATE {
+    HIDDEN,
+    MINIMIZED,
+    FOCUSED
+};
+
+
+struct NavTargetSharedData {
+
+    SystemSiteData *site = nullptr;
+    SystemLocationData *location = nullptr;
+    SystemBodyData *body = nullptr;
+    Vector2 target_position;
+    Vector2 this_position;
+    bool set = false;
+};
 
 class UILayer{
     public:
@@ -102,3 +119,18 @@ class LocationTestSceneUiLayer : public UILayer {
 
     LocationPlan *plan;
 };
+
+/* class ShopUI : public UILayer {
+
+    public:
+    ShopUI();
+    ~ShopUI(){};
+    void Update() override;
+    void Draw() override;
+
+    Button close_button;
+
+    Signal close_shop;
+};
+
+ */

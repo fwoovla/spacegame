@@ -166,5 +166,5 @@ void Location::AddPlayer() {
 
 void Location::OnOpenShop() {
     printf("openning shop %i\n", shared_site_data.type);
-
+    open_shop.EmitSignal();
 }

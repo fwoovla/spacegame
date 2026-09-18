@@ -38,6 +38,8 @@ struct Viewport {
 
 extern Viewport g_viewport;
 
+bool IsOnScreen(Vector2 world_position, float world_radius);
+
 void CalculateViewport(Vector2 resolution, float scale);
 
 void HandleCamera();

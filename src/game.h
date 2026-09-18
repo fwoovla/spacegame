@@ -14,6 +14,8 @@ struct DebugData {
     int dummy;
     float update_time = 0.0f;
     float render_time = 0.0f;
+
+    int draw_count = 0;
     
 };
 
@@ -38,6 +40,7 @@ struct GameData {
     int tick_rate  = 10;
     bool running = false;
     bool show_debug;
+    SHOP_TYPE shop_type;
     DebugData debug_data;
 
     CAMERA_STATE camera_state = CAMERA_SYSTEM;
@@ -45,6 +48,7 @@ struct GameData {
 
     SharedTransitionData transition;
     SharedSelectionData selection;
+
     
 };
 

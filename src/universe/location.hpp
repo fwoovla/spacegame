@@ -69,5 +69,6 @@ class Location {
 
         //Signal landing_requested;
         Signal launch_requested;
+        Signal open_shop;
 };
 

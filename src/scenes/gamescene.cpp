@@ -31,10 +31,7 @@ GameScene::GameScene() {
 
 
     universe_manager.exit_ship.Connect([&]() { OnExitShip();});
-    universe_manager.enter_ship.Connect([&]() { OnEnterShip();});
-
-    //ui = std::make_unique<GameUiLayer>();
-    
+    universe_manager.enter_ship.Connect([&]() { OnEnterShip();});  
 
     world_ticker.Start(1.0f / g_game_data.tick_rate, false);
     world_ticker.timer_timeout.Connect( [&](){OnWorldTick();} );
@@ -52,12 +49,7 @@ SCENE_ID GameScene::Update() {
 
     HandleCamera();
  
- /*    if(g_input.keys_pressed[0] == KEY_ENTER) {
-        g_current_player->entity_data->position.x = (float)GetRandomValue(100, 20000);
-        g_current_player->entity_data->position.y = (float)GetRandomValue(100, 20000);
-    }
- */
-    
+
     if(g_current_player != nullptr) {
         universe_manager.Update();
     }
@@ -82,7 +74,6 @@ void GameScene::DrawScene() {
         universe_manager.DrawDebug();        
 
         DrawRectangleLines(0, 0, universe_manager.current_system.get()->system_data.radius * 2, universe_manager.current_system.get()->system_data.radius * 2, WHITE);
-        //DrawCircleV(g_input.world_mouse_position, 4, GREEN);    
     }
 
     EndMode2D();
@@ -114,11 +105,14 @@ void GameScene::OnWorldTick() {
 
 
 void GameScene::OnEnterShip() {
+    universe_manager.character_ui.ClearTarget();
     universe_manager.hud.SetTarget(g_current_player, universe_manager.current_system.get(), &universe_manager.selection_manager, &universe_manager.universe_data);
+    g_input.in_use = false;
 }
 
 void GameScene::OnExitShip() {
     universe_manager.hud.ClearTarget();
+    universe_manager.character_ui.SetTarget(g_current_player, universe_manager.current_system.get(), &universe_manager.selection_manager, &universe_manager.universe_data);
     g_input.in_use = false;
 }
 

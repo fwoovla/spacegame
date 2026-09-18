@@ -46,6 +46,19 @@ void CalculateViewport(Vector2 resolution, float scale) {
 }
 
 
+bool IsOnScreen(Vector2 world_position, float world_radius) {
+    Vector2 screen_pos = GetWorldToScreen2D(world_position, g_camera);
+    float radius = world_radius * g_camera.zoom;
+    
+    if(CheckCollisionCircleRec(screen_pos, radius, {0, 0, g_viewport.resolution.x, g_viewport.resolution.y})) {
+        return true;
+    }
+    return false;
+}
+
+
+
+
 void HandleCamera() {
     float zoom_factor = g_camera.zoom/1;
 

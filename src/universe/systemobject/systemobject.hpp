@@ -1,13 +1,21 @@
 #pragma once
 #include <raylib.h>
 #include "../../input/selectionmanager.hpp"
+//#include "../../uilayers/shopui/shopui.hpp"
 #include <vector>
 #include <string>
 
 
 enum SITE_TYPE {
     SITE_LANDING,
-    SITE_FUEL_SHOP,
+    SITE_SHOP,
+};
+
+enum SHOP_TYPE {
+    SHOP_NONE = -1,
+    SHOP_FUEL,
+    SHOP_EQUIPMENT,
+    SHOP_COUNT
 };
 
 
@@ -17,6 +25,7 @@ struct SiteLocalData {
     int uid = -1;
     std::string name = "no site name";
     SITE_TYPE site_type = SITE_LANDING;
+    SHOP_TYPE shop_type = SHOP_NONE;
     int size = 0;
 };
 
@@ -123,9 +132,9 @@ struct SystemBodyData {
 
 
 struct LocationPlan {
-    int size_x = 10;
-    int size_y = 10;
-    int grid_size = 32;
+    int size_x = 0;
+    int size_y = 0;
+    int grid_size = 0;
 
     Vector2 px_offset;
     
@@ -158,9 +167,9 @@ struct SystemLocationData {
 
 
 struct SitePlan {
-    int size_x = 10;
-    int size_y = 10;
-    int grid_size = 32;
+    int size_x = 0;
+    int size_y = 0;
+    int grid_size = 0;
 
     Vector2 px_offset;
     
@@ -211,8 +220,7 @@ class SystemObject  {
 
         Signal player_approaching;
         Signal player_departing;
-
-        
+       
 };
 
 

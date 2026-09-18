@@ -162,6 +162,14 @@ void FlightControl::Update() {
         system->system_travel_requested.EmitSignal();
     }
 
+    if(g_input.keys_pressed[0] == KEY_V) {
+        view_mode = (VIEW_MODE)(view_mode + 1);
+        if(view_mode > VIEW_COUNT - 1) {
+            view_mode = VIEW_NONE;
+            printf("view: %i\n", view_mode);
+        }
+    }
+
 
     std::string  throttle = TextFormat("%0.2f", entity->ship->ship_controller->current_mode->throttle );
     throttle_label.text = throttle + " %";
@@ -177,6 +185,18 @@ void FlightControl::Update() {
 }
 
 void FlightControl::Draw() {
+
+    if(view_mode == VIEW_ORBITS) {
+        for(auto &body : system->map_data.bodies) {
+            if(body.second.parent_uid != -1) {
+                Vector2 screen = GetWorldToScreen2D(system->map_data.bodies[body.second.parent_uid].position, g_camera);
+                float radius = body.second.orbit_radius * g_camera.zoom;
+                DrawCircleLinesV(screen, radius, GRAY);
+                //printf("screen pos %f %f\n", screen.x, screen.y);
+            }
+        }
+    }
+
 
     Rectangle bg_rect = {
         .x = 0,

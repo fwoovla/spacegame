@@ -13,6 +13,17 @@ void LoadData() {
     LoadShipEquipment("assets/ship_equipment.json");
     LoadCharacterControllerData("assets/characters.json");
     LoadObjectControllerData("assets/object_controllers.json");
+
+    FuelData fuel_1;
+    fuel_1.fuel_type = FUEL_CLASS_1;
+    fuel_1.price = 10.0f;
+
+    FuelData fuel_2;
+    fuel_2.fuel_type = FUEL_CLASS_2;
+    fuel_2.price = 20.0f;
+
+    g_fuel_data[fuel_1.fuel_type] = fuel_1;
+    g_fuel_data[fuel_2.fuel_type] = fuel_2;
 }
 
 void LoadCreatureEntityData(std::string file_path) {
@@ -170,6 +181,8 @@ void LoadShipEquipment(std::string file_path) {
     json j;
     file >> j;
 
+    
+
     for(auto& e : j["data"]) {
 
         SHIP_EQUIPMENT_ID equipment_id = StrToShipEquipmentId(e["equipment_id"].get<std::string>());
@@ -177,9 +190,17 @@ void LoadShipEquipment(std::string file_path) {
         if(equipment_id == EQUIPMENT_SYSTEM_DRIVE) {
             SystemDriveData drive = LoadSystemDriveData(e);
             g_system_drive_data[drive.part_id] = drive;
+            g_ship_equipment_data[drive.part_id] = &g_system_drive_data[drive.part_id];
         }
+/*         
+        else if( is another SHIP_EQUIPMENT_ID) {
+            load data
+        }
+*/
 
     }
+
+    printf("LOADED: %i SHIP EQUIPMENT\n\n", g_ship_equipment_data.size());
 }
 
 

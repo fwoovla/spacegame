@@ -75,6 +75,7 @@ class GameScene : public  BaseScene{
         
         //std::unique_ptr<GameUiLayer> ui;
         GameUiLayer ui;
+        //ShopUI shop_ui;
 
         Timer world_ticker;
 

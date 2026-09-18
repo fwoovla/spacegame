@@ -85,6 +85,9 @@ GENERATED += $(OBJDIR)/button.o
 GENERATED += $(OBJDIR)/buttonpanel.o
 GENERATED += $(OBJDIR)/character.o
 GENERATED += $(OBJDIR)/charactercontroller.o
+GENERATED += $(OBJDIR)/characterinfo.o
+GENERATED += $(OBJDIR)/characternavigation.o
+GENERATED += $(OBJDIR)/characterui.o
 GENERATED += $(OBJDIR)/characterutils.o
 GENERATED += $(OBJDIR)/components.o
 GENERATED += $(OBJDIR)/data.o
@@ -97,7 +100,6 @@ GENERATED += $(OBJDIR)/gameuilayer.o
 GENERATED += $(OBJDIR)/input.o
 GENERATED += $(OBJDIR)/label.o
 GENERATED += $(OBJDIR)/location.o
-GENERATED += $(OBJDIR)/locationmanager.o
 GENERATED += $(OBJDIR)/locationplan.o
 GENERATED += $(OBJDIR)/locationship.o
 GENERATED += $(OBJDIR)/locationsite.o
@@ -120,6 +122,10 @@ GENERATED += $(OBJDIR)/ship.o
 GENERATED += $(OBJDIR)/shipcontroller.o
 GENERATED += $(OBJDIR)/shipinfo.o
 GENERATED += $(OBJDIR)/shiputils.o
+GENERATED += $(OBJDIR)/shopitem.o
+GENERATED += $(OBJDIR)/shopitemgrid.o
+GENERATED += $(OBJDIR)/shopui.o
+GENERATED += $(OBJDIR)/shoputils.o
 GENERATED += $(OBJDIR)/signal.o
 GENERATED += $(OBJDIR)/splashscene.o
 GENERATED += $(OBJDIR)/sprite.o
@@ -147,6 +153,9 @@ OBJECTS += $(OBJDIR)/button.o
 OBJECTS += $(OBJDIR)/buttonpanel.o
 OBJECTS += $(OBJDIR)/character.o
 OBJECTS += $(OBJDIR)/charactercontroller.o
+OBJECTS += $(OBJDIR)/characterinfo.o
+OBJECTS += $(OBJDIR)/characternavigation.o
+OBJECTS += $(OBJDIR)/characterui.o
 OBJECTS += $(OBJDIR)/characterutils.o
 OBJECTS += $(OBJDIR)/components.o
 OBJECTS += $(OBJDIR)/data.o
@@ -159,7 +168,6 @@ OBJECTS += $(OBJDIR)/gameuilayer.o
 OBJECTS += $(OBJDIR)/input.o
 OBJECTS += $(OBJDIR)/label.o
 OBJECTS += $(OBJDIR)/location.o
-OBJECTS += $(OBJDIR)/locationmanager.o
 OBJECTS += $(OBJDIR)/locationplan.o
 OBJECTS += $(OBJDIR)/locationship.o
 OBJECTS += $(OBJDIR)/locationsite.o
@@ -182,6 +190,10 @@ OBJECTS += $(OBJDIR)/ship.o
 OBJECTS += $(OBJDIR)/shipcontroller.o
 OBJECTS += $(OBJDIR)/shipinfo.o
 OBJECTS += $(OBJDIR)/shiputils.o
+OBJECTS += $(OBJDIR)/shopitem.o
+OBJECTS += $(OBJDIR)/shopitemgrid.o
+OBJECTS += $(OBJDIR)/shopui.o
+OBJECTS += $(OBJDIR)/shoputils.o
 OBJECTS += $(OBJDIR)/signal.o
 OBJECTS += $(OBJDIR)/splashscene.o
 OBJECTS += $(OBJDIR)/sprite.o
@@ -343,6 +355,15 @@ $(OBJDIR)/label.o: src/ui/label.cpp
 $(OBJDIR)/textinput.o: src/ui/textinput.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/characterinfo.o: src/uilayers/characterui/characterinfo.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/characternavigation.o: src/uilayers/characterui/characternavigation.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/characterui.o: src/uilayers/characterui/characterui.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/debuguilayer.o: src/uilayers/debuguilayer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -388,6 +409,18 @@ $(OBJDIR)/locationtestceneuilayer.o: src/uilayers/locationtestceneuilayer.cpp
 $(OBJDIR)/playerhudlayer.o: src/uilayers/playerhudlayer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/shopitem.o: src/uilayers/shopui/shopitem.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/shopitemgrid.o: src/uilayers/shopui/shopitemgrid.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/shopui.o: src/uilayers/shopui/shopui.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/shoputils.o: src/uilayers/shopui/shoputils.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/titleuilayer.o: src/uilayers/titleuilayer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -407,9 +440,6 @@ $(OBJDIR)/entityutils.o: src/universe/entityutils.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/location.o: src/universe/location.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/locationmanager.o: src/universe/locationmanager.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/locationship.o: src/universe/locationobject/locationship.cpp

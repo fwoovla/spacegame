@@ -34,17 +34,31 @@ SystemSite::~SystemSite() {
 
 void SystemSite::Update() {
 
+    is_on_screen = IsOnScreen(site_data->position, site_data->radius);
+    if(is_on_screen) {
+        is_on_screen = g_camera.zoom > 1.0f;
+    }
+
+    if(is_on_screen) {
+        g_game_data.debug_data.draw_count +=1;
+    }
+    
+
 }
 
 
 
 void SystemSite::Draw() {
+    if(!is_on_screen) {
+        return;
+    }
+
     Color color = RAYWHITE;
 
     if(site_data->local_data.site_type == SITE_LANDING) {
         color = GREEN;
     }
-    else if(site_data->local_data.site_type == SITE_FUEL_SHOP) {
+    else if(site_data->local_data.site_type == SITE_SHOP) {
         color = ORANGE;
     }
 
@@ -55,6 +69,10 @@ void SystemSite::Draw() {
 
 
 void SystemSite::DrawOverlay() {
+
+    if(!is_on_screen) {
+        return;
+    }
 
     if(info_area.mouse_hovering or info_area.selected) {
         

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../uilayers/flightcontrol/flightcontrol.hpp"
+#include "../uilayers/characterui/characterui.hpp"
+#include "../uilayers/shopui/shopui.hpp"
 #include "system.hpp"
 #include "location.hpp"
 #include <vector>
@@ -69,6 +71,9 @@ class UniverseManager {
         void LaunchFromLocation();
 
         int SelectRandomSystem();
+
+        void OnOpenShop();
+        void OnCloseShop();
         
 
     SelectionManager selection_manager;
@@ -92,6 +97,10 @@ class UniverseManager {
     Signal exit_ship;
 
     FlightControl hud;
+    CharacterUI character_ui;
+
+    bool shop_open = false;
+    ShopUI shop_ui;
 
     FastNoiseLite system_noise;
 };

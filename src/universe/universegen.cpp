@@ -297,14 +297,20 @@ SystemSiteData GenerateSystemSiteData(SystemLocationData *location, int uid) {
     new_site.site_plan = GenerateNewSitePlan(new_site.local_data);
 
     if(new_site.local_data.site_type == SITE_LANDING) {
-        new_site.name = " landing pad" + std::to_string(new_site.uid);
+        new_site.name = " landing site" + std::to_string(new_site.uid);
     }
-    else if(new_site.local_data.site_type == SITE_FUEL_SHOP) {
-        new_site.name = " fuel shop" + std::to_string(new_site.uid);
+    else if(new_site.local_data.site_type == SITE_SHOP) {
+        if(new_site.local_data.shop_type == SHOP_FUEL) {
+            new_site.name = "fuel";
+        }
+        else if(new_site.local_data.shop_type == SHOP_EQUIPMENT) {
+            new_site.name = "equipment";
+        }
+        new_site.name += " shop" + std::to_string(new_site.uid);
     }
 
 
-    new_site.radius = 10;
+    new_site.radius = new_site.site_plan.grid_size/2;
 
     
 

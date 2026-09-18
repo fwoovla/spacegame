@@ -54,7 +54,9 @@ void SceneManager::UpdateScene() {
 
     if(g_game_data.show_debug) {
         //debug_ui.Update();
-    } 
+    }
+
+    g_game_data.debug_data.draw_count = 0;
 }
 
 void SceneManager::DrawScene() {

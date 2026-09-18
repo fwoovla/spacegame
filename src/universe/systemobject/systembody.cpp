@@ -30,9 +30,18 @@ SystemBody::~SystemBody() {
 
 void SystemBody::Update() {
 
+    is_on_screen = IsOnScreen(body_data->position, body_data->radius);
+    if(is_on_screen) {
+        g_game_data.debug_data.draw_count +=1;
+    }
+
 }
 
 void SystemBody::Draw() {
+    if(!is_on_screen) {
+        return;
+    }
+
     DrawCircleV(body_data->position, body_data->radius, body_data->modulate);
 
     if(body_data->parent_uid != body_data->uid and g_game_data.show_debug) {
@@ -42,6 +51,9 @@ void SystemBody::Draw() {
 }
 
 void SystemBody::DrawOverlay() {
+    if(!is_on_screen) {
+        return;
+    }
 
     if(info_area.mouse_hovering or info_area.selected) {
         

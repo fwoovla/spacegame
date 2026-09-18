@@ -5,18 +5,6 @@
 
 struct UniverseData;  //from universe.hpp
 
-struct NavTargetSharedData {
-
-    SystemSiteData *site = nullptr;
-    SystemLocationData *location = nullptr;
-    SystemBodyData *body = nullptr;
-    Vector2 target_position;
-    Vector2 this_position;
-    bool set = false;
-
-};
-
-
 struct SharedButtonPayload {
     int payload_i;
     std::string payload_s = "";
@@ -80,9 +68,6 @@ class SystemList {
 
     std::vector<NavListEntry> master_nav_list;
     std::vector<NavListEntry> display_nav_list;
-
-    //NavListEntry *highlighted_entry;
-    //std::vector<Label> label_list;
 
     Vector2 position;
 
@@ -235,17 +220,13 @@ class UniversePanel {
 
 
 
-enum COMPONENT_STATE {
-    HIDDEN,
-    MINIMIZED,
-    FOCUSED
-};
+
 
 class FlightComponent : public UILayer {
     public:
     ~FlightComponent() = default;
     virtual void SetState(COMPONENT_STATE new_state) = 0;
-    COMPONENT_STATE state = MINIMIZED;
+    COMPONENT_STATE state = COMPONENT_STATE::MINIMIZED;
     Rectangle min_bounds;
     Rectangle max_bounds;
     Label top_label;
@@ -353,6 +334,13 @@ class TargetScreen : public FlightComponent {
 
 class FlightControl : public UILayer {
     public:
+
+        enum VIEW_MODE {
+            VIEW_NONE,
+            VIEW_ORBITS,
+            VIEW_COUNT
+        };
+
         FlightControl();
         ~FlightControl() override;
         void Update() override;
@@ -401,6 +389,10 @@ class FlightControl : public UILayer {
 
         Rectangle flight_mode_indicator;
         Label flight_mode_label;
+
+        Rectangle view_mode_indicator;
+        Label view_mode_label;
+        VIEW_MODE view_mode = VIEW_NONE;
 
         //Rectangle flight_mode_indicator;
         

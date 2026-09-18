@@ -32,6 +32,11 @@ LocationShip::~LocationShip() {
 
 
 void LocationShip::Update() {
+    is_on_screen = IsOnScreen(position, ship_data->radius);
+    if(is_on_screen) {
+        g_game_data.debug_data.draw_count +=1;
+    }
+
     float detect_radius = ship_data->radius * DETECT_RADIUS_FACTOR;
     if(CheckCollisionPointCircle(g_current_player->entity_data->position, position, detect_radius) and info_area.selected) {
         can_board_ship = true;
@@ -43,6 +48,11 @@ void LocationShip::Update() {
 }
 
 void LocationShip::Draw() {
+
+    if(!is_on_screen) {
+        return;
+    }
+
     Color color = PURPLE;
     if(can_board_ship) {
         color = PINK;
@@ -54,6 +64,10 @@ void LocationShip::Draw() {
 }
 
 void LocationShip::DrawOverlay() {
+
+    if(!is_on_screen) {
+        return;
+    }
 
     //DrawLabelCenteredWithBG(info_label, g_font, TRANSDARKERGRAY);
     if(info_area.mouse_hovering or info_area.selected) {

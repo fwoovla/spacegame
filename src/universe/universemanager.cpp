@@ -72,7 +72,9 @@ void UniverseManager::CreateUniverse(std::string player_name) {
     }
 
     hud.SetTarget(g_current_player, current_system.get(), &selection_manager, &universe_data);
-    //hud.selection_manager = &selection_manager;
+
+    shop_ui.close_shop.Connect( [this]() { OnCloseShop();} );
+
 }
 
 //create the SystemMapData
@@ -261,9 +263,6 @@ void UniverseManager::ConnectSystems() {
     }
  */
     printf("\ntotal connections: %i\n", universe_data.connections.size());
-/*     for(auto &connection : universe_data.connections) {
-        printf("connection: %i  from: %i   to: %i\n", connection.uid, connection.system_a_uid, connection.system_b_uid);
-    } */
 
 }
 
@@ -325,26 +324,32 @@ void UniverseManager::Update() {
 
 
 
-
-
-
-    switch(location_active)
-    {
-        case false:
-            current_system->Update();
-            break;
-            
-        case true:
-            current_location->Update();
-            break;
-
+    if(shop_open) {
+        shop_ui.Update();
     }
-
-    selection_manager.Update();
+    else {
+        
+        switch(location_active)
+        {
+            case false:
+                current_system->Update();
+                break;
+                
+            case true:
+                current_location->Update();
+                break;
     
-    if(g_current_player->ship) {
-        hud.Update();
+        }
+        selection_manager.Update();
+        
+        if(g_current_player->ship) {
+            hud.Update();
+        }
+        else if(g_current_player->character) {
+            character_ui.Update();
+        }
     }
+
 }
 
 
@@ -403,19 +408,28 @@ void UniverseManager::DrawDebug() {
 
 
 void UniverseManager::DrawUI() {
-    switch(location_active)
-    {
-        case false:
+
+    if(shop_open) {
+        shop_ui.Draw();
+    }
+    else {
+        switch(location_active)
+        {
+            case false:
             current_system->DrawUI();
             break;
-        
-        case true:
+            
+            case true:
             current_location->DrawUI();
             break;
-    }
-
-    if(g_current_player->ship) {
-        hud.Draw();
+        }
+        
+        if(g_current_player->ship) {
+            hud.Draw();
+        }
+        else if(g_current_player->character) {
+            character_ui.Draw();
+        }
     }
 }
 
@@ -521,6 +535,7 @@ void UniverseManager::LandAtLocation() {
         g_current_player->entity_data = &fresh_data;
 
         current_location->launch_requested.Connect([this]() { LaunchFromLocationRequested();});
+        current_location->open_shop.Connect([this]() { OnOpenShop();});
 
         g_current_player->ExitShip(&universe_data.character_data[g_current_player->entity_data->character_uid]);
         exit_ship.EmitSignal();
@@ -621,6 +636,24 @@ int UniverseManager::SelectRandomSystem() {
     int i = GetRandomValue(0, num_systems-1);
     return system_uids[i];
 }
+
+
+
+
+void UniverseManager::OnOpenShop() {
+    if(g_game_data.shop_type != SHOP_NONE) {
+        shop_open = true;   
+        shop_ui.MakeShop(g_game_data.shop_type);
+    }
+
+}
+
+void UniverseManager::OnCloseShop() {
+    shop_open = false;
+}
+
+
+
 
 
 

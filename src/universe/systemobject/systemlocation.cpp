@@ -32,9 +32,21 @@ SystemLocation::~SystemLocation() {
 
 void SystemLocation::Update() {
 
+    is_on_screen = IsOnScreen(location_data->position, location_data->radius);
+    if(is_on_screen) {
+        is_on_screen = g_camera.zoom > 0.05;
+    }
+
+    if(is_on_screen) {
+        g_game_data.debug_data.draw_count +=1;
+    }
+
 }
 
 void SystemLocation::Draw() {
+    if(!is_on_screen) {
+        return;
+    }
 
     int grid_size = location_data->location_plan.grid_size;
     float size_x = location_data->location_plan.size_x;
@@ -68,6 +80,9 @@ void SystemLocation::Draw() {
 
 
 void SystemLocation::DrawOverlay() {
+    if(!is_on_screen) {
+        return;
+    }
 
     if(info_area.mouse_hovering or info_area.selected) {
         

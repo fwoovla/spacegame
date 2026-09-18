@@ -21,7 +21,7 @@ void ShipInfo::Update() {
         return;
     }
 
-    fuel_label.text = std::to_string(int(ship->ship_data->fuel));
+    fuel_label.text = "fuel: " + std::to_string(int(ship->ship_data->fuel));
 }
 
 void ShipInfo::Draw() {
