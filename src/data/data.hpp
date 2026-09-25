@@ -19,3 +19,5 @@ SystemDriveData LoadSystemDriveData(json &e);
 void LoadCharacterControllerData(std::string file_path);
 
 void LoadObjectControllerData(std::string file_path);
+
+void LoadUniverseGenData(std::string file_path);

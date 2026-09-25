@@ -1,5 +1,6 @@
 #include "data.hpp"
 #include "../resources/json.hpp"
+#include "../universe/universe.hpp"
 
 
 using json = nlohmann::json;
@@ -7,6 +8,7 @@ using json = nlohmann::json;
 
 
 void LoadData() {
+    LoadUniverseGenData("assets/universegen.json");
     LoadCreatureEntityData("assets/creature_entities.json");
     LoadObjectEntityData("assets/object_entities.json");
     LoadShipData("assets/ships.json");
@@ -148,7 +150,7 @@ void LoadShipData(std::string file_path) {
 
             SHIP_EQUIPMENT_ID e_id = StrToShipEquipmentId(equipment_id_s);
             SHIP_PART_ID p_id = StrToShipPartId(part_id_s);
-
+            printf("--part id: %i\n", p_id );
 
             ShipEquipmentTag new_tag = {.equipment_id = e_id, .part_id = p_id};
 
@@ -301,5 +303,42 @@ void LoadObjectControllerData(std::string file_path) {
     printf("LOADED: %i OBJECT CONTROLLER\n\n", g_object_entity_controller_template_data.size());
 
 
+
+}
+
+void LoadUniverseGenData(std::string file_path) {
+    std::ifstream cfile(file_path);
+    if (!cfile.is_open()) {
+        TraceLog(LOG_INFO, "CANNOT OPEN DISTRIBUTION SOURCE DATA FILE");
+        return;
+    }
+
+    printf("\n\nLOADING DISTRIBUTION SOURCE DATA FROM %s\n", file_path.c_str());
+
+    json j;
+    cfile>>j;
+
+    distribution_data.clear();
+    distribution_data.resize(DISTRIBUTION_COUNT);
+
+    //for(auto &d : j["distributions"]) {
+        
+    for(auto &s : j["distributions"]) {
+        printf("source....\n");
+        DistributionSourceData new_source;
+
+        DISTRIBUTION_TYPE type = StrToDistributionType(s["type"]);
+
+        new_source.type = type;
+        new_source.max_radius_scale = s["max_radius_scale"];
+        new_source.min_radius_scale = s["min_radius_scale"];   
+        new_source.strength_scale = s["strength_scale"];
+        new_source.source_count = s["source_count"];
+
+        distribution_data[type] = new_source;
+    }
+
+        printf("--DISTRIBUTION source DATA LOADED: %i\n", distribution_data.size());   
+    //}
 
 }

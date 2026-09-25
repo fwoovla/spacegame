@@ -4,8 +4,6 @@
 ShipController::ShipController(ShipData *_data) {
     ship_data = _data;
 
-    printf("setting fm\n");
-
     SetFlightModes();
 
     current_mode = &flight_modes.at(flight_mode);
@@ -92,8 +90,6 @@ void ShipController::Draw(Vector2 &position, float scale) {
 
     }
 
-    //printf("SHIP DRAW  %0.3f  %0.3f  %0.3f\n", screen.x, screen.y, ship_data->radius);
-
 }
 
 
@@ -177,7 +173,6 @@ void ShipController::ManualFlightInput(float dt) {
         if(current_mode->throttle < -1.0f) current_mode->throttle = -1.0f;
     }
     
-
 }
 
 
@@ -204,9 +199,16 @@ void ShipController::FlightUpdate(Vector2 &position, float dt) {
 
 void ShipController::SetFlightModes() {
 
-    printf("set fm   equimnent tags: %i\n", ship_data->equipment_tags.size());
 
-    SystemDriveData &drive = g_system_drive_data[ (SHIP_PART_ID)ship_data->equipment_tags[EQUIPMENT_SYSTEM_DRIVE].part_id ];
+    SHIP_PART_ID part_id = (SHIP_PART_ID)ship_data->equipment_tags[EQUIPMENT_SYSTEM_DRIVE].part_id;
+
+    printf("set flight mode   drive part number: %i\n", part_id);
+
+    if(part_id == SHIP_PART_NONE) {
+        return;
+    }
+
+    SystemDriveData &drive = g_system_drive_data[ part_id ];
 
     flight_modes[SYSTEM_FLIGHT_MODE].thrust = drive.thrust;
     flight_modes[SYSTEM_FLIGHT_MODE].reverse_thrust = drive.reverse_thrust;

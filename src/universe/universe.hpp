@@ -7,14 +7,17 @@
 #include "location.hpp"
 #include <vector>
 #include "../FastNoisLite.h"
+#include "distributions.hpp"
 
-struct Chunk {
+/* struct Chunk {
     Vector2i chunk_pos;
     std::vector<BaseEntity *> entity_list;
 };
 
+ */
 
 
+ 
 struct SystemConnection {
     int uid = -1;
     int system_a_uid = -1;
@@ -29,6 +32,8 @@ struct UniverseData {
     uint64_t seed;
     int max_systems = 0;
     float radius = 0.0f;
+
+    std::vector<DistributionField> distributions;
 
     std::unordered_map<int, SystemMapData> map_data;
     std::vector<SystemConnection> connections;
@@ -45,6 +50,7 @@ class UniverseManager {
         ~UniverseManager(){};
         void CreateUniverse(std::string player_name);
         void OutlineUniverse();
+        void GenerateDistributions();
         void ConnectSystems();
         void DiscoverSystemConnections(int system_uid);
 
@@ -106,30 +112,31 @@ class UniverseManager {
 };
 
 
+EntityData GenerateEntityInstance(EntityTemplateData &tmpl, Vector2 position);
+
+//universe gen
+
 void UniverseGen_MakeSystem(SystemMapData &sys_map_data);
 void GeneratePlanet(SystemBodyData &body_data);
 void GenerateMoon(SystemBodyData &body_data);
 void UniverseGen_MakeLocations(SystemMapData &sys_map_data);
 void UniverseGen_MakeSites(SystemMapData &sys_map_data);
 
+DistributionField GenerateDistribution(const float universe_radius, const DistributionSourceData &data);
 
-EntityData GenerateEntityInstance(EntityTemplateData &tmpl, Vector2 position);
+SystemLocalData GenerateSystemLocalData(DistributionResult &result);
 
 SystemBodyData GenerateSystemStarData(SystemMapData &map_data);
-
 SystemBodyData GenerateSystemBodyData(BODY_TYPE type, int layer, float layer_delta, SystemBodyData *parent);
-
 SystemLocationData GenerateSystemLocationData(SystemBodyData *parent);
-
 SystemSiteData GenerateSystemSiteData(SystemLocationData *parent, int uid);
 
 LocationMapData GenerateLocationMapData(System *system, int location_uid);
-
 LocationSiteData GenerateLocationSiteData(SystemSiteData *site, Vector2 position);
-
-
 
 std::string StarTypeToStr(STAR_TYPE star_type);
 std::string CompositionTypeToStr(BODY_COMPOSITION composition_type);
 std::string EnvoronmentTypeToStr(BODY_ENVIRONMENT environment_type);
 std::vector<Color> GetBodyColors(SystemBodyData &body_data);
+
+// end universe gen

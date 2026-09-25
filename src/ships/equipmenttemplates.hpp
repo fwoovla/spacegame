@@ -16,12 +16,6 @@ struct FuelData {
 extern std::unordered_map<FUEL_TYPE, FuelData> g_fuel_data;
 
 
-/* enum  {
-
-};
-
- */
-
 enum SHIP_EQUIPMENT_ID {
     EQUIPMENT_NONE = -1,
     EQUIPMENT_SYSTEM_DRIVE = 0,
@@ -29,7 +23,7 @@ enum SHIP_EQUIPMENT_ID {
 };
 
 enum SHIP_PART_ID {
-    SHIP_PART_NONE = 0,
+    SHIP_PART_NONE = -1,
     SYSTEM_DRIVE_MK1,
     SYSTEM_DRIVE_MK2
 };
@@ -38,8 +32,8 @@ SHIP_EQUIPMENT_ID StrToShipEquipmentId(const std::string& str);
 
 
 struct ShipEquipmentTag {
-    SHIP_EQUIPMENT_ID equipment_id;
-    int part_id;
+    SHIP_EQUIPMENT_ID equipment_id = EQUIPMENT_NONE;
+    int part_id = -1;
 };
 
 
@@ -54,14 +48,14 @@ struct ShipEquipmentData {
 
 
 
-
 struct SystemDriveData : ShipEquipmentData {
-    float thrust = 100.0f;
-    float reverse_thrust = 50.0f;
-    float max_speed = 1000.0f;
+    float thrust = 0.0f;
+    float reverse_thrust = 0.0f;
+    float max_speed = 0.0f;
     float turn_speed = PI;
     float drag = 0.02f;
 };
+
 
 extern std::unordered_map<SHIP_PART_ID, SystemDriveData> g_system_drive_data;
 

@@ -9,7 +9,12 @@
 #include "../viewport/viewport.hpp"
 
 
-
+struct SystemLocalData {
+    float technology = 0.0f;
+    float population = 0.0f;
+    float industry = 0.0f;
+    float faction = 0.0f;
+};
 
 struct SystemMapData {
     int uid = -1;
@@ -17,6 +22,8 @@ struct SystemMapData {
     Vector2 map_position;
     bool discovered = false;
     bool examined = false;
+
+    SystemLocalData local_data;
 
     float radius = 0.0f;
 
@@ -100,7 +107,6 @@ class System {
         Signal system_travel_requested;
 
 };
-
 
 
 

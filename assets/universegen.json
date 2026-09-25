@@ -1,0 +1,35 @@
+{
+    "distributions":[
+        
+            {
+                "type":"DISTRIBUTION_POPULATION",
+                "source_count": 10,
+                "max_radius_scale":   0.8,
+                "min_radius_scale":   0.5,
+                "strength_scale":   1.0
+            },
+            {
+                "type":"DISTRIBUTION_TECHNOLOGY",
+                "source_count": 40,
+                "max_radius_scale":   0.2,
+                "min_radius_scale":   0.1,
+                "strength_scale":   1.0
+            },
+            {
+                "type":"DISTRIBUTION_INDUSTRY",
+                "source_count": 40,
+                "max_radius_scale":   0.2,
+                "min_radius_scale":   0.1,
+                "strength_scale":   1.0
+            },
+            {
+                "type":"DISTRIBUTION_FACTION",
+                "source_count": 10,
+                "max_radius_scale":   0.5,
+                "min_radius_scale":   0.3,
+                "strength_scale":   1.0
+            }
+
+    ]
+}
+

@@ -38,6 +38,8 @@ struct LocationLocalData {
 
     std::vector<int> site_uids;
 
+    int population = 0;
+
 };
 
 

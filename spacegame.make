@@ -92,6 +92,7 @@ GENERATED += $(OBJDIR)/characterutils.o
 GENERATED += $(OBJDIR)/components.o
 GENERATED += $(OBJDIR)/data.o
 GENERATED += $(OBJDIR)/debuguilayer.o
+GENERATED += $(OBJDIR)/distributions.o
 GENERATED += $(OBJDIR)/entityutils.o
 GENERATED += $(OBJDIR)/flightcontrol.o
 GENERATED += $(OBJDIR)/game.o
@@ -160,6 +161,7 @@ OBJECTS += $(OBJDIR)/characterutils.o
 OBJECTS += $(OBJDIR)/components.o
 OBJECTS += $(OBJDIR)/data.o
 OBJECTS += $(OBJDIR)/debuguilayer.o
+OBJECTS += $(OBJDIR)/distributions.o
 OBJECTS += $(OBJDIR)/entityutils.o
 OBJECTS += $(OBJDIR)/flightcontrol.o
 OBJECTS += $(OBJDIR)/game.o
@@ -425,6 +427,9 @@ $(OBJDIR)/titleuilayer.o: src/uilayers/titleuilayer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/components.o: src/universe/components/components.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/distributions.o: src/universe/distributions.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/asteroidentity.o: src/universe/entities/asteroidentity.cpp

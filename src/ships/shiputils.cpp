@@ -25,7 +25,7 @@ SHIP_EQUIPMENT_ID StrToShipEquipmentId(const std::string& str) {
     if (auto it = lookup_table.find(str); it != lookup_table.end()) {
         return it->second;
     }
-    return SHIP_EQUIPMENT_ID::EQUIPMENT_SYSTEM_DRIVE;
+    return SHIP_EQUIPMENT_ID::EQUIPMENT_NONE;
 
 }
 

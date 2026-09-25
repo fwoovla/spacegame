@@ -104,10 +104,10 @@ void PlayerCharacter::EnterShip(ShipData *_data) {
     ship_data = _data;
     character.reset();
     
-    printf("entering ship   equimnent tags: %i\n", ship_data->equipment_tags.size());
+    printf("entering ship %s  equipped %i modules\n", ship_data->name.c_str(), ship_data->equipment_tags.size());
     ship = std::make_unique<Ship>(_data);
     movement_type = MOVEMENT_SHIP;
-    printf("enter ship\n");
+    //printf("enter ship\n");
 
 }
 

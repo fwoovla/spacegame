@@ -135,6 +135,13 @@ void UniversePanel::Update() {
             details_label.text += "\nlocations: " + std::to_string(selected_system_data.system->locations.size());
             details_label.text += "\nlanding sites: " + std::to_string(selected_system_data.system->sites.size());
         }
+
+        std::string pop = TextFormat("%0.2f", selected_system_data.system->local_data.population);
+        std::string tech = TextFormat("%0.2f", selected_system_data.system->local_data.technology);
+        std::string indu = TextFormat("%0.2f", selected_system_data.system->local_data.industry);
+        std::string faction = TextFormat("%0.2f", selected_system_data.system->local_data.faction);
+
+        details_label.text += "\npop: " + pop + "\ntech: " + tech + "\nind: " + indu + "\nfaction: " + faction;
     }
 
 }

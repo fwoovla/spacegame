@@ -18,6 +18,43 @@ void UniverseMap::Draw() {
     if(!universe) {
         return;
     }
+    if(g_game_data.show_debug) {
+        for(auto &distribution : universe->distributions) {
+            for(auto &source : distribution.sources) {
+                Vector2 map_pos = source.position / map_scale;
+                Vector2 target_pos = Vector2Subtract(map_pos, offset);
+                target_pos =  Vector2Add(target_pos, center);
+                
+                float radius = source.radius / map_scale;
+
+                if(CheckCollisionPointRec(target_pos, bounds)) {
+                    Color d_color = WHITE;
+                    switch (source.type)
+                    {
+                    case DISTRIBUTION_POPULATION:
+                        d_color = GREEN;
+                        break;
+                    case DISTRIBUTION_TECHNOLOGY:
+                        d_color = BLUE;
+                        break;
+                    case DISTRIBUTION_INDUSTRY:
+                        d_color = RED;
+                        break;
+                    case DISTRIBUTION_FACTION:
+                        d_color = ORANGE;
+                        break;
+
+                    default:
+                        break;
+                    }
+
+                    DrawCircleLinesV(target_pos, radius, d_color);
+                    printf("distribution %0.0f %0.0f  radius %0.0f\n", target_pos.x, target_pos.y, radius);
+                }
+
+            }
+        }
+    }
 
     for(UniverseListEntry &entry : *display_system_list) {
         Vector2 map_pos = Vector2Add(entry.position, center);
@@ -61,7 +98,7 @@ void UniverseMap::Draw() {
         if(CheckCollisionPointCircle(g_input.screen_mouse_position, map_pos, 10)) {
             label_color = WHITE;
             
-            DrawCircleLinesV(map_pos, 10, WHITE);
+            //DrawCircleLinesV(map_pos, 10, WHITE);
 
 /*             
             if(g_input.mouse_left) {

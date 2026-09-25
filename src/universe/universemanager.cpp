@@ -11,6 +11,7 @@ void UniverseManager::CreateUniverse(std::string player_name) {
     universe_data.max_systems = 500;
     universe_data.radius = 500000.0f;
     universe_data.seed = GetRandomValue(0, 100000);
+    SetRandomSeed(universe_data.seed);
 
     OutlineUniverse();
 
@@ -81,7 +82,8 @@ void UniverseManager::CreateUniverse(std::string player_name) {
 void UniverseManager::OutlineUniverse() {
     printf("\n\nOUTLINING UNIVERSE\n\n");
 
-
+    universe_data.distributions.resize(DISTRIBUTION_COUNT);
+    GenerateDistributions();
 
     //initial system data
     for(int system_index = 0 ; system_index < universe_data.max_systems; system_index++) {
@@ -99,10 +101,20 @@ void UniverseManager::OutlineUniverse() {
             (float)GetRandomValue(-(int)universe_data.radius, (int)universe_data.radius), 
             (float)GetRandomValue(-(int)universe_data.radius, (int)universe_data.radius) 
         };
+
+        DistributionResult result = GetDistributionResult(universe_data.distributions, new_map_data.map_position);
+        new_map_data.local_data = GenerateSystemLocalData(result);
         universe_data.map_data[system_uid] = new_map_data;
     }
 }
 
+
+void UniverseManager::GenerateDistributions() {
+    printf("--DISTRIBUTION source DATA LOADED: %i\n", distribution_data.size());
+        for(int d = 0; d < DISTRIBUTION_COUNT; d++) {
+            universe_data.distributions[d] = GenerateDistribution(universe_data.radius, distribution_data[d]);
+        }
+}
 
 void UniverseManager::ConnectSystems() {
 
@@ -262,7 +274,7 @@ void UniverseManager::ConnectSystems() {
         --extra_connections;
     }
  */
-    printf("\ntotal connections: %i\n", universe_data.connections.size());
+    printf("\ntotal systems: %i  total connections: %i\n", universe_data.map_data.size(), universe_data.connections.size());
 
 }
 

@@ -1,8 +1,10 @@
 #include "universe.hpp"
 
+
 void UniverseGen_MakeSystem(SystemMapData &sys_map_data) {
 
-    printf("------------------- System: %s -------------------\n", sys_map_data.name.c_str());
+    //printf("------------------- System: %s -------------------\n", sys_map_data.name.c_str());
+
 
 
     SystemBodyData star_body_data = GenerateSystemStarData(sys_map_data);
@@ -41,7 +43,7 @@ void UniverseGen_MakeSystem(SystemMapData &sys_map_data) {
 
     UniverseGen_MakeLocations(sys_map_data);
     UniverseGen_MakeSites(sys_map_data);
-    printf("------------------- END SYSTEM -------------------\n\n");
+    //printf("------------------- END SYSTEM -------------------\n\n");
 }
 
 void UniverseGen_MakeLocations(SystemMapData &sys_map_data) {
@@ -58,10 +60,10 @@ void UniverseGen_MakeLocations(SystemMapData &sys_map_data) {
 
     for (SystemBodyData *body : bodies) {
 
-        printf(" Location on Body: %s -------------------\n", body->name.c_str());
+        //printf(" Location on Body: %s -------------------\n", body->name.c_str());
         SystemLocationData new_location = GenerateSystemLocationData(body);
         sys_map_data.locations[new_location.uid] = new_location;
-        printf(" END Location -------------------\n");
+        //printf(" END Location -------------------\n");
     }
 
 }
@@ -77,11 +79,11 @@ void UniverseGen_MakeSites(SystemMapData &sys_map_data) {
     }
     for (SystemLocationData *location : locations) {
         for(int uid : location->local_data.site_uids) {
-            printf(" Site at Location: %s -------------------\n", location->name.c_str());
+            //printf(" Site at Location: %s -------------------\n", location->name.c_str());
             SystemSiteData new_site = GenerateSystemSiteData(location, uid);
             sys_map_data.sites[new_site.uid] = new_site;
             location->site_uids.push_back(new_site.uid);
-            printf(" END Site -------------------\n");
+            //printf(" END Site -------------------\n");
         }
     }
 
@@ -89,6 +91,23 @@ void UniverseGen_MakeSites(SystemMapData &sys_map_data) {
 
 
 
+
+DistributionField GenerateDistribution(const float universe_radius, const DistributionSourceData &data) {
+    
+    DistributionField distribution;
+    distribution.type = data.type;
+
+    for(int s = 0; s < data.source_count; s++) {
+        DistributionSource source;
+        source.type = data.type;
+        source.position = {(float)GetRandomValue((int)-universe_radius, (int)universe_radius),(float)GetRandomValue((int)-universe_radius, (int)universe_radius)};
+        source.radius = (float)GetRandomValue((int)(universe_radius * data.min_radius_scale), (int)(universe_radius * data.max_radius_scale));
+        source.strength = data.strength_scale;
+        distribution.sources.push_back(source);
+    }
+
+    return distribution;
+}
 
 
 
@@ -119,7 +138,7 @@ SystemBodyData GenerateSystemStarData(SystemMapData &map_data) {
     data.modulate = ORANGE;
 
     
-    printf("star  %0.5f %0.5f  delta %0.5f\n", data.position.x, data.position.y, data.orbital_layer_delta);
+    //printf("star  %0.5f %0.5f  delta %0.5f\n", data.position.x, data.position.y, data.orbital_layer_delta);
     return data;
 
 }
@@ -161,7 +180,7 @@ SystemBodyData GenerateSystemBodyData( BODY_TYPE type, int layer, float layer_de
         data.parent_orbital = layer;
     }
 
-    printf("body: %i  uid: %i data created  %0.5f %0.5f  delta %0.5f\n", type, data.uid, data.position.x, data.position.y + layer, data.orbital_layer_delta);
+    //printf("body: %i  uid: %i data created  %0.5f %0.5f  delta %0.5f\n", type, data.uid, data.position.x, data.position.y + layer, data.orbital_layer_delta);
     return data;
 }
 
@@ -190,7 +209,7 @@ void GeneratePlanet(SystemBodyData &body_data) {
     body_data.orbital_body_count = GetRandomValue(0,5);
     body_data.orbital_layer_count = GetRandomValue(5, 20);
     body_data.orbital_layer_delta = (body_data.radius * 5) /body_data.orbital_layer_count;
-    printf("body comp %s\n", CompositionTypeToStr(body_data.body_composition).c_str());
+    //printf("body comp %s\n", CompositionTypeToStr(body_data.body_composition).c_str());
 }
 
 
@@ -217,7 +236,7 @@ void GenerateMoon(SystemBodyData &body_data) {
     body_data.orbital_layer_count = 0;
     body_data.orbital_layer_delta = 0;
 
-    printf("body comp %s\n", CompositionTypeToStr(body_data.body_composition).c_str());
+    //printf("body comp %s\n", CompositionTypeToStr(body_data.body_composition).c_str());
 
 }
 
@@ -226,6 +245,20 @@ void GenerateMoon(SystemBodyData &body_data) {
 
 
 
+//
+//==========================SYSTEM DATA =========================================
+//
+
+SystemLocalData GenerateSystemLocalData(DistributionResult &result) {
+    SystemLocalData local_data;
+
+    local_data.population = result.results[DISTRIBUTION_POPULATION];
+    local_data.technology = result.results[DISTRIBUTION_TECHNOLOGY];
+    local_data.industry = result.results[DISTRIBUTION_INDUSTRY];
+    local_data.faction = result.results[DISTRIBUTION_FACTION];
+
+    return local_data;
+}
 
 
 
@@ -265,7 +298,7 @@ SystemLocationData GenerateSystemLocationData(SystemBodyData *body) {
     data.location_plan = GenerateNewLocationPlan(data.local_data);
     data.radius = (data.location_plan.size_x * data.location_plan.grid_size) / 2;
 
-    printf("location data created   name: %s\n", data.name.c_str());
+    //printf("location data created   name: %s\n", data.name.c_str());
     body->location_uids.push_back(data.uid);
     return data;
 }
@@ -314,7 +347,7 @@ SystemSiteData GenerateSystemSiteData(SystemLocationData *location, int uid) {
 
     
 
-    printf("site data created    name: %s  uid: %i \n", new_site.name.c_str(), new_site.uid);
+    //printf("site data created    name: %s  uid: %i \n", new_site.name.c_str(), new_site.uid);
     return new_site;
 
 
