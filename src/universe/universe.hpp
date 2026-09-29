@@ -28,12 +28,15 @@ struct SystemConnection {
 };
 
 
+struct GalaxyRegion; //see galaxygen
+
 struct UniverseData {
     uint64_t seed;
     int max_systems = 0;
     float radius = 0.0f;
 
     std::vector<DistributionField> distributions;
+    std::vector<GalaxyRegion> galaxy_regions;
 
     std::unordered_map<int, SystemMapData> map_data;
     std::vector<SystemConnection> connections;
@@ -49,15 +52,15 @@ class UniverseManager {
         UniverseManager(){};
         ~UniverseManager(){};
         void CreateUniverse(std::string player_name);
+
         void OutlineUniverse();
+
         void GenerateDistributions();
+
         void ConnectSystems();
+
         void DiscoverSystemConnections(int system_uid);
 
-        //void GenerateLocations(SystemMapData &map_data);
-        //void GenerateSites(SystemMapData &map_data);
-
-        //void PopulateSystem(SystemMapData &map_data);
         void GenerateNewSystem(int system_uid);
 
         void Update();
@@ -114,13 +117,13 @@ class UniverseManager {
 
 EntityData GenerateEntityInstance(EntityTemplateData &tmpl, Vector2 position);
 
-//universe gen
+//system gen
 
-void UniverseGen_MakeSystem(SystemMapData &sys_map_data);
-void GeneratePlanet(SystemBodyData &body_data);
-void GenerateMoon(SystemBodyData &body_data);
-void UniverseGen_MakeLocations(SystemMapData &sys_map_data);
-void UniverseGen_MakeSites(SystemMapData &sys_map_data);
+void SystemGen_MakeSystem(SystemMapData &sys_map_data);
+void SystemGen_GeneratePlanet(SystemBodyData &body_data);
+void SystemGen_GenerateMoon(SystemBodyData &body_data);
+void SystemGen_MakeLocations(SystemMapData &sys_map_data);
+void SystemGen_MakeSites(SystemMapData &sys_map_data);
 
 DistributionField GenerateDistribution(const float universe_radius, const DistributionSourceData &data);
 
@@ -139,4 +142,30 @@ std::string CompositionTypeToStr(BODY_COMPOSITION composition_type);
 std::string EnvoronmentTypeToStr(BODY_ENVIRONMENT environment_type);
 std::vector<Color> GetBodyColors(SystemBodyData &body_data);
 
-// end universe gen
+// end system gen
+
+
+//universe/galaxy gen
+
+enum GALAXY_REGION_TYPE {
+    GALAXY_REGION_CORE,
+    GALAXY_REGION_BULDGE,
+    GALAXY_REGION_DISC,
+    GALAXY_REGION_ARM,
+    GALAXY_REGION_COUNT
+};
+
+struct GalaxyRegion {
+    GALAXY_REGION_TYPE region_type = GALAXY_REGION_CORE;
+
+    float density = 0.0f;
+    float radius = 0.0f;
+
+};
+
+
+void UniverseGen_MakeGalaxy(UniverseData &universe_data);
+
+GalaxyRegion UniverseGen_GenerateRegion(GALAXY_REGION_TYPE type);
+
+// end universe/galaxy gen

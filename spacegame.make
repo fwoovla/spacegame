@@ -132,6 +132,7 @@ GENERATED += $(OBJDIR)/splashscene.o
 GENERATED += $(OBJDIR)/sprite.o
 GENERATED += $(OBJDIR)/system.o
 GENERATED += $(OBJDIR)/systembody.o
+GENERATED += $(OBJDIR)/systemgen.o
 GENERATED += $(OBJDIR)/systemlist.o
 GENERATED += $(OBJDIR)/systemlocation.o
 GENERATED += $(OBJDIR)/systemsite.o
@@ -201,6 +202,7 @@ OBJECTS += $(OBJDIR)/splashscene.o
 OBJECTS += $(OBJDIR)/sprite.o
 OBJECTS += $(OBJDIR)/system.o
 OBJECTS += $(OBJDIR)/systembody.o
+OBJECTS += $(OBJDIR)/systemgen.o
 OBJECTS += $(OBJDIR)/systemlist.o
 OBJECTS += $(OBJDIR)/systemlocation.o
 OBJECTS += $(OBJDIR)/systemsite.o
@@ -457,6 +459,9 @@ $(OBJDIR)/locationplan.o: src/universe/locationplan.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/system.o: src/universe/system.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/systemgen.o: src/universe/systemgen.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/systembody.o: src/universe/systemobject/systembody.cpp
