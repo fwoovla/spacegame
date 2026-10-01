@@ -16,6 +16,16 @@ struct SystemLocalData {
     float faction = 0.0f;
 };
 
+struct SystemEnvironmentData {
+    float gas = 0.0f;
+    float dust = 0.0f;
+    float radiation = 0.0f;
+    float habitability = 0.0f;
+
+    float planet_size_modifier = 1.0f;
+    float star_formation = 0.0f;
+};
+
 struct SystemMapData {
     int uid = -1;
     std::string name = "system name";
@@ -24,6 +34,7 @@ struct SystemMapData {
     bool examined = false;
 
     SystemLocalData local_data;
+    SystemEnvironmentData environment_data;
 
     float radius = 0.0f;
 

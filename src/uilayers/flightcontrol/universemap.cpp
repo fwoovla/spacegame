@@ -49,7 +49,7 @@ void UniverseMap::Draw() {
                     }
 
                     DrawCircleLinesV(target_pos, radius, d_color);
-                    printf("distribution %0.0f %0.0f  radius %0.0f\n", target_pos.x, target_pos.y, radius);
+                    //printf("distribution %0.0f %0.0f  radius %0.0f\n", target_pos.x, target_pos.y, radius);
                 }
 
             }
@@ -200,14 +200,14 @@ void UniverseMap::Update() {
 
 void UniverseMap::HandleMapMovement() {
 
-    float wheel_zoom = g_input.mouse_wheel * 20.0f;
+    float wheel_zoom = g_input.mouse_wheel * 50.0f;
     
     map_scale -= wheel_zoom;
     if(map_scale < 50.0f) {
         map_scale = 50.0f;
     }
-    if(map_scale > 2000.0f) {
-        map_scale = 2000.0f;
+    if(map_scale > 20000.0f) {
+        map_scale = 20000.0f;
     }
 
     if(selected_system_data->system == nullptr) {

@@ -13,8 +13,6 @@ void UniverseManager::CreateUniverse(std::string player_name) {
     universe_data.seed = GetRandomValue(0, 100000);
     SetRandomSeed(universe_data.seed); */
 
-    UniverseGen_MakeGalaxy(universe_data);
-
     OutlineUniverse();
 
     for(auto &[uid, system] : universe_data.map_data) {
@@ -82,11 +80,13 @@ void UniverseManager::CreateUniverse(std::string player_name) {
 
 //create the SystemMapData
 void UniverseManager::OutlineUniverse() {
-    printf("\n\nOUTLINING UNIVERSE\n\n");
 
-    universe_data.distributions.resize(DISTRIBUTION_COUNT);
-    GenerateDistributions();
-
+    UniverseGen_MakeGalaxy(universe_data);
+    
+    //universe_data.distributions.resize(DISTRIBUTION_COUNT);
+    //GenerateDistributions();
+    
+    printf("\n\nADDING SYSTEMS TO UNIVERSE\n\n");
     //initial system data
     for(int system_index = 0 ; system_index < universe_data.max_systems; system_index++) {
         int system_uid = GetUID();
@@ -104,9 +104,17 @@ void UniverseManager::OutlineUniverse() {
             (float)GetRandomValue(-(int)universe_data.radius, (int)universe_data.radius) 
         };
 
-        DistributionResult result = GetDistributionResult(universe_data.distributions, new_map_data.map_position);
-        new_map_data.local_data = GenerateSystemLocalData(result);
-        universe_data.map_data[system_uid] = new_map_data;
+        //DistributionResult distributions = GetDistributionResult(universe_data.distributions, new_map_data.map_position);
+        GALAXY_REGION_TYPE region = GetGalaxyRegion(universe_data.galaxy_regions, new_map_data.map_position);
+
+        if(region < GALAXY_REGION_COUNT) {
+            if(GetRandomValue(0, 100) < universe_data.galaxy_regions[(int)region].density * 100) {
+
+                GalaxyEnvironmentResult environment = GetGalaxyEnvironmentResult(universe_data.structures, new_map_data.map_position);
+                new_map_data.environment_data = GenerateSystemEnvironmentData(environment);
+                universe_data.map_data[system_uid] = new_map_data;
+            }
+        }
     }
 }
 

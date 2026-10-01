@@ -341,4 +341,25 @@ void LoadUniverseGenData(std::string file_path) {
         printf("--DISTRIBUTION source DATA LOADED: %i\n", distribution_data.size());   
     //}
 
+    galaxy_structure_data.clear();
+    galaxy_structure_data.resize(GALAXY_STRUCTURE_COUNT);
+
+    //for(auto &d : j["distributions"]) {
+        
+    for(auto &s : j["structures"]) {
+        printf("structure....\n");
+        GalaxyStructureSourceData new_structure;
+
+        GALAXY_STRUCTURE_TYPE type = StrToStructureType(s["type"]);
+
+        new_structure.type = type;
+        new_structure.gas = s["gas"];
+        new_structure.dust = s["dust"];   
+        new_structure.radiation = s["radiation"];
+        new_structure.habitability = s["habitability"];
+
+        galaxy_structure_data[type] = new_structure;
+    }
+
+        printf("--galaxy_structure_data  DATA LOADED: %i\n", galaxy_structure_data.size());
 }

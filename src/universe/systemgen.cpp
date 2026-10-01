@@ -249,19 +249,29 @@ void SystemGen_GenerateMoon(SystemBodyData &body_data) {
 //==========================SYSTEM DATA =========================================
 //
 
-SystemLocalData GenerateSystemLocalData(DistributionResult &result) {
+SystemLocalData GenerateSystemLocalData(DistributionResult &distributions, GalaxyRegion &region) {
     SystemLocalData local_data;
 
-    local_data.population = result.results[DISTRIBUTION_POPULATION];
-    local_data.technology = result.results[DISTRIBUTION_TECHNOLOGY];
-    local_data.industry = result.results[DISTRIBUTION_INDUSTRY];
-    local_data.faction = result.results[DISTRIBUTION_FACTION];
+    local_data.population = distributions.results[DISTRIBUTION_POPULATION];
+    local_data.technology = distributions.results[DISTRIBUTION_TECHNOLOGY];
+    local_data.industry = distributions.results[DISTRIBUTION_INDUSTRY];
+    local_data.faction = distributions.results[DISTRIBUTION_FACTION];
+
+    //printf("generating system in the %i  region\n", region.region_type);
 
     return local_data;
 }
 
 
+SystemEnvironmentData GenerateSystemEnvironmentData(const GalaxyEnvironmentResult &environment) {
+    SystemEnvironmentData e_data;
 
+    e_data.gas = environment.results[GALAXY_STRUCTURE_GAS_CLOUD];
+    e_data.dust = environment.results[GALAXY_STRUCTURE_DUST_CLOUD];
+    e_data.radiation = environment.results[GALAXY_STRUCTURE_RADIATION_CLOUD];
+    //e_data.radiation = environment.results[GALAXY_STRUCTURE_];
+    return e_data;
+}
 
 
 //

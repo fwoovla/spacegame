@@ -8,6 +8,7 @@
 #include <vector>
 #include "../FastNoisLite.h"
 #include "distributions.hpp"
+#include "galaxystructures.hpp"
 
 /* struct Chunk {
     Vector2i chunk_pos;
@@ -36,6 +37,7 @@ struct UniverseData {
     float radius = 0.0f;
 
     std::vector<DistributionField> distributions;
+    std::vector<GalaxyStructure> structures;
     std::vector<GalaxyRegion> galaxy_regions;
 
     std::unordered_map<int, SystemMapData> map_data;
@@ -127,7 +129,8 @@ void SystemGen_MakeSites(SystemMapData &sys_map_data);
 
 DistributionField GenerateDistribution(const float universe_radius, const DistributionSourceData &data);
 
-SystemLocalData GenerateSystemLocalData(DistributionResult &result);
+SystemLocalData GenerateSystemLocalData(DistributionResult &distributions, GalaxyRegion &region);
+SystemEnvironmentData GenerateSystemEnvironmentData(const GalaxyEnvironmentResult &environment);
 
 SystemBodyData GenerateSystemStarData(SystemMapData &map_data);
 SystemBodyData GenerateSystemBodyData(BODY_TYPE type, int layer, float layer_delta, SystemBodyData *parent);
@@ -161,11 +164,14 @@ struct GalaxyRegion {
     float density = 0.0f;
     float radius = 0.0f;
 
+    std::vector<Circle> circles;
+
 };
 
 
 void UniverseGen_MakeGalaxy(UniverseData &universe_data);
 
-GalaxyRegion UniverseGen_GenerateRegion(GALAXY_REGION_TYPE type);
+GalaxyRegion UniverseGen_GenerateRegion(GALAXY_REGION_TYPE type, float galaxy_radius);
+GALAXY_REGION_TYPE GetGalaxyRegion(const std::vector<GalaxyRegion> &regions, Vector2 position);
 
 // end universe/galaxy gen

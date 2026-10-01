@@ -58,7 +58,17 @@ struct Line {
     Vector2 end;
 };
 
+struct Circle {
+    Vector2 center;
+    float radius;
+};
 
+struct Donut {
+
+    Circle hole;
+    Circle ring;
+
+};
 
 struct GameSettings {
     enum MODE {
